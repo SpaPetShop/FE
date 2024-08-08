@@ -1,17 +1,5 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "./components/home/Home";
-import Header from "./components/common/header/Header";
-import Banner from "./components/common/banner/Banner";
+import AppRoutes from "./routes/AppRoute";
 
-const App: React.FC = () => (
-  <Router>
-    <Header />
-    <Banner />
-    <Routes>
-      <Route path="/" element={<Home />} />
-    </Routes>
-  </Router>
-);
+const App = () => <AppRoutes />;
 
 export default App;
