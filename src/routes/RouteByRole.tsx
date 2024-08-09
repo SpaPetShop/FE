@@ -1,4 +1,8 @@
 import Dashboard from "../pages/admin/Dashboard";
+import ManageOderList from "../pages/admin/ManageMenu/ManageOderList";
+import TotalCustomer from "../pages/admin/ManageMenu/ToltalCustomer";
+import TotalManager from "../pages/admin/ManageMenu/TotalManager";
+import TotalStaff from "../pages/admin/ManageMenu/TotalStaff";
 import Login from "../pages/common/Authentication/Login";
 import Register from "../pages/common/Authentication/Register";
 import Page401 from "../pages/common/ErrorPage/Page401";
@@ -35,10 +39,7 @@ export const adminRoutes = [
     path: "/admin-dashboard",
     element: <Dashboard />,
   },
-  {
-    path: "/manage-customers",
-    element: <Home />
-  },
+  
   {
     path: "/manage-customers",
     element: <Home />
@@ -46,7 +47,24 @@ export const adminRoutes = [
    {
     path: "/admin-manage-customers",
     element: <Home />,
+   },
+   {
+    path: "/admin-manage-totalCustomer",
+    element: <TotalCustomer />,
+   },
+   {
+    path: "/admin-manage-totalStaff",
+    element: <TotalStaff />,
+   },
+   {
+    path: "/admin-manage-totalManager",
+    element: <TotalManager />,
+   },
+   {
+    path: "/admin-manage-oderList",
+    element: <ManageOderList />,
    }
+
   
 ];
 

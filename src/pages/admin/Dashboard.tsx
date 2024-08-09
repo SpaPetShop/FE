@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import React from 'react'
 import RevenueChart from './RevenueChart'
-import TotalCustomer from './ToltalCustomer'
+
 
 const Dashboard = () => {
   return (
@@ -10,7 +10,7 @@ const Dashboard = () => {
       <div>
        
         <RevenueChart/>
-        <TotalCustomer/>
+        
         
       </div>
        </Box>
