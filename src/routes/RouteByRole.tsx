@@ -36,9 +36,18 @@ export const adminRoutes = [
     element: <Dashboard />,
   },
   {
+    path: "/manage-customers",
+    element: <Home />
+  },
+  {
+    path: "/manage-customers",
+    element: <Home />
+  },
+   {
     path: "/admin-manage-customers",
     element: <Home />,
-  },
+   }
+  
 ];
 
 export const managerRoutes = [
