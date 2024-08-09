@@ -1,31 +1,22 @@
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import BarChartIcon from "@mui/icons-material/BarChart";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import LayersIcon from "@mui/icons-material/Layers";
 import Logout from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import PeopleIcon from "@mui/icons-material/People";
 import PersonAdd from "@mui/icons-material/PersonAdd";
-import Settings from "@mui/icons-material/Settings";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Stack } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Avatar from "@mui/material/Avatar";
 import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import MuiDrawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import Link from "@mui/material/Link";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import ListSubheader from "@mui/material/ListSubheader";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
@@ -33,27 +24,12 @@ import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { UserContext } from "../../../context/AuthContext";
+import { adminSidebarItems, managerSidebarItems } from "./ListItemSidebar";
+import { ROLES } from "../../../routes/roles";
 
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
-const drawerWidth: number = 240;
+const drawerWidth: number = 270;
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
@@ -108,6 +84,15 @@ const defaultTheme = createTheme();
 
 export default function Sidebar() {
   const [open, setOpen] = React.useState(true);
+  const location = useLocation(); // Sử dụng useLocation để lấy thông tin về URL hiện tại
+  const navigate = useNavigate();
+  const isActive = (path: string) => {
+    return location.pathname === path; // So sánh URL hiện tại với path của mỗi thẻ
+  };
+  const [titleSelected, setTitleSelected] = React.useState(
+    "PET SERVICES MANAGEMENT"
+  );
+  const currentUser = React.useContext(UserContext);
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -119,6 +104,29 @@ export default function Sidebar() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const handleLogout = () => {
+    currentUser.setUser(null);
+    localStorage.removeItem("userData");
+    navigate("/");
+  };
+  console.log(location.pathname);
+  React.useEffect(() => {
+    if (location.pathname && currentUser.user?.role === "ADMIN") {
+      const filterItem = adminSidebarItems.filter(
+        (item) => item.path === location.pathname
+      );
+      console.log({ filterItem });
+      setTitleSelected(filterItem[0]?.title);
+    }
+
+    if (location.pathname && currentUser.user?.role === "MANAGER") {
+      const filterItem = managerSidebarItems.filter(
+        (item) => item.path === location.pathname
+      );
+      console.log({ filterItem });
+      setTitleSelected(filterItem[0]?.title);
+    }
+  }, [location, currentUser]);
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: "flex" }}>
@@ -127,11 +135,12 @@ export default function Sidebar() {
           <Toolbar
             sx={{
               pr: "24px", // keep right padding when drawer closed
+              bgcolor: "white",
             }}
           >
             <IconButton
               edge="start"
-              color="inherit"
+              color="primary"
               aria-label="open drawer"
               onClick={toggleDrawer}
               sx={{
@@ -145,26 +154,20 @@ export default function Sidebar() {
             <Typography
               component="h1"
               variant="h6"
-              color="inherit"
+              color="black"
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Dashboard
+              {titleSelected}
             </Typography>
             <Stack direction={"row"}>
               <IconButton color="inherit">
-                <Badge badgeContent={4} color="secondary">
-                  <NotificationsIcon />
+                <Badge badgeContent={4} color="error">
+                  <NotificationsIcon color="secondary" />
                 </Badge>
               </IconButton>
               <Box>
-                <Box
-                  sx={{
-                    // display: "flex",
-                    // alignItems: "center",
-                    // textAlign: "center",
-                  }}
-                >
+                <Box>
                   <Tooltip title="Account settings">
                     <IconButton
                       onClick={handleClick}
@@ -174,7 +177,10 @@ export default function Sidebar() {
                       aria-haspopup="true"
                       aria-expanded={open ? "true" : undefined}
                     >
-                      <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+                      <Avatar
+                        sx={{ width: 32, height: 32 }}
+                        src={"/logo.png"}
+                      ></Avatar>
                     </IconButton>
                   </Tooltip>
                 </Box>
@@ -213,10 +219,39 @@ export default function Sidebar() {
                   transformOrigin={{ horizontal: "right", vertical: "top" }}
                   anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
                 >
-                  <Box>
-                   <Typography align="center">Hà Thành Đạt</Typography> 
-                    <Typography align="center">Quản trị viên</Typography>
-                  </Box>                               
+                  <Stack
+                    direction={"row"}
+                    alignItems={"cenetr"}
+                    spacing={1}
+                    sx={{ p: 1 }}
+                  >
+                    <img
+                      src={"/logo.png"}
+                      alt="Avatar"
+                      style={{
+                        width: "50px",
+                        height: "50px",
+                        objectFit: "contain",
+                      }}
+                    />
+                    <Box>
+                      <Typography sx={{ color: "black", fontWeight: 700 }}>
+                        {currentUser.user?.name}
+                      </Typography>
+                      <Stack
+                        direction={"row"}
+                        alignItems={"center"}
+                        spacing={1}
+                      >
+                        <AdminPanelSettingsIcon fontSize="small" />
+                        <Typography sx={{ color: "#dd2c00", fontWeight: 600 }}>
+                          {currentUser.user?.role === ROLES.ADMIN
+                            ? "Quản trị viên"
+                            : "Quản lý"}
+                        </Typography>
+                      </Stack>
+                    </Box>
+                  </Stack>
                   <Divider />
                   <MenuItem onClick={handleClose}>
                     <ListItemIcon>
@@ -224,7 +259,12 @@ export default function Sidebar() {
                     </ListItemIcon>
                     Thông tin cá nhân
                   </MenuItem>
-                  <MenuItem onClick={handleClose}>
+                  <MenuItem
+                    onClick={() => {
+                      handleLogout();
+                      handleClose();
+                    }}
+                  >
                     <ListItemIcon>
                       <Logout fontSize="small" />
                     </ListItemIcon>
@@ -235,7 +275,16 @@ export default function Sidebar() {
             </Stack>
           </Toolbar>
         </AppBar>
-        <Drawer variant="permanent" open={open}>
+        <Drawer
+          variant="permanent"
+          open={open}
+          PaperProps={{
+            sx: {
+              backgroundImage:
+                "linear-gradient(to right top, #ffab91, #ffbc8e, #ffce8f, #ffe193, #fff59d)",
+            },
+          }}
+        >
           <Toolbar
             sx={{
               display: "flex",
@@ -244,8 +293,12 @@ export default function Sidebar() {
               px: [1],
             }}
           >
-            <Typography textAlign={"center"} variant="h5" sx={{ width: 240 }}>
-              Pet shop
+            <img src="/logo.png" alt="logo" style={{ width: "40px" }} />
+            <Typography
+              textAlign={"center"}
+              sx={{ width: 250, fontWeight: 600 }}
+            >
+              Pet World
             </Typography>
 
             <IconButton onClick={toggleDrawer}>
@@ -254,58 +307,53 @@ export default function Sidebar() {
           </Toolbar>
           <Divider />
           <List component="nav">
-            <ListItemButton>
-              <ListItemIcon>
-                <DashboardIcon />
-              </ListItemIcon>
-              <ListItemText primary="Dashboard" />
-            </ListItemButton>
-            <ListItemButton>
-              <ListItemIcon>
-                <ShoppingCartIcon />
-              </ListItemIcon>
-              <ListItemText primary="Orders" />
-            </ListItemButton>
-            <ListItemButton>
-              <ListItemIcon>
-                <PeopleIcon />
-              </ListItemIcon>
-              <ListItemText primary="Customers" />
-            </ListItemButton>
-            <ListItemButton>
-              <ListItemIcon>
-                <BarChartIcon />
-              </ListItemIcon>
-              <ListItemText primary="Reports" />
-            </ListItemButton>
-            <ListItemButton>
-              <ListItemIcon>
-                <LayersIcon />
-              </ListItemIcon>
-              <ListItemText primary="Integrations" />
-            </ListItemButton>
-            <Divider sx={{ my: 1 }} />
-            <ListSubheader component="div" inset>
-              Saved reports
-            </ListSubheader>
-            <ListItemButton>
-              <ListItemIcon>
-                <AssignmentIcon />
-              </ListItemIcon>
-              <ListItemText primary="Current month" />
-            </ListItemButton>
-            <ListItemButton>
-              <ListItemIcon>
-                <AssignmentIcon />
-              </ListItemIcon>
-              <ListItemText primary="Last quarter" />
-            </ListItemButton>
-            <ListItemButton>
-              <ListItemIcon>
-                <AssignmentIcon />
-              </ListItemIcon>
-              <ListItemText primary="Year-end sale" />
-            </ListItemButton>
+            {currentUser.user?.role === "MANAGER" &&
+              managerSidebarItems.map((item, index) => (
+                <Link
+                  to={item.path}
+                  style={{ textDecoration: "none" }}
+                  key={item.path}
+                >
+                  <ListItemButton
+                    sx={{
+                      fontSize: "11px",
+                      fontWeight: 600,
+                      backgroundImage: isActive(item.path)
+                        ? "linear-gradient(to right, #7ff3fd, #82f6fc, #86f8fb, #8bfbf9, #8ffdf8)"
+                        : "transparent",
+                      color: "black",
+                    }}
+                  >
+                    <ListItemIcon>{item.icon}</ListItemIcon>
+                    <ListItemText primary={item.title} />
+                  </ListItemButton>
+                </Link>
+              ))}
+
+            {currentUser.user?.role === "ADMIN" &&
+              adminSidebarItems.map((item, index) => (
+                <Link
+                  to={item.path}
+                  style={{ textDecoration: "none" }}
+                  key={item.path}
+                >
+                  <ListItemButton
+                    sx={{
+                      fontSize: "11px",
+                      fontWeight: 600,
+                      backgroundImage: isActive(item.path)
+                        ? "linear-gradient(to right, #7ff3fd, #82f6fc, #86f8fb, #8bfbf9, #8ffdf8)"
+                        : "transparent",
+                      // color: isActive(item.path) ? "black" : "black",
+                      color: "black",
+                    }}
+                  >
+                    <ListItemIcon>{item.icon}</ListItemIcon>
+
+                    <ListItemText primary={item.title} />
+                  </ListItemButton>
+                </Link>
+              ))}
           </List>
         </Drawer>
         <Box
@@ -321,9 +369,12 @@ export default function Sidebar() {
           }}
         >
           <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          {/* <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}> */}
+          <Box sx={{ p: 3 }}>
             <Outlet />
-          </Container>
+          </Box>
+
+          {/* </Container> */}
         </Box>
       </Box>
     </ThemeProvider>
