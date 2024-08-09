@@ -17,7 +17,7 @@ const Login = () => {
               avatarUrl: "",
               email: "",
               id: "123",
-              name: "Hà đạt",
+              name: "Hà Thành Đạt - Master FE",
               role: "ADMIN",
             })
           );
@@ -26,13 +26,92 @@ const Login = () => {
             avatarUrl: "",
             email: "",
             id: "123",
-            name: "Hà đạt",
+            name: "Hà Thành Đạt - Master FE",
             role: "ADMIN",
+          });
+          navigate("/admin-dashboard");
+        }}
+      >
+        Login with admin role
+      </Button>
+
+      <Button
+        onClick={() => {
+          localStorage.setItem(
+            "userData",
+            JSON.stringify({
+              accessToken: "abc",
+              avatarUrl: "",
+              email: "",
+              id: "123",
+              name: "Hà Thành Đạt - Master FE",
+              role: "MANAGER",
+            })
+          );
+          currentUser.setUser({
+            accessToken: "abc",
+            avatarUrl: "",
+            email: "",
+            id: "123",
+            name: "Hà Thành Đạt - Master FE",
+            role: "MANAGER",
+          });
+          navigate("/manager-dashboard");
+        }}
+      >
+        Login with manager role
+      </Button>
+      <Button
+        onClick={() => {
+          localStorage.setItem(
+            "userData",
+            JSON.stringify({
+              accessToken: "abc",
+              avatarUrl: "",
+              email: "",
+              id: "123",
+              name: "Hà Thành Đạt - Master FE",
+              role: "STAFF",
+            })
+          );
+          currentUser.setUser({
+            accessToken: "abc",
+            avatarUrl: "",
+            email: "",
+            id: "123",
+            name: "Hà Thành Đạt - Master FE",
+            role: "STAFF",
           });
           navigate("/");
         }}
       >
-        Login
+        Login with staff role
+      </Button>
+      <Button
+        onClick={() => {
+          localStorage.setItem(
+            "userData",
+            JSON.stringify({
+              accessToken: "abc",
+              avatarUrl: "",
+              email: "",
+              id: "123",
+              name: "Hà Thành Đạt - Master FE",
+              role: "CUSTOMER",
+            })
+          );
+          currentUser.setUser({
+            accessToken: "abc",
+            avatarUrl: "",
+            email: "",
+            id: "123",
+            name: "Hà Thành Đạt - Master FE",
+            role: "CUSTOMER",
+          });
+          navigate("/");
+        }}
+      >
+        Login with customer role
       </Button>
 
       <Button
