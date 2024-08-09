@@ -34,6 +34,10 @@ export const adminRoutes = [
   {
     path: "/manage-customers",
     element: <Home />
+  },
+  {
+    path: "/manage-customers",
+    element: <Home />
   }
 ];
 
