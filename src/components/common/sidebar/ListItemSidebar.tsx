@@ -36,5 +36,30 @@ export const adminSidebarItems = [
     title: "Bảng điều khiển",
     path: "/admin-dashboard",
     icon: <DashboardIcon />,
+
+  },
+  {
+    title: "Quản lý đơn hàng",
+    path: "/admin-manage-oderList",
+    icon: <InventoryOutlinedIcon />,
+    
+  },
+  {
+    title: "Quản lý Account Manager",
+    path: "/admin-manage-totalManager",
+    icon: <InventoryOutlinedIcon />,
+    
+  },
+  {
+    title: "Quản lý Account Staff",
+    path: "/admin-manage-totalStaff",
+    icon: <InventoryOutlinedIcon />,
+    
+  },
+  {
+    title: "Quản lý Account Customer",
+    path: "/admin-manage-totalCustomer",
+    icon: <InventoryOutlinedIcon />,
+    
   },
 ];
