@@ -1,6 +1,8 @@
+import { Grid, IconButton } from "@mui/material";
 import React from "react";
-import { Container, Section, Title, CardGrid } from "../../components/home/Home.styles";
+import { Container, Section, Title } from "../../components/home/Home.styles";
 import PetCard from "../../components/home/component/PetCard";
+import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 
 const pets = [
   {
@@ -37,6 +39,15 @@ const pets = [
     price: "200,000 VND",
     duration: "40 phút",
     rate: "4.7",
+    availability: "Còn chỗ"
+  },
+  {
+    type: "Chó",
+    name: "Chăm sóc răng miệng cho chó",
+    image: "https://animalmedicalnc.com/wp-content/uploads/2017/01/amnc-brushing-dog-teeth-6.jpg",
+    price: "120,000 VND",
+    duration: "25 phút",
+    rate: "4.9",
     availability: "Còn chỗ"
   },
   {
@@ -92,33 +103,53 @@ const pets = [
     duration: "20 phút",
     rate: "4.6",
     availability: "Còn chỗ"
+  },
+  {
+    type: "Mèo",
+    name: "Chăm sóc răng miệng cho mèo",
+    image: "https://happypaws.vn/wp-content/uploads/cham-soc-cho-meo-con-443-1200x800.jpg",
+    price: "110,000 VND",
+    duration: "20 phút",
+    rate: "4.6",
+    availability: "Còn chỗ"
   }
 ];
 
-const Home: React.FC = () => (
+const Home: React.FC = () => {
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }
+  return(
   <Container>
     <Title>Your Boss Our Care</Title>
     <Section>
       <h2>Chó</h2>
-      <CardGrid>
+      <Grid container spacing={3}>
         {pets
           .filter((pet) => pet.type === "Chó")
           .map((pet) => (
             <PetCard key={pet.name} pet={pet} />
           ))}
-      </CardGrid>
+      </Grid>
     </Section>
     <Section>
       <h2>Mèo</h2>
-      <CardGrid>
+      <Grid container spacing={3}>
         {pets
           .filter((pet) => pet.type === "Mèo")
           .map((pet) => (
             <PetCard key={pet.name} pet={pet} />
           ))}
-      </CardGrid>
+      </Grid>
     </Section>
+    <IconButton aria-label="delete" size="large" sx={{position:"fixed", bottom:5, right:5}} onClick={handleScrollToTop}>
+        <ArrowCircleUpIcon fontSize="inherit" color="success"/>
+      </IconButton>
   </Container>
-);
+)
+}
 
 export default Home;

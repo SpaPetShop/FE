@@ -5,6 +5,7 @@ import TotalManager from "../pages/admin/ManageMenu/TotalManager";
 import TotalStaff from "../pages/admin/ManageMenu/TotalStaff";
 import Login from "../pages/common/Authentication/Login";
 import Register from "../pages/common/Authentication/Register";
+import ContactPage from "../pages/common/Contact";
 import Page401 from "../pages/common/ErrorPage/Page401";
 import Page403 from "../pages/common/ErrorPage/Page403";
 import Home from "../pages/common/Home";
@@ -19,18 +20,27 @@ export const commonRoutes = [
   {
     path: "/login",
     element: <Login />,
+    isWrapLayout: false
   },
   {
     path: "/register",
     element: <Register />,
+    isWrapLayout: false
+  },
+  {
+    path: "/contact",
+    element: <ContactPage />,
+    isWrapLayout: true
   },
   {
     path: "/401",
     element: <Page401 />,
+    isWrapLayout: false
   },
   {
     path: "/403",
     element: <Page403 />,
+    isWrapLayout: false
   },
 ];
 
