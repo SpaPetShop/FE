@@ -14,17 +14,27 @@ import Page404 from "../pages/common/ErrorPage/Page404";
 import Home from "../pages/common/Home";
 import CheckAuthenticate from "../components/common/wrapper/CheckAuthenticate";
 
+type commonRouteType = {
+  path: string;
+  element: JSX.Element;
+  isWrapLayout: boolean;
+};
 const AppRoutes = () => {
   return (
     <Routes>
-      {commonRoutes.map((route: any, index: any) => {
+      {commonRoutes.map((route: commonRouteType, index: any) => {
         if (route.path === "/login")
           return (
             <Route element={<CheckAuthenticate />}>
               <Route key={index} path={route.path} element={route.element} />
             </Route>
-          );
-        else
+          )
+        if (route.isWrapLayout) {
+          return(
+          <Route element={<WrapLayoutCustomer />}>
+            <Route key={index} path={route.path} element={route.element} />
+          </Route>)
+        } else
           return (
             <Route key={index} path={route.path} element={route.element} />
           );

@@ -1,11 +1,10 @@
-import * as React from 'react';
+import { Chip, Grid } from '@mui/material';
+import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { Chip, Grid } from '@mui/material';
 import { ServiceType } from '../../types/ServiceType';
 
 export type SingleCardServiceProps = {
@@ -31,7 +30,7 @@ export default function SingleService({service}: SingleCardServiceProps) {
         <Chip label={service.status === "ACTIVE" ? "Đang hoạt động" : "Ngưng hoạt động"} color={service.status === "ACTIVE" ? "success" : "error"}/>
       </CardContent>
       <CardActions>
-        <Button size="small">Xem chi tiết</Button>
+      <Button size="small" sx={{borderRadius:"20px", width:"120px"}} variant='outlined' color='warning'>Xem chi tiết</Button>
       </CardActions>
     </Card>
     </Grid>
