@@ -2,7 +2,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const axiosClient = axios.create({
-  baseURL: "http://spapet.vinhuser.one:1234/api/v1",
+  baseURL: "https://spapet.vinhuser.one/api/v1",
   headers: {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
@@ -29,11 +29,11 @@ axiosClient.interceptors.response.use(
     return response;
   },
   async (error) => {
-    if (error.response.status === 401) {
-      localStorage.clear();
-      toast.warning("Access token expires !");
-      window.location.href = "/login";
-    }
+    // if (error.response.status === 401) {
+    //   localStorage.clear();
+    //   toast.warning("Access token expires !");
+    //   window.location.href = "/login";
+    // }
 
     return Promise.reject(error);
   }

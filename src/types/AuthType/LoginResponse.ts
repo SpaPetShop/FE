@@ -1,8 +1,12 @@
 export type LoginResponse = {
-    accessToken: string
-    avatarUrl: string
-    email:string
-    id: string
-    name: string
-    role: string
-  }
+  tokenModel: {
+    accessToken: string;
+    refreshToken: string;
+  };
+  id: string;
+  fullName: string;
+  role: string;
+  status: string;
+  username: string;
+  image: string
+};

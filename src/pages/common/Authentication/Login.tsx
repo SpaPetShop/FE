@@ -21,9 +21,7 @@ const validationSchema = Yup.object({
   username: Yup.string()
     .required("*Tên đăng nhập không được để trống !"),
   password: Yup.string()
-    .required("*Mật khẩu không được để trống !")
-    .min(6, "*Mật khẩu phải có ít nhất 6 kí tự !")
-    .max(20, "*Mật khẩu chứa tối đa 20 kí tự !"),
+    .required("*Mật khẩu không được để trống !"),
 });
 
 export default function Login() {
@@ -35,7 +33,7 @@ export default function Login() {
       case ROLES.ADMIN:
         return navigate("/admin-dashboard");
       case ROLES.MANAGER:
-        return navigate("/manager-dashboard");
+        return navigate("/manager-manage-order");
       case ROLES.CUSTOMER:
         return navigate("/");
       case ROLES.STAFF:
@@ -59,7 +57,7 @@ export default function Login() {
       <Container
         component="main"
         maxWidth="xs"
-        sx={{ backgroundColor: "rgba(255, 255, 255, 0.5)", p: 5 }}
+        sx={{ backgroundColor: "rgba(255, 255, 255, 0.8)", p: 5 }}
       >
         <Box
           sx={{
@@ -88,33 +86,38 @@ export default function Login() {
             validationSchema={validationSchema}
             onSubmit={async (values) => {
               try {
-                setIsLoading(true);
-                console.log(values);
-                // const response = await AuthAPI.login(values);
-                // console.log(response);
+                setIsLoading(true);           
+                const response = await AuthAPI.login(values);
                 localStorage.setItem(
                   "userData",
                   JSON.stringify({
-                    accessToken: "abc",
-                    avatarUrl: "",
+                    accessToken: response.tokenModel.accessToken,
+                    avatarUrl: response.image,
                     email: "",
-                    id: "123",
-                    name: "Hà Thành Đạt - Master FE",
-                    role: values.username.toUpperCase(),
+                    id: response.id,
+                    name: response.fullName,
+                    role: response.role?.toUpperCase(),
+                    status: response.status?.toUpperCase()
                   })
                 );
                 currentUser.setUser({
-                  accessToken: "abc",
-                  avatarUrl: "",
+                  accessToken: response.tokenModel.accessToken,
+                  avatarUrl: response.image,
                   email: "",
-                  id: "123",
-                  name: "Hà Thành Đạt - Master FE",
-                  role: values.username.toUpperCase(),
+                  id: response.id,
+                  name: response.fullName,
+                  role: response.role?.toUpperCase(),
+                  status: response.status?.toUpperCase()
                 });
-                handleNavigateByRole(values.username.toUpperCase());
+                handleNavigateByRole(response.role?.toUpperCase());
                 toast.success("Đăng nhập thành công !");
-              } catch (error) {
-                toast.error("Đăng nhập thất bại !");
+              } catch (error: any) {
+                if(error?.response?.data){
+                  toast.error(error?.response?.data?.error || "Đăng nhập thất bại !");
+                }else{
+                  toast.error("Đăng nhập thất bại !");
+                }
+                
               } finally {
                 setIsLoading(false);
               }
