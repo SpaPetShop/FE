@@ -10,6 +10,5 @@ const AuthAPI = {
     const url = "/auth/login";
     return axiosClient.post<any, LoginResponse>(url, payload);
   },
-  
 };
 export default AuthAPI;
