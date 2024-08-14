@@ -1,169 +1,33 @@
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import Logout from "@mui/icons-material/Logout";
-import PersonAdd from "@mui/icons-material/PersonAdd";
-import { Avatar, Box, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack, Tooltip, Typography } from "@mui/material";
-import React, { useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import logoImage from "../../../assets/images/home/logo.png";
-import { UserContext } from "../../../context/AuthContext";
-import { ROLES } from "../../../routes/roles";
+import React from "react";
 import "./Header.css";
+import { Link } from "react-router-dom";
+import logoImage from "../../../assets/images/home/logo.png";
 
-const Header: React.FC = () => {
-  const currentUser = useContext(UserContext);
-  const navigate = useNavigate()
-  const [open, setOpen] = React.useState(true);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const openMenu = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const handleLogout = () => {
-    currentUser.setUser(null);
-    localStorage.removeItem("userData");
-    navigate("/");
-  };
-
-  return (
-    <header className="header-container">
-      <div className="logo">
+const Header: React.FC = () => (
+  <header className="header-container">
+    <div className="logo">
+      <Link to="/">
         <img src={logoImage} alt="Pet Station" />
-        <span>Pet Station</span>
-      </div>
-      <nav>
-        <ul>
-          <li>
-            <Link to={"/"}>Trang chủ</Link>
-          </li>
-          <li>
-            <Link to={"/"}>Giới thiệu</Link>
-          </li>
-          <li>
-            <Link to={"/"}>Dịch vụ</Link>
-          </li>
-          <li>
-            <Link to={"/"}>Đặt lịch</Link>
-          </li>
-          <li>
-            <Link to={"/contact"}>Liên hệ</Link>
-          </li>
-          {currentUser.user ? (
-            <Box>
-            <Box>
-              <Tooltip title="Account settings">
-                <IconButton
-                  onClick={handleClick}
-                  size="small"
-                  sx={{ ml: 2 }}
-                  aria-controls={open ? "account-menu" : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={open ? "true" : undefined}
-                >
-                  <Avatar
-                    sx={{ width: 32, height: 32 }}
-                    src={"/logo.png"}
-                  ></Avatar>
-                </IconButton>
-              </Tooltip>
-            </Box>
-            <Menu
-              anchorEl={anchorEl}
-              id="account-menu"
-              open={openMenu}
-              onClose={handleClose}
-              onClick={handleClose}
-              PaperProps={{
-                elevation: 0,
-                sx: {
-                  overflow: "visible",
-                  filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                  mt: 1.5,
-                  "& .MuiAvatar-root": {
-                    width: 32,
-                    height: 32,
-                    ml: -0.5,
-                    mr: 1,
-                  },
-                  "&::before": {
-                    content: '""',
-                    display: "block",
-                    position: "absolute",
-                    top: 0,
-                    right: 14,
-                    width: 10,
-                    height: 10,
-                    bgcolor: "background.paper",
-                    transform: "translateY(-50%) rotate(45deg)",
-                    zIndex: 0,
-                  },
-                },
-              }}
-              transformOrigin={{ horizontal: "right", vertical: "top" }}
-              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-            >
-              <Stack
-                direction={"row"}
-                alignItems={"cenetr"}
-                spacing={1}
-                sx={{ p: 1 }}
-              >
-                <img
-                  src={"/logo.png"}
-                  alt="Avatar"
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                    objectFit: "contain",
-                  }}
-                />
-                <Box>
-                  <Typography sx={{ color: "black", fontWeight: 700 }}>
-                    {currentUser.user?.name}
-                  </Typography>
-                  <Stack
-                    direction={"row"}
-                    alignItems={"center"}
-                    spacing={1}
-                  >
-                    <AdminPanelSettingsIcon fontSize="small" />
-                    <Typography sx={{ color: "#dd2c00", fontWeight: 600 }}>
-                      {currentUser.user?.role === ROLES.ADMIN
-                        ? "Quản trị viên"
-                        : "Quản lý"}
-                    </Typography>
-                  </Stack>
-                </Box>
-              </Stack>
-              <Divider />
-              <MenuItem onClick={handleClose}>
-                <ListItemIcon>
-                  <PersonAdd fontSize="small" />
-                </ListItemIcon>
-                Thông tin cá nhân
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  handleLogout();
-                  handleClose();
-                }}
-              >
-                <ListItemIcon>
-                  <Logout fontSize="small" />
-                </ListItemIcon>
-                Đăng xuất
-              </MenuItem>
-            </Menu>
-          </Box>
-          ) : (
-            <Link to={"/login"}>Đăng nhập</Link>
-          )}
-        </ul>
-      </nav>
-    </header>
-  );
-};
+      </Link>
+    </div>
+    <nav>
+      <ul>
+        <li>
+          <Link to="/">Trang chủ</Link>
+        </li>
+        {/* <li><a href="#about">Giới thiệu</a></li> */}
+        <li>
+          <Link to="/detail">Sản phẩm</Link>
+        </li>
+        {/* <li><a href="#services">Dịch vụ</a></li> */}
+        <li>
+          <Link to="/booking">Đặt lịch</Link>
+        </li>
+        {/* <li><a href="#events">Sự kiện</a></li> */}
+        {/* <li><a href="#contact">Liên hệ</a></li> */}
+      </ul>
+    </nav>
+  </header>
+);
 
 export default Header;
