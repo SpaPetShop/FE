@@ -10,39 +10,43 @@ import Page401 from "../pages/common/ErrorPage/Page401";
 import Page403 from "../pages/common/ErrorPage/Page403";
 import Home from "../pages/common/Home";
 import Profile from "../pages/customer/Profile";
+import CreateCombo from "../pages/manager/CreateCombo";
+import DetailCombo from "../pages/manager/DetailCombo";
 import DetailCustomer from "../pages/manager/DetailCustomer";
-import DetailService from "../pages/manager/DetailService";
+import ListCategory from "../pages/manager/ListCategory";
+import ListCombo from "../pages/manager/ListCombo";
 import ListOrder from "../pages/manager/ListOrder";
-import ListService from "../pages/manager/ListService";
+import ListProduct from "../pages/manager/ListProduct";
 import ListStaff from "../pages/manager/ListStaff";
 import ListUser from "../pages/manager/ListUser";
+import UpdateCombo from "../pages/manager/UpdateCombo";
 import StaffCalendar from "../pages/staff/StaffCalendar";
 
 export const commonRoutes = [
   {
     path: "/login",
     element: <Login />,
-    isWrapLayout: false
+    isWrapLayout: false,
   },
   {
     path: "/register",
     element: <Register />,
-    isWrapLayout: false
+    isWrapLayout: false,
   },
   {
     path: "/contact",
     element: <ContactPage />,
-    isWrapLayout: true
+    isWrapLayout: true,
   },
   {
     path: "/401",
     element: <Page401 />,
-    isWrapLayout: false
+    isWrapLayout: false,
   },
   {
     path: "/403",
     element: <Page403 />,
-    isWrapLayout: false
+    isWrapLayout: false,
   },
 ];
 
@@ -51,40 +55,34 @@ export const adminRoutes = [
     path: "/admin-dashboard",
     element: <Dashboard />,
   },
-  
+
   {
     path: "/manage-customers",
-    element: <Home />
+    element: <Home />,
   },
-   {
+  {
     path: "/admin-manage-customers",
     element: <Home />,
-   },
-   {
+  },
+  {
     path: "/admin-manage-totalCustomer",
     element: <TotalCustomer />,
-   },
-   {
+  },
+  {
     path: "/admin-manage-totalStaff",
     element: <TotalStaff />,
-   },
-   {
+  },
+  {
     path: "/admin-manage-totalManager",
     element: <TotalManager />,
-   },
-   {
+  },
+  {
     path: "/admin-manage-oderList",
     element: <ManageOderList />,
-   }
-
-  
+  },
 ];
 
 export const managerRoutes = [
-  {
-    path: "/manager-dashboard",
-    element: <Dashboard />,
-  },
   {
     path: "/manager-manage-customer",
     element: <ListUser />,
@@ -98,12 +96,28 @@ export const managerRoutes = [
     element: <ListStaff />,
   },
   {
-    path: "/manager-manage-service",
-    element: <ListService />,
+    path: "/manager-manage-combo",
+    element: <ListCombo />,
   },
   {
-    path: "/manager-manage-service/:id",
-    element: <DetailService />,
+    path: "/manager-manage-product",
+    element: <ListProduct />,
+  },
+  {
+    path: "/manager-manage-category",
+    element: <ListCategory />,
+  },
+  {
+    path: "/manager-manage-combo/:id",
+    element: <DetailCombo />,
+  },
+  {
+    path: "/manager-manage-combo/create-combo",
+    element: <CreateCombo />,
+  },
+  {
+    path: "/manager-manage-combo/update-combo/:id",
+    element: <UpdateCombo />,
   },
   {
     path: "/manager-manage-order",

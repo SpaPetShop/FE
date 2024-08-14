@@ -2,6 +2,8 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import Logout from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import { Stack } from "@mui/material";
@@ -125,6 +127,28 @@ export default function Sidebar() {
       setTitleSelected(filterItem[0]?.title || "PET SPA");
     }
   }, [location, currentUser]);
+  const renderRole = () => {
+    switch (currentUser.user?.role?.toUpperCase()) {
+      case ROLES.ADMIN:
+        return {
+          name: "Quản trị viên",
+          icon: <AdminPanelSettingsIcon fontSize="small" />,
+        };
+      case ROLES.MANAGER:
+        return {
+          name: "Quản lý",
+          icon: <AdminPanelSettingsIcon fontSize="small" />,
+        };
+      case ROLES.CUSTOMER:
+        return {
+          name: "Khách hàng",
+          icon: <PersonOutlineIcon fontSize="small" />,
+        };
+      case ROLES.STAFF:
+        return { name: "Nhân viên", icon: <AccountBoxIcon fontSize="small" /> };
+    }
+  };
+  const role = renderRole();
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: "flex" }}>
@@ -176,7 +200,7 @@ export default function Sidebar() {
                     >
                       <Avatar
                         sx={{ width: 32, height: 32 }}
-                        src={"/logo.png"}
+                        src={currentUser.user?.avatarUrl || "/logo.png"}
                       ></Avatar>
                     </IconButton>
                   </Tooltip>
@@ -240,22 +264,23 @@ export default function Sidebar() {
                         alignItems={"center"}
                         spacing={1}
                       >
-                        <AdminPanelSettingsIcon fontSize="small" />
+                        {role?.icon}
                         <Typography sx={{ color: "#dd2c00", fontWeight: 600 }}>
-                          {currentUser.user?.role === ROLES.ADMIN
-                            ? "Quản trị viên"
-                            : "Quản lý"}
+                          {role?.name}
                         </Typography>
                       </Stack>
                     </Box>
                   </Stack>
                   <Divider />
-                  <MenuItem onClick={handleClose}>
-                    <ListItemIcon>
-                      <PersonAdd fontSize="small" />
-                    </ListItemIcon>
-                    Thông tin cá nhân
-                  </MenuItem>
+                  {(currentUser.user?.role === ROLES.STAFF ||
+                    currentUser.user?.role === ROLES.CUSTOMER) && (
+                    <MenuItem onClick={handleClose}>
+                      <ListItemIcon>
+                        <PersonAdd fontSize="small" />
+                      </ListItemIcon>
+                      Thông tin cá nhân
+                    </MenuItem>
+                  )}
                   <MenuItem
                     onClick={() => {
                       handleLogout();
