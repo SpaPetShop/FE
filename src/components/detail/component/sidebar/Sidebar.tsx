@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import './Sidebar.css';
-import serviceData from '../../../../assets/data/detail/service.json';
+import React, { useState } from "react";
+import "./Sidebar.css";
+import serviceData from "../../../../assets/data/detail/service.json";
 
 const Sidebar: React.FC = () => {
-  const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({});
+  const [expandedSections, setExpandedSections] = useState<{
+    [key: string]: boolean;
+  }>({});
 
   const toggleSection = (category: string) => {
     setExpandedSections((prevState) => ({
@@ -18,9 +20,18 @@ const Sidebar: React.FC = () => {
       <ul className="sidebar-menu">
         {serviceData.services.map((service, index) => (
           <li key={index}>
-            <div className="category-header" onClick={() => toggleSection(service.category)}>
+            <div
+              className="category-header"
+              onClick={() => toggleSection(service.category)}
+            >
               <span>{service.category}</span>
-              <span className={`arrow ${expandedSections[service.category] ? 'expanded' : ''}`}>&#9660;</span>
+              <span
+                className={`arrow ${
+                  expandedSections[service.category] ? "expanded" : ""
+                }`}
+              >
+                &#9660;
+              </span>
             </div>
             {expandedSections[service.category] && (
               <ul>
