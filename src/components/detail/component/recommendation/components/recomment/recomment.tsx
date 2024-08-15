@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./recomment.css";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import data from "../../../../../../assets/data/detail/recomment.json";
 
 interface PetService {
@@ -37,8 +37,12 @@ const Recomment: React.FC = () => {
             <div className="recomment-card recomment-image-container">
               <img src={pet.image} alt={pet.name} className="recomment-image" />
               <div className="recomment-buttons">
-                <Link to="/detail" className="recomment-button">Xem chi tiết</Link>
-                <Link to="/booking" className="recomment-button">Đặt lịch ngay</Link>
+                <Link to="/detail" className="recomment-button">
+                  Xem chi tiết
+                </Link>
+                <Link to="/booking" className="recomment-button">
+                  Đặt lịch ngay
+                </Link>
               </div>
             </div>
             <div className="recomment-info">

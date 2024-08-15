@@ -5,7 +5,7 @@ import Recomment from "./components/recomment/recomment";
 
 const Recommendation: React.FC = () => (
   <div className="recommendation">
-    <FeaturedTitle title={'CÁC DỊCH VỤ KHÁC'}/>
+    <FeaturedTitle title={"CÁC DỊCH VỤ KHÁC"} />
     <div className="recommendation-items">
       <Recomment />
     </div>

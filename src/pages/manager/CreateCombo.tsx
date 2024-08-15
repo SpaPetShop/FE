@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import Button from "@mui/material/Button";
-import { Field, Form, Formik } from "formik";
+import { Field, Form, Formik, FormikProps, FormikValues } from "formik";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -37,13 +37,15 @@ const validationSchema = Yup.object({
 
 export default function CreateCombo() {
   const navigate = useNavigate();
+  const formikRef = React.useRef<FormikProps<FormikValues>>(null);
   const [listCategory, setListCategory] = React.useState<CategoryType[] | []>(
     []
   );
   const [listProductSelected, setListProductSelected] = React.useState<
     string[] | []
   >([]);
-  const [totalSellingPriceOfSubProuducts, setTotalSellingPriceOfSubProuducts] = React.useState(0)
+  const [totalSellingPriceOfSubProuducts, setTotalSellingPriceOfSubProuducts] =
+    React.useState(0);
   const [isLoading, setIsLoading] = React.useState(false);
   console.log("check product", listProductSelected);
   React.useEffect(() => {
@@ -64,7 +66,7 @@ export default function CreateCombo() {
 
   return (
     <Paper sx={{ p: 10 }}>
-       {isLoading && <LoadingComponentVersion2 open={isLoading}/>}
+      {isLoading && <LoadingComponentVersion2 open={isLoading} />}
       <Formik
         initialValues={{
           name: "",
@@ -74,17 +76,22 @@ export default function CreateCombo() {
           status: "",
           categoryId: "",
         }}
+        innerRef={formikRef}
         validationSchema={validationSchema}
         onSubmit={async (values) => {
-          try {       
+          if (listProductSelected.length === 0) {
+            toast.error("Vui lòng chọn sản phẩm cho gói!");
+            return;
+          }
+          try {
             const response = await ProductAPI.create({
               ...values,
               priority: 0,
-              supProductId: listProductSelected
+              supProductId: listProductSelected,
             });
             console.log({ response });
             toast.success("Tạo thành công !");
-            navigate("/manager-manage-combo")
+            navigate("/manager-manage-combo");
           } catch (error) {
             toast.error("Tạo thất bại !");
           }
@@ -228,9 +235,7 @@ export default function CreateCombo() {
                       <MenuItem value={item.id}>{item.name}</MenuItem>
                     ))}
                   </Field>
-                  <FormHelperText>
-                    {touched.categoryId && errors.categoryId}
-                  </FormHelperText>
+                  <FormHelperText>*Vui lòng chọn loại sản phẩm</FormHelperText>
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
@@ -254,25 +259,31 @@ export default function CreateCombo() {
                     <MenuItem value="OutOfStock">Hết hàng</MenuItem>
                   </Field>
                   <FormHelperText>
-                    {touched.status && errors.status}
+                    * Vui lòng chọn trạng thái gói
                   </FormHelperText>
                 </FormControl>
               </Grid>
             </Grid>
 
-            <Box sx={{ mt: 5, mb: 3 }}>
-              <TableSelectProduct
-              listProductSelected={listProductSelected}
-                setListProductSelected={setListProductSelected}
-                setTotalSellingPriceOfSubProuducts={setTotalSellingPriceOfSubProuducts}
-              />
-            </Box>
-            {typeof(values.sellingPrice) === "number" && totalSellingPriceOfSubProuducts <
-                values.sellingPrice && (
+            {values.categoryId && (
+              <Box sx={{ mt: 5, mb: 3 }}>
+                <TableSelectProduct
+                  listProductSelected={listProductSelected}
+                  formikRef={formikRef}
+                  setListProductSelected={setListProductSelected}
+                  setTotalSellingPriceOfSubProuducts={
+                    setTotalSellingPriceOfSubProuducts
+                  }
+                />
+              </Box>
+            )}
+            {typeof values.sellingPrice === "number" &&
+              totalSellingPriceOfSubProuducts < values.sellingPrice && (
                 <Box>
                   <Alert variant="filled" severity="warning">
                     Giá tiền bán ra của gói lớn hơn tổng giá tiền các sản phẩm
-                    mà bạn đã chọn!{" "} ({totalSellingPriceOfSubProuducts.toLocaleString()} VNĐ) 
+                    mà bạn đã chọn! (
+                    {totalSellingPriceOfSubProuducts.toLocaleString()} VNĐ)
                   </Alert>
                 </Box>
               )}

@@ -17,6 +17,7 @@ import {
   ProductType,
 } from "../../../types/Product/ProductType";
 import SubProductAPI from "../../../utils/SubProductAPI";
+import { FormikProps, FormikValues } from "formik";
 
 interface HeadCell {
   disablePadding: boolean;
@@ -49,6 +50,12 @@ const headCells: readonly HeadCell[] = [
     numeric: true,
     disablePadding: false,
     label: "Giá bán",
+  },
+  {
+    id: "category",
+    numeric: true,
+    disablePadding: false,
+    label: "Loại",
   },
 ];
 
@@ -95,7 +102,10 @@ interface EnhancedTableToolbarProps {
 interface TableSelectProductProps {
   listProductSelected: [] | string[];
   setListProductSelected: React.Dispatch<React.SetStateAction<[] | string[]>>;
-  setTotalSellingPriceOfSubProuducts: React.Dispatch<React.SetStateAction<number>>
+  setTotalSellingPriceOfSubProuducts: React.Dispatch<
+    React.SetStateAction<number>
+  >;
+  formikRef: React.RefObject<FormikProps<FormikValues>>;
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
@@ -153,7 +163,8 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 export default function TableSelectProduct({
   listProductSelected,
   setListProductSelected,
-  setTotalSellingPriceOfSubProuducts
+  setTotalSellingPriceOfSubProuducts,
+  formikRef,
 }: TableSelectProductProps) {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [listProduct, setListProduct] = React.useState<ProductType[] | []>([]);
@@ -173,14 +184,16 @@ export default function TableSelectProduct({
       const newSelected = listProduct.map((n) => n.id);
       setSelected(newSelected);
       setListProductSelected(newSelected);
-      const commonElements = listProduct.filter(element => newSelected.includes(element.id));
+      const commonElements = listProduct.filter((element) =>
+        newSelected.includes(element.id)
+      );
       let totalSubPrice = 0;
-      commonElements.forEach(element => {
-        totalSubPrice = totalSubPrice + element.sellingPrice
+      commonElements.forEach((element) => {
+        totalSubPrice = totalSubPrice + element.sellingPrice;
       });
-      console.log({commonElements});
-      console.log({totalSubPrice});
-      setTotalSellingPriceOfSubProuducts(totalSubPrice)
+      console.log({ commonElements });
+      console.log({ totalSubPrice });
+      setTotalSellingPriceOfSubProuducts(totalSubPrice);
       return;
     }
     setSelected([]);
@@ -204,14 +217,16 @@ export default function TableSelectProduct({
     }
     setSelected(newSelected);
     setListProductSelected(newSelected);
-    const commonElements = listProduct.filter(element => newSelected.includes(element.id));
+    const commonElements = listProduct.filter((element) =>
+      newSelected.includes(element.id)
+    );
     let totalSubPrice = 0;
-    commonElements.forEach(element => {
-      totalSubPrice = totalSubPrice + element.sellingPrice
+    commonElements.forEach((element) => {
+      totalSubPrice = totalSubPrice + element.sellingPrice;
     });
-    console.log({commonElements});
-    console.log({totalSubPrice});
-    setTotalSellingPriceOfSubProuducts(totalSubPrice)
+    console.log({ commonElements });
+    console.log({ totalSubPrice });
+    setTotalSellingPriceOfSubProuducts(totalSubPrice);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -227,10 +242,10 @@ export default function TableSelectProduct({
 
   const isSelected = (id: string) => selected.indexOf(id) !== -1;
   React.useEffect(() => {
-    if(listProductSelected.length > 0){
-      setSelected(listProductSelected)
+    if (listProductSelected.length > 0) {
+      setSelected(listProductSelected);
     }
-  },[listProductSelected])
+  }, [listProductSelected]);
   React.useEffect(() => {
     const fetchAllProduct = async () => {
       try {
@@ -250,13 +265,24 @@ export default function TableSelectProduct({
     fetchAllProduct();
   }, [filter]);
 
+  React.useEffect(() => {
+    if (formikRef.current?.values.categoryId) {
+      setSelected([]);
+      setFilter((prev) => ({
+        ...prev,
+        CategoryId: formikRef.current?.values.categoryId,
+      }));
+    }
+  }, [formikRef.current?.values.categoryId, formikRef]);
+  console.log("ref", formikRef.current?.values);
+
   return (
     <Box sx={{ width: "100%" }}>
       <Box sx={{ width: "100%", mb: 2, border: "1px solid" }}>
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>
           <Table
-            sx={{ minWidth: 500}}
+            sx={{ minWidth: 500 }}
             aria-labelledby="tableTitle"
             size={"medium"}
           >
@@ -300,11 +326,21 @@ export default function TableSelectProduct({
                     </TableCell>
 
                     <TableCell align="center">{row.description}</TableCell>
-                    <TableCell align="center">{row.stockPrice.toLocaleString()} VNĐ</TableCell>
-                    <TableCell align="center">{row.sellingPrice.toLocaleString()} VNĐ</TableCell>
+                    <TableCell align="center">
+                      {row.stockPrice.toLocaleString()} VNĐ
+                    </TableCell>
+                    <TableCell align="center">
+                      {row.sellingPrice.toLocaleString()} VNĐ
+                    </TableCell>
+                    <TableCell align="center">{row.category.name}</TableCell>
                   </TableRow>
                 );
               })}
+              {listProduct.length === 0 && (
+                <TableCell colSpan={6} align="center">
+                  Không có dữ liệu
+                </TableCell>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
