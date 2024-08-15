@@ -48,17 +48,6 @@
   display: flex;
 }
 
-.detail-button, .book-button {
-  background-color: #ffa500;
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.3s;
-  font-size: 14px;
-}
-
 .detail-button:hover, .book-button:hover {
   transform: scale(1.05);
 }
