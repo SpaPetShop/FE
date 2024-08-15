@@ -11,8 +11,10 @@ import AuthRoute from "./AuthRoute";
 import Sidebar from "../components/common/sidebar/Sidebar";
 import WrapLayoutCustomer from "../components/common/wrapper/WrapLayoutCustomer";
 import Page404 from "../pages/common/ErrorPage/Page404";
-import Home from "../pages/common/Home";
+import Home from "../pages/common/Home/Home";
 import CheckAuthenticate from "../components/common/wrapper/CheckAuthenticate";
+import DetailPage from "../pages/common/Detail/DetailPage";
+import Booking from "../pages/customer/booking/Booking";
 
 type commonRouteType = {
   path: string;
@@ -53,6 +55,8 @@ const AppRoutes = () => {
 
       <Route key={"wrap_layout2"} element={<WrapLayoutCustomer />}>
         <Route path={"/"} element={<Home />} />;
+        <Route path={"/:id"} element={<DetailPage />} />;
+        <Route path="/booking" element={<Booking />} />
         <Route
           key={"customer_private"}
           element={<AuthRoute allowedRoles={[ROLES.CUSTOMER]} />}

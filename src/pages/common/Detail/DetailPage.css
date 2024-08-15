@@ -1,0 +1,29 @@
+.detail-page {
+    display: flex;
+    padding: 20px;
+    background-color: #f8f8f8;
+}
+
+.sidebar {
+    flex: 0 0 30%;
+    background-color: #fff;
+    padding: 20px;
+    margin-right: 20px;
+    border: 1px solid #ddd;
+}
+
+.main-content-area {
+    flex: 0 0 65%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    /* Add some space between the sections */
+}
+
+.main-content,
+.information,
+.recommendation {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+}

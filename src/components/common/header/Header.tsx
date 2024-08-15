@@ -65,8 +65,9 @@ const Header: React.FC = () => {
   return (
     <header className="header-container">
       <div className="logo">
-        <img src={logoImage} alt="Pet Station" />
-        <span>Pet Station</span>
+        <Link to="/">
+          <img src={logoImage} alt="Pet Station" />
+        </Link>
       </div>
       <nav>
         <ul>
@@ -80,7 +81,7 @@ const Header: React.FC = () => {
             <Link to={"/"}>Dịch vụ</Link>
           </li>
           <li>
-            <Link to={"/"}>Đặt lịch</Link>
+            <Link to={"/booking"}>Đặt lịch</Link>
           </li>
           <li>
             <Link to={"/contact"}>Liên hệ</Link>
