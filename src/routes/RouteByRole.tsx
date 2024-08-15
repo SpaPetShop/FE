@@ -8,7 +8,7 @@ import Register from "../pages/common/Authentication/Register";
 import ContactPage from "../pages/common/Contact";
 import Page401 from "../pages/common/ErrorPage/Page401";
 import Page403 from "../pages/common/ErrorPage/Page403";
-import Home from "../pages/common/Home";
+import Home from "../pages/common/Home/Home";
 import Profile from "../pages/customer/Profile";
 import CreateCombo from "../pages/manager/CreateCombo";
 import DetailCombo from "../pages/manager/DetailCombo";
