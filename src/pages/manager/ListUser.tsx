@@ -7,11 +7,20 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Avatar, Chip, InputAdornment, Stack, TablePagination, TextField, Typography } from "@mui/material";
+import {
+  Avatar,
+  Chip,
+  InputAdornment,
+  Stack,
+  TablePagination,
+  TextField,
+  Typography,
+} from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { UserType } from "../../types/UserType";
 import moment from "moment";
-import MenuActionManageUser from "../../components/manager/MenuActionManageUser";
+import MenuActionManageUser from "../../components/manager/MenuAction/MenuActionManageUser";
+import { useNavigate } from "react-router-dom";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -31,9 +40,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:last-child td, &:last-child th": {
     border: 0,
   },
-  "&:hover":{
+  "&:hover": {
     backgroundColor: "#81d4fa",
-  }
+  },
 }));
 
 const dataUsers: UserType[] = [
@@ -144,6 +153,7 @@ const dataUsers: UserType[] = [
 ];
 
 export default function ListUser() {
+  const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [listUser, setListUser] = React.useState<UserType[] | []>(dataUsers);
@@ -159,32 +169,32 @@ export default function ListUser() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  const handleSearchName = (name: string) =>{  
-    if(name) setListUser(dataUsers.filter((user)=>user.name.includes(name)))
-      else setListUser(dataUsers.slice(startIndex, endIndex))
-  }
-  React.useEffect(()=>{
-      const newData = dataUsers.slice(startIndex, endIndex)
-      setListUser(newData);
-  },[page, rowsPerPage, startIndex, endIndex])
+  const handleSearchName = (name: string) => {
+    if (name) setListUser(dataUsers.filter((user) => user.name.includes(name)));
+    else setListUser(dataUsers.slice(startIndex, endIndex));
+  };
+  React.useEffect(() => {
+    const newData = dataUsers.slice(startIndex, endIndex);
+    setListUser(newData);
+  }, [page, rowsPerPage, startIndex, endIndex]);
   console.log(Math.ceil(dataUsers.length / rowsPerPage));
   return (
     <Paper sx={{ p: 2 }}>
       <TextField
-          size="small"
-          placeholder="Nhập tên người dùng ..."
-          label="Tìm kiếm"
-          onChange={(e)=>handleSearchName(e.target.value)}
-          sx={{ mt: 2, mb: 3, ml: 3, width: "345px" }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchOutlinedIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
-      <TableContainer component={Paper} sx={{minHeight:600}}>
+        size="small"
+        placeholder="Nhập tên người dùng ..."
+        label="Tìm kiếm"
+        onChange={(e) => handleSearchName(e.target.value)}
+        sx={{ mt: 2, mb: 3, ml: 3, width: "345px" }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchOutlinedIcon />
+            </InputAdornment>
+          ),
+        }}
+      />
+      <TableContainer component={Paper} sx={{ minHeight: 600 }}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
@@ -199,17 +209,39 @@ export default function ListUser() {
           <TableBody>
             {listUser.map((row, index) => (
               <StyledTableRow key={index}>
-                 <StyledTableCell align="center" size="small">{page*rowsPerPage + index+1}</StyledTableCell>
-                <StyledTableCell component="th" scope="row" size="small">
-                  <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                    <Avatar src={row.avatar}/>
-                    <Typography>{row.name}</Typography>
-                    </Stack>
+                <StyledTableCell align="center" size="small">
+                  {page * rowsPerPage + index + 1}
                 </StyledTableCell>
-                <StyledTableCell align="center" size="small">{row.phone}</StyledTableCell>
-                <StyledTableCell align="center" size="small">{moment(row.createdDate).format("DD/MM/YYYY")}</StyledTableCell>
-                <StyledTableCell align="center" size="small">{row.status === "ACTIVE" ? <Chip label={"Đang hoạt động"} color="success"/> : <Chip label={"Ngưng hoạt động"} color="error"/>}</StyledTableCell>
-                <StyledTableCell align="center" size="small"><MenuActionManageUser/></StyledTableCell>
+                <StyledTableCell component="th" scope="row" size="small">
+                  <Stack
+                    direction={"row"}
+                    alignItems={"center"}
+                    spacing={2}
+                    sx={{ cursor: "pointer" }}
+                    onClick={() =>
+                      navigate(`/manager-manage-customer/${row.id}`)
+                    }
+                  >
+                    <Avatar src={row.avatar} />
+                    <Typography>{row.name}</Typography>
+                  </Stack>
+                </StyledTableCell>
+                <StyledTableCell align="center" size="small">
+                  {row.phone}
+                </StyledTableCell>
+                <StyledTableCell align="center" size="small">
+                  {moment(row.createdDate).format("DD/MM/YYYY")}
+                </StyledTableCell>
+                <StyledTableCell align="center" size="small">
+                  {row.status === "ACTIVE" ? (
+                    <Chip label={"Đang hoạt động"} color="success" />
+                  ) : (
+                    <Chip label={"Ngưng hoạt động"} color="error" />
+                  )}
+                </StyledTableCell>
+                <StyledTableCell align="center" size="small">
+                  <MenuActionManageUser />
+                </StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>

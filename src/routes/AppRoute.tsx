@@ -14,63 +14,110 @@ import Page404 from "../pages/common/ErrorPage/Page404";
 import Home from "../pages/common/Home";
 import CheckAuthenticate from "../components/common/wrapper/CheckAuthenticate";
 
+type commonRouteType = {
+  path: string;
+  element: JSX.Element;
+  isWrapLayout: boolean;
+};
 const AppRoutes = () => {
   return (
     <Routes>
-      {commonRoutes.map((route: any, index: any) => {
+      {commonRoutes.map((route: commonRouteType, index: any) => {
         if (route.path === "/login")
           return (
-            <Route element={<CheckAuthenticate />}>
-              <Route key={index} path={route.path} element={route.element} />
+            <Route key={"check_auth"} element={<CheckAuthenticate />}>
+              <Route
+                key={route.path}
+                path={route.path}
+                element={route.element}
+              />
             </Route>
           );
-        else
+        if (route.isWrapLayout) {
           return (
-            <Route key={index} path={route.path} element={route.element} />
+            <Route key={"wrap_layout2"} element={<WrapLayoutCustomer />}>
+              <Route
+                key={route.path}
+                path={route.path}
+                element={route.element}
+              />
+            </Route>
+          );
+        } else
+          return (
+            <Route key={route.path} path={route.path} element={route.element} />
           );
       })}
 
       {/* Customer routes with protected */}
 
-      <Route element={<WrapLayoutCustomer />}>
+      <Route key={"wrap_layout2"} element={<WrapLayoutCustomer />}>
         <Route path={"/"} element={<Home />} />;
-        <Route element={<AuthRoute allowedRoles={[ROLES.CUSTOMER]} />}>
+        <Route
+          key={"customer_private"}
+          element={<AuthRoute allowedRoles={[ROLES.CUSTOMER]} />}
+        >
           {customerRoutes.map((route: any, index: any) => {
             return (
-              <Route key={index} path={route.path} element={route.element} />
+              <Route
+                key={route.path}
+                path={route.path}
+                element={route.element}
+              />
             );
           })}
         </Route>
       </Route>
 
       {/* Admin routes with protected */}
-      <Route element={<AuthRoute allowedRoles={[ROLES.ADMIN]} />}>
+      <Route
+        key={"admin_private"}
+        element={<AuthRoute allowedRoles={[ROLES.ADMIN]} />}
+      >
         <Route element={<Sidebar />}>
           {adminRoutes.map((route, index) => {
             return (
-              <Route key={index} path={route.path} element={route.element} />
+              <Route
+                key={route.path}
+                path={route.path}
+                element={route.element}
+              />
             );
           })}
         </Route>
       </Route>
 
       {/* Manager routes with protected */}
-      <Route element={<AuthRoute allowedRoles={[ROLES.MANAGER]} />}>
+      <Route
+        key={"manager_private"}
+        element={<AuthRoute allowedRoles={[ROLES.MANAGER]} />}
+      >
         <Route element={<Sidebar />}>
           {managerRoutes.map((route, index) => {
             return (
-              <Route key={index} path={route.path} element={route.element} />
+              <Route
+                key={route.path}
+                path={route.path}
+                element={route.element}
+              />
             );
           })}
         </Route>
       </Route>
 
       {/* Staff routes with protected */}
-      <Route element={<AuthRoute allowedRoles={[ROLES.STAFF]} />}>
+      <Route
+        key={"staff_private"}
+        element={<AuthRoute allowedRoles={[ROLES.STAFF]} />}
+      >
         <Route element={<Sidebar />}>
           {staffRoutes.map((route, index) => {
             return (
-              <Route key={index} path={route.path} element={route.element} />
+              <Route
+                key={route.path}
+                path={route.path}
+                element={route.element}
+              />
             );
           })}
         </Route>

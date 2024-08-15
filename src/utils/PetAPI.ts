@@ -1,5 +1,5 @@
 import axiosClient from "./axiosClient";
-const petApi = {
+const petAPI = {
   getDataBookingOfCustomer: (params: any) => {
     const url = "/";
     return axiosClient.get(url, {
@@ -22,4 +22,4 @@ const petApi = {
     return axiosClient.delete(url, payload);
   },
 };
-export default petApi;
+export default petAPI;

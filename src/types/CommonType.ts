@@ -1,8 +1,6 @@
-export type CommonResponse = {
-   data: any
-   pagination:{
-    page: number
-    pageSize: number
-    total: number
-   }
-}
+export type PaginationType = {
+  size: number;
+  page: number;
+  total: number;
+  totalPages: number;
+};

@@ -20,8 +20,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import moment from "moment";
 import * as React from "react";
-import MenuActionManageStaff from "../../components/manager/MenuActionManageStaff";
-import ModalCreateStaff from "../../components/manager/ModalCreateStaff";
+import MenuActionManageStaff from "../../components/manager/MenuAction/MenuActionManageStaff";
+import ModalCreateStaff from "../../components/manager/Modal/ModalCreateStaff";
 import { UserType } from "../../types/UserType";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({

@@ -18,8 +18,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import moment from "moment";
 import * as React from "react";
-import MenuActionManageOrder from "../../components/manager/MenuActionManageOrder";
-import MenuFilterStatusOrder from "../../components/manager/MenuFilterStatusOrder";
+import MenuActionManageOrder from "../../components/manager/MenuAction/MenuActionManageOrder";
+import MenuFilterStatusOrder from "../../components/manager/MenuAction/MenuFilterStatusOrder";
 import { OrderType } from "../../types/OrderType";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
