@@ -25,6 +25,8 @@ import AdminManageStaffAPI from '../../../utils/AdminMangeStaffAPI';
 import ModalCreateStaff from '../../../components/manager/Modal/ModalCreateStaff';
 import MenuActionManageStaff from '../../../components/manager/MenuAction/MenuActionManageStaff';
 import { GridRowSelectionModel } from '@mui/x-data-grid';
+import ModalCreateManager from '../ModalCreateManager';
+import MenuActionManageManager from '../../../components/manager/MenuAction/MenuActionManageManager';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -176,7 +178,7 @@ const TotalManager = () => {
                   )}
                 </StyledTableCell>
                 <StyledTableCell align="center" size="small">
-                  <MenuActionManageStaff />
+                  <MenuActionManageManager  /> 
                 </StyledTableCell>
               </StyledTableRow>
             ))}
@@ -193,7 +195,7 @@ const TotalManager = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
-      <ModalCreateStaff open={showModalCreate} setOpen={setShowModalCreate} />
+      <ModalCreateManager open={showModalCreate} setOpen={setShowModalCreate} />
     </Paper>
   );
 };
