@@ -2,7 +2,11 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import {
   Box,
   Chip,
+  FormControl,
   InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
   Skeleton,
   Stack,
   TablePagination,
@@ -11,7 +15,6 @@ import {
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
-import MuiTab, { TabProps } from '@mui/material/Tab';
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -23,7 +26,6 @@ import useDebounce from "../../hook/useDebounce";
 import { PaginationType } from "../../types/CommonType";
 import { FilterUserType, UserType } from "../../types/User/UserType";
 import UserAPI from "../../utils/UserAPI";
-import { TabContext, TabList } from "@mui/lab";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -47,36 +49,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     backgroundColor: "#81d4fa",
   },
 }));
-const Tab = styled(MuiTab)<TabProps>(({ theme }) => ({
-  [theme.breakpoints.down('md')]: {
-    minWidth: 100
-  },
-  [theme.breakpoints.down('sm')]: {
-    minWidth: 67
-  }
-}))
 
-const TabName = styled('span')(({ theme }) => ({
-  lineHeight: 1.71,
-  fontSize: '0.875rem',
-  marginLeft: theme.spacing(2.4),
-}))
-
-const renderStatus = (status: string) => {
-  switch (status) {
-    case "PENDING":
-      return <Chip sx={{minWidth:120}} label={"Đang chờ"} color="warning"/>
-    case "CONFIRMED":
-      return <Chip sx={{minWidth:120}}  label={"Đã xác nhận"} color="info"/>
-    case "PROCESSING":
-      return <Chip  sx={{minWidth:120}} label={"Đang tiến hành"} color="secondary"/>
-    case "COMPLETED":
-      return <Chip sx={{minWidth:120}}  label={"Hoàn thành"} color="success"/>
-    case "CANCELLED":
-      return <Chip sx={{minWidth:120}}  label={"Đã hủy"} color="error"/>
-  }
-}
-export default function ListOrder() {
+export default function ListTask() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [listUser, setListUser] = React.useState<UserType[] | []>(
     []
@@ -96,10 +70,6 @@ export default function ListOrder() {
   });
   const debouncedInputValueName = useDebounce(searchName, 500); // Debounce with 500ms delay
   const debouncedInputValuePhone = useDebounce(searchPhone, 500);
-  const [value, setValue] = React.useState<string>('ALL')
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue)
-  }
   const handleChangePage = (event: unknown, newPage: number) => {
     setFilter((prev) => ({ ...prev, page: newPage }));
   };
@@ -148,38 +118,6 @@ export default function ListOrder() {
 
   return (
     <Paper sx={{ p: 3 }}>
-       <TabContext value={value}>
-          <TabList
-            onChange={handleChange}
-            aria-label='account-settings tabs'
-            sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}
-          >
-            <Tab
-              value='ALL'
-              label={
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <TabName>Tất Cả Đơn Hàng</TabName>
-                </Box>
-              }
-            />       
-            <Tab
-              value='SELECT'
-              label={
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <TabName>Nhân Viên Được Chọn</TabName>
-                </Box>
-              }
-            />
-            <Tab
-              value='RANDOM'
-              label={
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <TabName>Nhân Viên Ngẫu Nhiên</TabName>
-                </Box>
-              }
-            />
-          </TabList>
-          </TabContext>
         <Stack
           direction={"row"}
           alignItems={"center"}
@@ -216,7 +154,27 @@ export default function ListOrder() {
               ),
             }}
           />
-         <Box></Box>
+          <Box sx={{ minWidth: 120 }}>
+            <FormControl sx={{ width: "300px" }} size="small">
+              <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={filter.Status}
+                label="Trạng thái"
+                onChange={(e) =>
+                  setFilter((prev) => ({
+                    ...prev,
+                    Status: e.target.value as string,
+                  }))
+                }
+              >
+                <MenuItem value={""}>Tất cả</MenuItem>
+                <MenuItem value={"Activate"}>Đang hoạt động</MenuItem>
+                <MenuItem value={"Deactivate"}>Ngưng hoạt động</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
         </Stack>
 
 

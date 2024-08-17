@@ -20,6 +20,7 @@ import ListCombo from "../pages/manager/ListCombo";
 import ListOrder from "../pages/manager/ListOrder";
 import ListProduct from "../pages/manager/ListProduct";
 import ListStaff from "../pages/manager/ListStaff";
+import ListTask from "../pages/manager/ListTask";
 import ListUser from "../pages/manager/ListUser";
 import UpdateCombo from "../pages/manager/UpdateCombo";
 import StaffCalendar from "../pages/staff/StaffCalendar";
@@ -96,6 +97,10 @@ export const managerRoutes = [
   {
     path: "/manager-manage-staff",
     element: <ListStaff />,
+  },
+  {
+    path: "/manager-manage-task",
+    element: <ListTask />,
   },
   {
     path: "/manager-manage-combo",

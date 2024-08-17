@@ -4,6 +4,7 @@ import {
   FormControl,
   FormHelperText,
   Grid,
+  IconButton,
   MenuItem,
   Paper,
   Select,
@@ -11,8 +12,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import Button from "@mui/material/Button";
-import { Field, Form, Formik, FormikProps, FormikValues } from "formik";
+import { Field, FieldArray, Form, Formik, FormikProps, FormikValues } from "formik";
 import * as React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -35,6 +38,9 @@ const validationSchema = Yup.object({
     .min(1000, "Giá bán không thể nhỏ hơn 1000 VNĐ!"),
   status: Yup.string().required("*Trạng thái không được để trống !"),
   categoryId: Yup.string().required("*Loại sản phẩm không được để trống !"),
+  image: Yup.array().of(
+    Yup.string().required("Hình ảnh không được để trống!")
+  ),
 });
 
 export default function UpdateCombo() {
@@ -51,7 +57,6 @@ export default function UpdateCombo() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [totalSellingPriceOfSubProuducts, setTotalSellingPriceOfSubProuducts] =
     React.useState(0);
-  console.log("check price nà", totalSellingPriceOfSubProuducts);
   React.useEffect(() => {
     const fetchListCategory = async () => {
       try {
@@ -64,12 +69,18 @@ export default function UpdateCombo() {
         setIsLoading(false);
       }
     };
-    const fetchAllCombo = async () => {
+    const fetchCombo = async () => {
       try {
         setIsLoading(true);
         const data = await ProductAPI.getDetail(id || "");
+        console.log("detail", data);
         setData(data);
-        setListProductSelected(data.supProducts.map((item) => item.id));
+        let total = 0;
+        setListProductSelected(data.supProducts.map((item) =>{
+            total = total + item.sellingPrice
+        return  item.id
+        } ));
+        setTotalSellingPriceOfSubProuducts(total)
       } catch (error) {
         console.log("Error get detail Combo: ", error);
       } finally {
@@ -77,7 +88,7 @@ export default function UpdateCombo() {
       }
     };
     if (id) {
-      fetchAllCombo();
+      fetchCombo();
       fetchListCategory();
       formikRef.current?.setFieldValue("categoryId", data?.category.id);
     }
@@ -95,6 +106,7 @@ export default function UpdateCombo() {
             sellingPrice: data.sellingPrice || "",
             status: data.status || "",
             categoryId: data.category.id || "",
+            image: data.image.map((img)=>img.imageURL) || [""]
           }}
           innerRef={formikRef}
           validationSchema={validationSchema}
@@ -108,8 +120,11 @@ export default function UpdateCombo() {
                 ...values,
                 priority: 0,
                 supProductId: listProductSelected,
+                image: values.image.map((img: any)=>{return({
+                  imageURL: img
+                })
+              })
               });
-              console.log({ response });
               toast.success("Tạo thành công !");
               navigate("/manager-manage-combo");
             } catch (error) {
@@ -286,7 +301,76 @@ export default function UpdateCombo() {
                   </FormControl>
                 </Grid>
               </Grid>
+              <Box mb={2}></Box>
+            <Typography variant="subtitle2" sx={{ color: "black", mb: 1 }}>Nhập link ảnh:</Typography>
+            <FieldArray name="image">
+                    {({ push, remove }: any) => (
+                      <Box>
+                        {values.image.map(
+                          (subService: any, index: any) => (
+                            <Stack
+                              direction={"row"}
+                              alignItems={"center"}                            
+                              spacing={1}
+                              sx={{mb:3}}
+                            >
+                              <Field name={`image.${index}`}>
+                                {({ field, meta }: any) => (
+                                  <Box sx={{width:"100%"}}>                              
+                                    <TextField
+                                      {...field}
+                                      label={`Ảnh ${index + 1}`}
+                                      type="text"
+                                      size="small"
+                                      placeholder="Nhập url ảnh..."
+                                      fullWidth
+                                      autoComplete="off"
+                                      // sx={{ minWidth: 500 }}
+                                      error={meta.touched && !!meta.error}
+                                      helperText={
+                                        meta.touched && meta.error
+                                          ? meta.error
+                                          : ""
+                                      }
+                                    />
+                                  </Box>
+                                )}
+                              </Field>
+                              {/* hiển thị nút delete cho phần tử thứ 2 trở đi */}
+                              {index > 0 && (
+                                <
+                                >
+                                  <IconButton
+                                    aria-label="delete"
+                                    size="small"
+                                    onClick={() => remove(index)}
+                                  >
+                                    <DeleteIcon
+                                      fontSize="inherit"
+                                      color="error"
+                                    />
+                                  </IconButton>
+                                </>
+                                //   <Button onClick={()=>remove(index)}> delete {index + 1}</Button>
+                              )}
+                            </Stack>
+                          )
+                        )}
 
+                        <Box>
+                          <Button
+                            startIcon={<AddOutlinedIcon />}
+                            variant="outlined"
+                            size="small"
+                            onClick={() => push("")}     
+                            color="info"
+                          >
+                            Thêm
+                          </Button>
+                        </Box>
+                      </Box>
+                    )}
+                  </FieldArray>
               <Box sx={{ mt: 5, mb: 3 }}>
                 <TableSelectProduct
                   setListProductSelected={setListProductSelected}
@@ -300,10 +384,10 @@ export default function UpdateCombo() {
               {typeof values.sellingPrice === "number" &&
                 totalSellingPriceOfSubProuducts < values.sellingPrice && (
                   <Box>
-                    <Alert variant="filled" severity="warning">
+                    <Alert severity="warning">
                       Giá tiền bán ra của gói lớn hơn tổng giá tiền các sản phẩm
                       mà bạn đã chọn! (
-                      {totalSellingPriceOfSubProuducts.toLocaleString()} VNĐ)
+                      {values.sellingPrice.toLocaleString()} VNĐ {">"} {totalSellingPriceOfSubProuducts.toLocaleString()} VNĐ)
                     </Alert>
                   </Box>
                 )}

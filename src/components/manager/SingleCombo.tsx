@@ -40,9 +40,9 @@ export default function SingleCombo({ data }: SingleComboProps) {
   };
 
   return (
-    <Grid item xs={4} sm={3} md={3} lg={2}>
+    <Grid item xs={4} sm={3} md={3} lg={3}>
       <Card
-        sx={{ maxWidth: 345 }}
+        sx={{ maxWidth: 400 }}
         onClick={() => navigate(`/manager-manage-combo/${data.id}`)}
       >
         <CardActionArea>
