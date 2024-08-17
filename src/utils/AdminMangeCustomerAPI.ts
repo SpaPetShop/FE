@@ -1,12 +1,11 @@
-import { CategoryResponse } from "../types/Category/CategoryType";
 import axiosClient from "./axiosClient";
 const CategoryAPI = {
   getAll: (params: any) => {
-    const url = "/";
-    return axiosClient.get<any, CategoryResponse>(url, {
+    const url = "/accounts";
+    return axiosClient.get(url, {
       params,
       paramsSerializer: {
-        indexes: null, // by default: false
+        indexes: null, 
       },
     });
   },
