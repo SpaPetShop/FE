@@ -4,6 +4,7 @@ import {
   FormControl,
   FormHelperText,
   Grid,
+  IconButton,
   MenuItem,
   Paper,
   Select,
@@ -11,8 +12,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import Button from "@mui/material/Button";
-import { Field, Form, Formik, FormikProps, FormikValues } from "formik";
+import { Field, FieldArray, Form, Formik, FormikProps, FormikValues } from "formik";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -33,6 +36,9 @@ const validationSchema = Yup.object({
     .min(1000, "Giá bán không thể nhỏ hơn 1000 VNĐ!"),
   status: Yup.string().required("*Trạng thái không được để trống !"),
   categoryId: Yup.string().required("*Loại sản phẩm không được để trống !"),
+  image: Yup.array().of(
+    Yup.string().required("Hình ảnh không được để trống!")
+  ),
 });
 
 export default function CreateCombo() {
@@ -75,6 +81,7 @@ export default function CreateCombo() {
           sellingPrice: "",
           status: "",
           categoryId: "",
+          image:[""]
         }}
         innerRef={formikRef}
         validationSchema={validationSchema}
@@ -88,6 +95,10 @@ export default function CreateCombo() {
               ...values,
               priority: 0,
               supProductId: listProductSelected,
+              image: values.image.map((img: any)=>{return({
+                imageURL: img
+              })
+            })
             });
             console.log({ response });
             toast.success("Tạo thành công !");
@@ -264,7 +275,76 @@ export default function CreateCombo() {
                 </FormControl>
               </Grid>
             </Grid>
+            <Box mb={2}></Box>
+            <Typography variant="subtitle2" sx={{ color: "black", mb: 1 }}>Nhập link ảnh:</Typography>
+            <FieldArray name="image">
+                    {({ push, remove }: any) => (
+                      <Box>
+                        {values.image.map(
+                          (subService: any, index: any) => (
+                            <Stack
+                              direction={"row"}
+                              alignItems={"center"}                            
+                              spacing={1}
+                              sx={{mb:3}}
+                            >
+                              <Field name={`image.${index}`}>
+                                {({ field, meta }: any) => (
+                                  <Box sx={{width:"100%"}}>                              
+                                    <TextField
+                                      {...field}
+                                      label={`Ảnh ${index + 1}`}
+                                      type="text"
+                                      size="small"
+                                      placeholder="Nhập url ảnh..."
+                                      fullWidth
+                                      autoComplete="off"
+                                      // sx={{ minWidth: 500 }}
+                                      error={meta.touched && !!meta.error}
+                                      helperText={
+                                        meta.touched && meta.error
+                                          ? meta.error
+                                          : ""
+                                      }
+                                    />
+                                  </Box>
+                                )}
+                              </Field>
+                              {/* hiển thị nút delete cho phần tử thứ 2 trở đi */}
+                              {index > 0 && (
+                                <
+                                >
+                                  <IconButton
+                                    aria-label="delete"
+                                    size="small"
+                                    onClick={() => remove(index)}
+                                  >
+                                    <DeleteIcon
+                                      fontSize="inherit"
+                                      color="error"
+                                    />
+                                  </IconButton>
+                                </>
+                                //   <Button onClick={()=>remove(index)}> delete {index + 1}</Button>
+                              )}
+                            </Stack>
+                          )
+                        )}
 
+                        <Box>
+                          <Button
+                            startIcon={<AddOutlinedIcon />}
+                            variant="outlined"
+                            size="small"
+                            onClick={() => push("")}     
+                            color="info"
+                          >
+                            Thêm
+                          </Button>
+                        </Box>
+                      </Box>
+                    )}
+                  </FieldArray>
             {values.categoryId && (
               <Box sx={{ mt: 5, mb: 3 }}>
                 <TableSelectProduct
@@ -277,14 +357,14 @@ export default function CreateCombo() {
                 />
               </Box>
             )}
-            {typeof values.sellingPrice === "number" &&
+            {(typeof values.sellingPrice === "number" && listProductSelected.length > 0) &&
               totalSellingPriceOfSubProuducts < values.sellingPrice && (
                 <Box>
-                  <Alert variant="filled" severity="warning">
-                    Giá tiền bán ra của gói lớn hơn tổng giá tiền các sản phẩm
-                    mà bạn đã chọn! (
-                    {totalSellingPriceOfSubProuducts.toLocaleString()} VNĐ)
-                  </Alert>
+                   <Alert severity="warning">
+                      Giá tiền bán ra của gói lớn hơn tổng giá tiền các sản phẩm
+                      mà bạn đã chọn! (
+                      {values.sellingPrice.toLocaleString()} VNĐ {">"} {totalSellingPriceOfSubProuducts.toLocaleString()} VNĐ)
+                    </Alert>
                 </Box>
               )}
             <Stack direction={"row"} sx={{ mt: 4 }} spacing={3}>

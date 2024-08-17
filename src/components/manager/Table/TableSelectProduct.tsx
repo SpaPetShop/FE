@@ -191,8 +191,6 @@ export default function TableSelectProduct({
       commonElements.forEach((element) => {
         totalSubPrice = totalSubPrice + element.sellingPrice;
       });
-      console.log({ commonElements });
-      console.log({ totalSubPrice });
       setTotalSellingPriceOfSubProuducts(totalSubPrice);
       return;
     }
@@ -224,13 +222,10 @@ export default function TableSelectProduct({
     commonElements.forEach((element) => {
       totalSubPrice = totalSubPrice + element.sellingPrice;
     });
-    console.log({ commonElements });
-    console.log({ totalSubPrice });
     setTotalSellingPriceOfSubProuducts(totalSubPrice);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
-    console.log({ newPage });
     setFilter((prev) => ({ ...prev, page: newPage + 1 }));
   };
 
@@ -250,7 +245,6 @@ export default function TableSelectProduct({
     const fetchAllProduct = async () => {
       try {
         const data = await SubProductAPI.getAll(filter);
-        console.log({ data });
         setListProduct(data.items);
         setPagination({
           page: data.page,
@@ -274,7 +268,6 @@ export default function TableSelectProduct({
       }));
     }
   }, [formikRef.current?.values.categoryId, formikRef]);
-  console.log("ref", formikRef.current?.values);
 
   return (
     <Box sx={{ width: "100%" }}>
