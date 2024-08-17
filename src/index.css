@@ -11,3 +11,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@font-face {
+  font-family: "iciel-soup-of-justice";
+  src: url("/public/fonts/iCielSoupofJustice.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}

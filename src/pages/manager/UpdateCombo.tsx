@@ -12,18 +12,18 @@ import {
   Typography,
 } from "@mui/material";
 import Button from "@mui/material/Button";
-import { Field, Form, Formik } from "formik";
+import { Field, Form, Formik, FormikProps, FormikValues } from "formik";
 import * as React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
+import LoadingComponentVersion2 from "../../components/common/loading/Backdrop";
 import TableSelectProduct from "../../components/manager/Table/TableSelectProduct";
 import { CategoryType } from "../../types/Category/CategoryType";
-import CategoryAPI from "../../utils/CategoryAPI";
-import SubProductAPI from "../../utils/SubProductAPI";
-import LoadingComponentVersion2 from "../../components/common/loading/Backdrop";
-import ProductAPI from "../../utils/ProductAPI";
 import { ComboType } from "../../types/Combo/ComboType";
+import CategoryAPI from "../../utils/CategoryAPI";
+import ProductAPI from "../../utils/ProductAPI";
+
 const validationSchema = Yup.object({
   name: Yup.string().required("*Tên sản phẩm không được để trống!"),
   description: Yup.string().required("*Mô tả không được để trống!"),
@@ -39,6 +39,7 @@ const validationSchema = Yup.object({
 
 export default function UpdateCombo() {
   const navigate = useNavigate();
+  const formikRef = React.useRef<FormikProps<FormikValues>>(null);
   const { id } = useParams();
   const [data, setData] = React.useState<ComboType | null>(null);
   const [listCategory, setListCategory] = React.useState<CategoryType[] | []>(
@@ -78,8 +79,9 @@ export default function UpdateCombo() {
     if (id) {
       fetchAllCombo();
       fetchListCategory();
+      formikRef.current?.setFieldValue("categoryId", data?.category.id);
     }
-  }, [id]);
+  }, [data?.category.id, id]);
 
   return (
     <Paper sx={{ p: 10 }}>
@@ -94,9 +96,14 @@ export default function UpdateCombo() {
             status: data.status || "",
             categoryId: data.category.id || "",
           }}
+          innerRef={formikRef}
           validationSchema={validationSchema}
           onSubmit={async (values) => {
             try {
+              if (listProductSelected.length === 0) {
+                toast.error("Vui lòng chọn sản phẩm cho gói!");
+                return;
+              }
               const response = await ProductAPI.update(id || "", {
                 ...values,
                 priority: 0,
@@ -183,7 +190,6 @@ export default function UpdateCombo() {
                           placeholder="Nhập giá gốc..."
                           fullWidth
                           autoComplete="off"
-                          
                           //   label="Name of the product"
                           error={meta.touched && !!meta.error}
                           helperText={
@@ -212,7 +218,6 @@ export default function UpdateCombo() {
                           placeholder="Nhập giá bán..."
                           fullWidth
                           autoComplete="off"
-                          
                           //   label="Name of the product"
                           error={meta.touched && !!meta.error}
                           helperText={
@@ -251,9 +256,7 @@ export default function UpdateCombo() {
                         <MenuItem value={item.id}>{item.name}</MenuItem>
                       ))}
                     </Field>
-                    <FormHelperText>
-                      {touched.categoryId && errors.categoryId}
-                    </FormHelperText>
+                    <FormHelperText>Vui lòng chọn loại sản phẩm</FormHelperText>
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6}>
@@ -279,9 +282,7 @@ export default function UpdateCombo() {
                       <MenuItem value="UnAvailable">Không sẵn có</MenuItem>
                       <MenuItem value="OutOfStock">Hết hàng</MenuItem>
                     </Field>
-                    <FormHelperText>
-                      {touched.status && errors.status}
-                    </FormHelperText>
+                    <FormHelperText>Vui lòng chọn trạng thái</FormHelperText>
                   </FormControl>
                 </Grid>
               </Grid>
@@ -293,17 +294,19 @@ export default function UpdateCombo() {
                   setTotalSellingPriceOfSubProuducts={
                     setTotalSellingPriceOfSubProuducts
                   }
+                  formikRef={formikRef}
                 />
-              </Box>       
-              {typeof(values.sellingPrice) === "number" && totalSellingPriceOfSubProuducts <
-                values.sellingPrice && (
-                <Box>
-                 <Alert variant="filled" severity="warning">
-                    Giá tiền bán ra của gói lớn hơn tổng giá tiền các sản phẩm
-                    mà bạn đã chọn!{" "} ({totalSellingPriceOfSubProuducts.toLocaleString()} VNĐ) 
-                  </Alert>
-                </Box>
-              )}
+              </Box>
+              {typeof values.sellingPrice === "number" &&
+                totalSellingPriceOfSubProuducts < values.sellingPrice && (
+                  <Box>
+                    <Alert variant="filled" severity="warning">
+                      Giá tiền bán ra của gói lớn hơn tổng giá tiền các sản phẩm
+                      mà bạn đã chọn! (
+                      {totalSellingPriceOfSubProuducts.toLocaleString()} VNĐ)
+                    </Alert>
+                  </Box>
+                )}
               <Stack direction={"row"} sx={{ mt: 4 }} spacing={3}>
                 <Button
                   fullWidth
