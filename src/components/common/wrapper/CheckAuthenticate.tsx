@@ -15,7 +15,7 @@ const CheckAuthenticate = () => {
   else if (currentUser.user.role === ROLES.ADMIN)
     return <Navigate to="/admin-dashboard" />;
   else if (currentUser.user.role === ROLES.MANAGER)
-    return <Navigate to="/manager-dashboard" />;
+    return <Navigate to="/manager-manage-order" />;
   else if (
     currentUser.user.role === ROLES.STAFF ||
     currentUser.user.role === ROLES.CUSTOMER

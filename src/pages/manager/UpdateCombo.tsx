@@ -1,6 +1,8 @@
 import {
   Alert,
   Box,
+  Card,
+  CardMedia,
   FormControl,
   FormHelperText,
   Grid,
@@ -116,7 +118,9 @@ export default function UpdateCombo() {
                 toast.error("Vui lòng chọn sản phẩm cho gói!");
                 return;
               }
-              const response = await ProductAPI.update(id || "", {
+
+              await ProductAPI.update(id || "", {
+
                 ...values,
                 priority: 0,
                 supProductId: listProductSelected,
@@ -293,16 +297,39 @@ export default function UpdateCombo() {
                       onBlur={handleBlur}
                       value={values.status}
                     >
-                      <MenuItem value="Available">Sẵn có</MenuItem>
-                      <MenuItem value="UnAvailable">Không sẵn có</MenuItem>
-                      <MenuItem value="OutOfStock">Hết hàng</MenuItem>
+
+                      <MenuItem value="AVAILABLE">Sẵn có</MenuItem>
+                      <MenuItem value="UNAVAILABLE">Không sẵn có</MenuItem>
+                      <MenuItem value="OUTOFSTOCK">Hết hàng</MenuItem>
+
                     </Field>
                     <FormHelperText>Vui lòng chọn trạng thái</FormHelperText>
                   </FormControl>
                 </Grid>
               </Grid>
               <Box mb={2}></Box>
+
+            {data?.image[0]?.imageURL && (
+                    <>
+                      <Grid container spacing={3}>
+                        {data?.image?.map((img, index) => (
+                          <Grid item xs={12} sm={6} md={6} lg={4}>
+                            <Card sx={{ maxWidth: 400 }}>
+                              <CardMedia
+                                sx={{ height: 200, objectFit: "cover" }}
+                                image={img.imageURL}
+                                title="Product Image"
+                              />
+                            </Card>
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </>
+                  )}
+                  <Box mb={2}></Box>
             <Typography variant="subtitle2" sx={{ color: "black", mb: 1 }}>Nhập link ảnh:</Typography>
+           
+
             <FieldArray name="image">
                     {({ push, remove }: any) => (
                       <Box>

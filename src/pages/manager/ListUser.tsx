@@ -170,8 +170,10 @@ export default function ListUser() {
                 }
               >
                 <MenuItem value={""}>Tất cả</MenuItem>
-                <MenuItem value={"Activate"}>Đang hoạt động</MenuItem>
-                <MenuItem value={"Deactivate"}>Ngưng hoạt động</MenuItem>
+
+                <MenuItem value={"ACTIVE"}>Đang hoạt động</MenuItem>
+                <MenuItem value={"DEACTIVE"}>Ngưng hoạt động</MenuItem>
+
               </Select>
             </FormControl>
           </Box>
@@ -264,10 +266,12 @@ export default function ListUser() {
                     {row.point ? row.point : "-"}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                    {row.status === "Activate" ? (
-                      <Chip label={"Đang hoạt động"} color="success" />
+
+                    {row.status === "ACTIVE" ? (
+                      <Chip label={"Đang hoạt động"} color="success" size="small"/>
                     ) : (
-                      <Chip label={"Ngưng hoạt động"} color="error" />
+                      <Chip label={"Ngưng hoạt động"} color="error" size="small"/>
+
                     )}
                   </StyledTableCell>
                 </StyledTableRow>

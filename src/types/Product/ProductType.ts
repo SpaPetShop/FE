@@ -5,7 +5,10 @@ export type ProductType = {
   sellingPrice: number;
   description: string;
   status: string;
-  priority: string | null;
+
+  priority: number | null;
+  image:{imageURL: string}[]
+
   category: {
     id: string;
     name: string;

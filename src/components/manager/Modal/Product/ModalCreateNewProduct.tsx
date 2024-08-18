@@ -1,19 +1,27 @@
+
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,
   DialogActions,
   FormControl,
   FormHelperText,
+
+  IconButton,
+
   MenuItem,
   Select,
   Stack,
   TextField,
-  Typography
+
+  Typography,
+
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Field, Form, Formik } from "formik";
+import { Field, FieldArray, Form, Formik } from "formik";
 import * as React from "react";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
@@ -31,7 +39,10 @@ const validationSchema = Yup.object({
     .required("*Giá bán không được để trống!")
     .min(1000, "Giá bán không thể nhỏ hơn 1000 VNĐ!"),
   status: Yup.string().required("Trạng thái không được để trống !"),
-  categoryId: Yup.string().required("Trạng thái không được để trống !")
+
+  categoryId: Yup.string().required("Trạng thái không được để trống !"),
+  image: Yup.array().of(Yup.string().required("Hình ảnh không được để trống!")),
+
 });
 
 type ModalCreateProductProps = {
@@ -69,20 +80,38 @@ export default function ModalCreateProduct({
 
   return (
     <>
-      <Dialog open={open}>
+
+      <Dialog open={open}
+       fullWidth
+       maxWidth={"md"}>
+
         <Formik
           initialValues={{
             name: "",
             description: "",
             stockPrice: "",
             sellingPrice: "",
-            status: "",
+
+            status: "AVAILABLE",
             categoryId: "",
+            image: [""],
+
+
           }}
           validationSchema={validationSchema}
           onSubmit={async (values) => {
             try {
-              const response = await SubProductAPI.create({...values, priority: 0});
+
+              const response = await SubProductAPI.create({
+                ...values,
+                priority: 0,
+                image: values.image.map((img: any) => {
+                  return {
+                    imageURL: img,
+                  };
+                }),
+              });
+
               console.log({ response });
               setOpen(false);
               toast.success("Tạo thành công !");
@@ -111,7 +140,7 @@ export default function ModalCreateProduct({
                         {...field}
                         type="text"
                         size="small"
-                        placeholder="Nhập tên thể loại ..."
+                        placeholder="Nhập tên sản phẩm ..."
                         fullWidth
                         autoComplete="off"
                         sx={{ minWidth: 456 }}
@@ -152,6 +181,69 @@ export default function ModalCreateProduct({
                   )}
                 </Field>
                 <Box mb={2}></Box>
+
+                <FieldArray name="image">
+                  {({ push, remove }: any) => (
+                    <Box>
+                      {values.image.map((subService: any, index: any) => (
+                        <Stack
+                          direction={"row"}
+                          alignItems={"center"}
+                          spacing={1}
+                          sx={{ mb: 3 }}
+                        >
+                          <Field name={`image.${index}`}>
+                            {({ field, meta }: any) => (
+                              <Box sx={{ width: "100%" }}>
+                                <TextField
+                                  {...field}
+                                  label={`Ảnh ${index + 1}`}
+                                  type="text"
+                                  size="small"
+                                  placeholder="Nhập url ảnh..."
+                                  fullWidth
+                                  autoComplete="off"
+                                  // sx={{ minWidth: 500 }}
+                                  error={meta.touched && !!meta.error}
+                                  helperText={
+                                    meta.touched && meta.error ? meta.error : ""
+                                  }
+                                />
+                              </Box>
+                            )}
+                          </Field>
+                          {/* hiển thị nút delete cho phần tử thứ 2 trở đi */}
+                          {index > 0 && (
+                            <>
+                              <IconButton
+                                aria-label="delete"
+                                size="small"
+                                onClick={() => remove(index)}
+                              >
+                                <DeleteIcon fontSize="inherit" color="error" />
+                              </IconButton>
+                            </>
+                            //   <Button onClick={()=>remove(index)}> delete {index + 1}</Button>
+                          )}
+                        </Stack>
+                      ))}
+
+                      <Box>
+                        <Button
+                          startIcon={<AddOutlinedIcon />}
+                          variant="outlined"
+                          size="small"
+                          onClick={() => push("")}
+                          color="info"
+                        >
+                          Thêm
+                        </Button>
+                      </Box>
+                    </Box>
+                  )}
+                </FieldArray>
+                <Box mb={2}></Box>
+
                 <Field name={`stockPrice`}>
                   {({ field, meta }: any) => (
                     <>
@@ -217,8 +309,10 @@ export default function ModalCreateProduct({
                 >
                   <Field
                     as={Select}
-                    name="categoryId"                
-                  onChange={handleChange}
+
+                    name="categoryId"
+                    onChange={handleChange}
+
                     onBlur={handleBlur}
                     value={values.categoryId}
                   >
@@ -239,17 +333,21 @@ export default function ModalCreateProduct({
                   fullWidth
                   size="small"
                   error={touched.status && Boolean(errors.status)}
-                >               
+
+                >
                   <Field
                     as={Select}
-                    name="status"                   
+                    name="status"
+
                     onChange={handleChange}
                     onBlur={handleBlur}
                     value={values.status}
                   >
-                    <MenuItem value="Available">Sẵn có</MenuItem>
-                    <MenuItem value="UnAvailable">Không sẵn có</MenuItem>
-                    <MenuItem value="OutOfStock">Hết hàng</MenuItem>
+
+                    <MenuItem value="AVAILABLE">Sẵn có</MenuItem>
+                    <MenuItem value="UNAVAILABLE">Không sẵn có</MenuItem>
+                    <MenuItem value="OUTOFSTOCK">Hết hàng</MenuItem>
+
                   </Field>
                   <FormHelperText>
                     {touched.status && errors.status}
