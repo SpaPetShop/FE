@@ -2,11 +2,10 @@ import { useContext } from "react";
 import { useLocation, Navigate, Outlet } from "react-router-dom";
 import { UserContext } from "../context/AuthContext";
 
-
 const AuthRoute = ({ allowedRoles }: any) => {
-  const currentUser = useContext(UserContext)
+  const currentUser = useContext(UserContext);
   const location = useLocation();
-  console.log({currentUser}); 
+  console.log({ currentUser });
 
   return allowedRoles?.includes(currentUser?.user?.role) ? (
     <Outlet />

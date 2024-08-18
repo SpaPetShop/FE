@@ -1,85 +1,195 @@
-import React, { useState } from 'react';
-import { DataGrid, GridColDef, GridToolbar, GridRowSelectionModel } from '@mui/x-data-grid';
-import { Box, Button } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import {
+  Avatar,
+  Button,
+  Chip,
+  InputAdornment,
+  Paper,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  TextField,
+  TablePagination,
+  tableCellClasses,
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+import moment from 'moment';
+import AdminManageStaffAPI from '../../../utils/AdminMangeStaffAPI';
+import ModalCreateStaff from '../../../components/manager/Modal/ModalCreateStaff';
+import MenuActionManageStaff from '../../../components/manager/MenuAction/MenuActionManageStaff';
+import { GridRowSelectionModel } from '@mui/x-data-grid';
 
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: '#f4511e',
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+  '&:hover': {
+    backgroundColor: '#81d4fa',
+  },
+}));
 interface Customer {
-  id: number;
-  name: string;
+  id: string;
+  username: string;
+  role: string;
+  fullName: string;
+  gender: string;
+  phoneNumber: string;
   email: string;
-  phone: string;
-  address: string;
+  address?: string | null;
+  status: string;
+  image?: string | null;
 }
 
-const mockCustomers: Customer[] = [
-  { id: 1, name: 'John Doe', email: 'john.doe@example.com', phone: '555-1234', address: '123 Main St' },
-  { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', phone: '555-5678', address: '456 Elm St' },
-  { id: 3, name: 'Bob Johnson', email: 'bob.johnson@example.com', phone: '555-8765', address: '789 Oak St' },
-  { id: 4, name: 'Alice Davis', email: 'alice.davis@example.com', phone: '555-4321', address: '101 Maple St' },
-  { id: 5, name: 'Charlie Brown', email: 'charlie.brown@example.com', phone: '555-6789', address: '202 Pine St' },
-];
 
 const TotalCustomer = () => {
-  const [customers, setCustomers] = useState<Customer[]>(mockCustomers);
-  const [selectionModel, setSelectionModel] = useState<GridRowSelectionModel>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showModalCreate, setShowModalCreate] = useState(false);
 
-  const handleDelete = () => {
-    setCustomers((prevCustomers) => prevCustomers.filter((customer) => !selectionModel.includes(customer.id)));
-    setSelectionModel([]);
+  useEffect(() => {
+    const fetchManager = async () => {
+      try {
+        const response:any = await AdminManageStaffAPI.getAll({ role: 'User' });
+        setCustomers(response.items);
+      } catch (error) {
+        console.error('Failed to fetch staff:', error);
+      }
+    };
+
+    fetchManager();
+  }, []);
+
+ 
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
   };
-
-  const handleEdit = (id: number) => {
-    // Logic for editing a customer (e.g., open a dialog for editing)
-    alert(`Editing customer with ID: ${id}`);
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
   };
+  const handleSearchName = (name: string) => {
+    setSearchTerm(name);
+  };
+  const filteredCustomers = customers.filter((user) =>
+    user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 90 },
-    { field: 'name', headerName: 'Name', width: 150, editable: true },
-    { field: 'email', headerName: 'Email', width: 200, editable: true },
-    { field: 'phone', headerName: 'Phone', width: 150, editable: true },
-    { field: 'address', headerName: 'Address', width: 250, editable: true },
-    {
-      field: 'actions',
-      headerName: 'Actions',
-      sortable: false,
-      renderCell: (params) => (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => handleEdit(params.id as number)}
-        >
-          Edit
-        </Button>
-      ),
-      width: 150,
-    },
-  ];
+  const paginatedStaff = filteredCustomers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   return (
-    <Box sx={{ height: 600, width: '100%' }}>
-      <DataGrid
-        rows={customers}
-        columns={columns}
-        checkboxSelection
-        disableRowSelectionOnClick
-        onRowSelectionModelChange={(newSelection: GridRowSelectionModel) => {
-          setSelectionModel(newSelection as number[]);
-        }}
-        slots={{
-          toolbar: GridToolbar,
-        }}
-      />
-      {selectionModel.length > 0 && (
+    <Paper sx={{ p: 2 }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <TextField
+          size="small"
+          placeholder="Nhập tên nhân viên ..."
+          label="Tìm kiếm"
+          onChange={(e) => handleSearchName(e.target.value)}
+          sx={{ mt: 2, mb: 3, ml: 3, width: '345px' }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchOutlinedIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
         <Button
           variant="contained"
-          color="secondary"
-          onClick={handleDelete}
-          sx={{ mt: 2 }}
+          color="info"
+          startIcon={<PersonAddAltIcon />}
+          onClick={() => setShowModalCreate(true)}
         >
-          Delete Selected
+          Tạo khách hàng
         </Button>
-      )}
-    </Box>
+      </Stack>
+      <TableContainer component={Paper} sx={{ minHeight: 600 }}>
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell align="center">STT</StyledTableCell>
+              <StyledTableCell align="center">Tên nhân viên</StyledTableCell>
+              <StyledTableCell align="center">Số điện thoại</StyledTableCell>
+              <StyledTableCell align="center">Email</StyledTableCell>
+              <StyledTableCell align="center">Gioi tinh</StyledTableCell>
+              <StyledTableCell align="center">Trạng thái</StyledTableCell>
+              <StyledTableCell align="center">Thao tác</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {paginatedStaff.map((row, index) => (
+              <StyledTableRow key={row.id}>
+                <StyledTableCell align="center" size="small">
+                  {page * rowsPerPage + index + 1}
+                </StyledTableCell>
+                <StyledTableCell component="th" scope="row" size="small">
+                  <Stack direction="row" alignItems="center" spacing={2}>
+                    <Avatar src={row.image || '/default-avatar.png'} />
+                    <Typography>{row.fullName}</Typography>
+                  </Stack>
+                </StyledTableCell>
+                <StyledTableCell align="center" size="small">
+                  {row.phoneNumber}
+                </StyledTableCell>
+                <StyledTableCell align="center" size="small">
+                  {row.email}
+                </StyledTableCell>
+                <StyledTableCell align="center" size="small">
+                  {row.gender}
+                </StyledTableCell>
+                {/* <StyledTableCell align="center" size="small">
+                  {row.address}
+                </StyledTableCell>
+                */}
+                <StyledTableCell align="center" size="small">
+                  {row.status === 'Activate' ? (
+                    <Chip label="Đang hoạt động" color="success" />
+                  ) : (
+                    <Chip label="Ngưng hoạt động" color="error" />
+                  )}
+                </StyledTableCell>
+                <StyledTableCell align="center" size="small">
+                  <MenuActionManageStaff />
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={filteredCustomers.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+
+      <ModalCreateStaff open={showModalCreate} setOpen={setShowModalCreate} />
+    </Paper>
   );
 };
 
