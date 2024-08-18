@@ -13,7 +13,9 @@ import {
   Stack,
   TablePagination,
   TextField,
+
   Typography
+
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
@@ -35,6 +37,7 @@ import {
   ProductType,
 } from "../../types/Product/ProductType";
 import SubProductAPI from "../../utils/SubProductAPI";
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -65,6 +68,7 @@ export default function ListProduct() {
   const [showModalUpdate, setShowModalUpdate] = React.useState(false);
   const [showModalDelete, setShowModalDelete] = React.useState(false);
   const [listProduct, setListProduct] = React.useState<ProductType[] | []>([]);
+
   const [pagination, setPagination] = React.useState<PaginationType>({
     page: 1,
     size: 10,
@@ -94,6 +98,7 @@ export default function ListProduct() {
   };
   const renderStatus = (status: string) => {
     switch (status) {
+
       case "AVAILABLE":
         return (
           <Chip
@@ -120,6 +125,7 @@ export default function ListProduct() {
         );
     }
   };
+
   const fetchAllProduct = React.useCallback(async () => {
     try {
       setIsLoading(true);
@@ -188,9 +194,11 @@ export default function ListProduct() {
                 }
               >
                 <MenuItem value={""}>Tất cả</MenuItem>
+
                 <MenuItem value={"AVAILABLE"}>Đang Hoạt động</MenuItem>
                 <MenuItem value={"UNAVAILABLE"}>Ngưng hoạt động</MenuItem>
                 <MenuItem value={"OUTOFSTOCK"}>Hết hàng</MenuItem>
+
               </Select>
             </FormControl>
           </Box>
@@ -281,12 +289,15 @@ export default function ListProduct() {
                       maxWidth: "250px",
                     }}
                   >
+
                   {row.description}
+
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
                     {row.stockPrice.toLocaleString()} VNĐ
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
+
                     {row.sellingPrice.toLocaleString()} VNĐ
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
@@ -298,6 +309,7 @@ export default function ListProduct() {
                   <StyledTableCell align="center" size="small">
                     <MenuActionProduct
                       setOpenUpdate={setShowModalUpdate}
+
                       setOpenDelete={setShowModalDelete}
                       setSelectedProduct={setSelectedProduct}
                       data={row}
@@ -328,6 +340,7 @@ export default function ListProduct() {
         fetchAllProduct={fetchAllProduct}
       />
 
+
       {selectedProduct && (
         <ModalUpdateProduct
           open={showModalUpdate}
@@ -344,6 +357,7 @@ export default function ListProduct() {
           data={selectedProduct}
         />
       )}
+
     </Paper>
   );
 }

@@ -27,6 +27,7 @@ import OrderAPI from "../../utils/OrderAPI";
 import moment from "moment";
 import MenuActionOrder from "../../components/manager/MenuAction/MenuActionOrder";
 
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#f4511e",
@@ -74,16 +75,19 @@ export const renderStatusOrder = (status: string) => {
       return <Chip sx={{minWidth:120}}  label={"Hoàn Thành"} color="success" size="small"/>
     case "CANCELLED":
       return <Chip sx={{minWidth:120}}  label={"Đã Hủy"} color="error" size="small"/>
+
   }
 }
 export default function ListOrder() {
   const [isLoading, setIsLoading] = React.useState(false);
+
   const [listOrder, setListOrder] = React.useState<OrderType[] | []>(
     []
   );
   const [showModalUpdate, setShowModalUpdate] = React.useState(false);
   const [showModalDelete, setShowModalDelete] = React.useState(false);
   const [selectedOrder, setSelectedOrder] = React.useState<OrderType | null>(null)
+
   const [pagination, setPagination] = React.useState<PaginationType>({
     page: 1,
     size: 10,
@@ -92,9 +96,11 @@ export default function ListOrder() {
   });
   const [searchName, setSearchName] = React.useState("");
   const [searchPhone, setSearchPhone] = React.useState("");
+
   const [filter, setFilter] = React.useState<FilterOrderType>({
     page: 1,
     size: 10,
+
   });
   const debouncedInputValueName = useDebounce(searchName, 500); // Debounce with 500ms delay
   const debouncedInputValuePhone = useDebounce(searchPhone, 500);
@@ -118,12 +124,14 @@ export default function ListOrder() {
   const handleSearchPhone = (phone: string) => {
     setSearchPhone(phone);
   };
+
   const fetchAllOrder = React.useCallback(async () => {
     try {
       setIsLoading(true);
       const data = await OrderAPI.getAll(filter);
       console.log({ data });
       setListOrder(data.items);
+
       setPagination({
         page: data.page,
         size: data.size,
@@ -136,6 +144,7 @@ export default function ListOrder() {
       setIsLoading(false);
     }
   }, [filter]);
+
   React.useEffect(() => {
     fetchAllOrder();
   }, [fetchAllOrder]);
@@ -145,6 +154,7 @@ export default function ListOrder() {
   }, [debouncedInputValueName]);
 
   React.useEffect(() => {
+
     setFilter((prev) => ({ ...prev, PhoneNumber: debouncedInputValuePhone }));
   }, [debouncedInputValuePhone]);
 
@@ -227,6 +237,7 @@ export default function ListOrder() {
           <TableHead>
             <TableRow>
               <StyledTableCell align="center">STT</StyledTableCell>
+
               <StyledTableCell align="center">Tên Khách Hàng</StyledTableCell>
               <StyledTableCell align="center">Ngày Tạo</StyledTableCell>  
               <StyledTableCell align="center">Ngày Hoàn Thành</StyledTableCell>  
@@ -240,6 +251,7 @@ export default function ListOrder() {
             {listOrder.length === 0 && isLoading === false && (
               <StyledTableRow>
                 <StyledTableCell colSpan={7} align="left">
+
                   <Typography align="center">Không có dữ liệu!</Typography>
                 </StyledTableCell>
               </StyledTableRow>
@@ -268,17 +280,21 @@ export default function ListOrder() {
                   <StyledTableCell align="left">
                     <Skeleton variant="rectangular" />
                   </StyledTableCell>
+
                 </StyledTableRow>
               ))}
             {listOrder.length > 0 &&
               isLoading === false &&
               listOrder.map((row, index) => (
+
                 <StyledTableRow key={index}>
                   <StyledTableCell align="center" size="small">
                     {(pagination.page - 1) * pagination.size + index + 1}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
+
                     {row.userInfo.fullName}
+
                   </StyledTableCell>
                   <StyledTableCell
                     align="center"
@@ -290,6 +306,7 @@ export default function ListOrder() {
                       maxWidth: "250px",
                     }}
                   >
+
                     {moment(row.createdDate).format("DD/MM/YYYY")}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
@@ -311,6 +328,7 @@ export default function ListOrder() {
                      setOpenUpdate={setShowModalUpdate}
                      setSelectedOrder={setSelectedOrder}
                   /></StyledTableCell>               
+
                 </StyledTableRow>
               ))}
           </TableBody>

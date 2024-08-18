@@ -1,3 +1,4 @@
+
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -5,12 +6,16 @@ import {
   DialogActions,
   FormControl,
   FormHelperText,
+
   IconButton,
+
   MenuItem,
   Select,
   Stack,
   TextField,
+
   Typography,
+
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -34,8 +39,10 @@ const validationSchema = Yup.object({
     .required("*Giá bán không được để trống!")
     .min(1000, "Giá bán không thể nhỏ hơn 1000 VNĐ!"),
   status: Yup.string().required("Trạng thái không được để trống !"),
+
   categoryId: Yup.string().required("Trạng thái không được để trống !"),
   image: Yup.array().of(Yup.string().required("Hình ảnh không được để trống!")),
+
 });
 
 type ModalCreateProductProps = {
@@ -73,22 +80,28 @@ export default function ModalCreateProduct({
 
   return (
     <>
+
       <Dialog open={open}
        fullWidth
        maxWidth={"md"}>
+
         <Formik
           initialValues={{
             name: "",
             description: "",
             stockPrice: "",
             sellingPrice: "",
+
             status: "AVAILABLE",
             categoryId: "",
             image: [""],
+
+
           }}
           validationSchema={validationSchema}
           onSubmit={async (values) => {
             try {
+
               const response = await SubProductAPI.create({
                 ...values,
                 priority: 0,
@@ -98,6 +111,7 @@ export default function ModalCreateProduct({
                   };
                 }),
               });
+
               console.log({ response });
               setOpen(false);
               toast.success("Tạo thành công !");
@@ -167,6 +181,7 @@ export default function ModalCreateProduct({
                   )}
                 </Field>
                 <Box mb={2}></Box>
+
                 <FieldArray name="image">
                   {({ push, remove }: any) => (
                     <Box>
@@ -228,6 +243,7 @@ export default function ModalCreateProduct({
                   )}
                 </FieldArray>
                 <Box mb={2}></Box>
+
                 <Field name={`stockPrice`}>
                   {({ field, meta }: any) => (
                     <>
@@ -293,8 +309,10 @@ export default function ModalCreateProduct({
                 >
                   <Field
                     as={Select}
+
                     name="categoryId"
                     onChange={handleChange}
+
                     onBlur={handleBlur}
                     value={values.categoryId}
                   >
@@ -315,17 +333,21 @@ export default function ModalCreateProduct({
                   fullWidth
                   size="small"
                   error={touched.status && Boolean(errors.status)}
+
                 >
                   <Field
                     as={Select}
                     name="status"
+
                     onChange={handleChange}
                     onBlur={handleBlur}
                     value={values.status}
                   >
+
                     <MenuItem value="AVAILABLE">Sẵn có</MenuItem>
                     <MenuItem value="UNAVAILABLE">Không sẵn có</MenuItem>
                     <MenuItem value="OUTOFSTOCK">Hết hàng</MenuItem>
+
                   </Field>
                   <FormHelperText>
                     {touched.status && errors.status}

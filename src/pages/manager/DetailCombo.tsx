@@ -1,3 +1,4 @@
+
 import { Box, Button, Chip, Grid, Stack } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -9,6 +10,7 @@ import LoadingComponentVersion2 from "../../components/common/loading/Backdrop";
 import { renderStatusCombo } from "../../components/manager/SingleCombo";
 import { ComboType } from "../../types/Combo/ComboType";
 import ProductAPI from "../../utils/ProductAPI";
+
 
 export default function DetailCombo() {
   const { id } = useParams();
@@ -140,6 +142,7 @@ export default function DetailCombo() {
                   }}
                 />
               </Stack>
+
               <Stack
                 direction={"row"}
                 alignItems={"center"}
@@ -151,6 +154,7 @@ export default function DetailCombo() {
                 </Typography>
                 {renderStatusCombo(data?.status || "")}
               </Stack>
+
               
                 <Button
                   sx={{ width: 200, mt: 3 }}
