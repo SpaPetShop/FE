@@ -200,7 +200,7 @@ export default function Sidebar() {
                     >
                       <Avatar
                         sx={{ width: 32, height: 32 }}
-                        src={currentUser.user?.avatarUrl || "/logo.png"}
+                        src={currentUser.user?.image || "/logo.png"}
                       ></Avatar>
                     </IconButton>
                   </Tooltip>
@@ -320,7 +320,7 @@ export default function Sidebar() {
               textAlign={"center"}
               sx={{ width: 250, fontWeight: 600 }}
             >
-              Pet World
+              Pet SPA
             </Typography>
 
             <IconButton onClick={toggleDrawer}>

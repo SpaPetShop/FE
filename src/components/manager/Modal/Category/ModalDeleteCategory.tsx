@@ -42,7 +42,7 @@ import LoadingComponentVersion2 from "../../../common/loading/Backdrop";
     if (data)
       return (
         <>
-          <Dialog open={open}>
+          <Dialog open={open} fullWidth maxWidth="sm">
       
                   <DialogTitle
                     id="alert-dialog-title"

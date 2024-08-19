@@ -9,6 +9,7 @@ import ContactPage from "../pages/common/Contact";
 import Page401 from "../pages/common/ErrorPage/Page401";
 import Page403 from "../pages/common/ErrorPage/Page403";
 import Home from "../pages/common/Home/Home";
+import PaymentSuccess from "../pages/common/PaymentSuccess";
 import Profile from "../pages/customer/Profile";
 import CreateCombo from "../pages/manager/CreateCombo";
 import DetailCombo from "../pages/manager/DetailCombo";
@@ -17,6 +18,7 @@ import DetailOrder from "../pages/manager/DetailOrder";
 import ListCategory from "../pages/manager/ListCategory";
 import ListCombo from "../pages/manager/ListCombo";
 import ListOrder from "../pages/manager/ListOrder";
+import ListPetType from "../pages/manager/ListPetType";
 import ListProduct from "../pages/manager/ListProduct";
 import ListStaff from "../pages/manager/ListStaff";
 import ListTask from "../pages/manager/ListTask";
@@ -48,6 +50,11 @@ export const commonRoutes = [
   {
     path: "/403",
     element: <Page403 />,
+    isWrapLayout: false,
+  },
+  {
+    path: "/payment",
+    element: <PaymentSuccess />,
     isWrapLayout: false,
   },
 ];
@@ -112,6 +119,10 @@ export const managerRoutes = [
   {
     path: "/manager-manage-category",
     element: <ListCategory />,
+  },
+  {
+    path: "/manager-manage-pet-type",
+    element: <ListPetType />,
   },
   {
     path: "/manager-manage-combo/:id",

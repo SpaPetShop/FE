@@ -2,7 +2,7 @@ export type AuthUser = {
     id: string;
     name: string;
     email: string;
-    avatarUrl: string;
+    image: string;
     role: string;
     accessToken: string;
     status: string
