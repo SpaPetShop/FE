@@ -22,9 +22,6 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import moment from 'moment';
 import AdminManageStaffAPI from '../../../utils/AdminMangeStaffAPI';
-import ModalCreateStaff from '../../../components/manager/Modal/ModalCreateStaff';
-import MenuActionManageStaff from '../../../components/manager/MenuAction/MenuActionManageStaff';
-import { GridRowSelectionModel } from '@mui/x-data-grid';
 import ModalCreateManager from '../ModalCreateManager';
 import MenuActionManageManager from '../../../components/manager/MenuAction/MenuActionManageManager';
 
@@ -195,7 +192,11 @@ const TotalManager = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
-      <ModalCreateManager open={showModalCreate} setOpen={setShowModalCreate} />
+<ModalCreateManager
+        open={showModalCreate}
+        setOpen={setShowModalCreate}
+       
+      />
     </Paper>
   );
 };

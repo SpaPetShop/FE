@@ -116,14 +116,7 @@ const TotalCustomer = () => {
             ),
           }}
         />
-        <Button
-          variant="contained"
-          color="info"
-          startIcon={<PersonAddAltIcon />}
-          onClick={() => setShowModalCreate(true)}
-        >
-          Tạo khách hàng
-        </Button>
+       
       </Stack>
       <TableContainer component={Paper} sx={{ minHeight: 600 }}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -133,7 +126,7 @@ const TotalCustomer = () => {
               <StyledTableCell align="center">Tên nhân viên</StyledTableCell>
               <StyledTableCell align="center">Số điện thoại</StyledTableCell>
               <StyledTableCell align="center">Email</StyledTableCell>
-              <StyledTableCell align="center">Gioi tinh</StyledTableCell>
+              <StyledTableCell align="center">Giới tính</StyledTableCell>
               <StyledTableCell align="center">Trạng thái</StyledTableCell>
               <StyledTableCell align="center">Thao tác</StyledTableCell>
             </TableRow>
@@ -188,7 +181,7 @@ const TotalCustomer = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
-      <ModalCreateStaff open={showModalCreate} setOpen={setShowModalCreate} />
+      
     </Paper>
   );
 };

@@ -1,9 +1,9 @@
 import { CategoryResponse } from "../types/Category/CategoryType";
 import axiosClient from "./axiosClient";
-const CategoryAPI = {
+const AdminMangeOderAPi = {
   getAll: (params: any) => {
-    const url = "/categories";
-    return axiosClient.get<any, CategoryResponse>(url, {
+    const url = "/orders";
+    return axiosClient.get<any>(url, {
       params,
       paramsSerializer: {
         indexes: null, // by default: false
@@ -23,4 +23,4 @@ const CategoryAPI = {
     return axiosClient.delete(url);
   },
 };
-export default CategoryAPI;
+export default AdminMangeOderAPi;

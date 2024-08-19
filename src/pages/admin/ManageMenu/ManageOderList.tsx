@@ -1,111 +1,193 @@
-import React, { useState } from 'react';
-import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import {
+  Avatar,
+  Button,
+  Chip,
+  InputAdornment,
+  Paper,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  TextField,
+  TablePagination,
+  tableCellClasses,
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+import moment from 'moment';
+import AdminManageStaffAPI from '../../../utils/AdminMangeStaffAPI';
+import ModalCreateManager from '../ModalCreateManager';
+import MenuActionManageManager from '../../../components/manager/MenuAction/MenuActionManageManager';
+import AdminMangeOderAPi from '../../../utils/AdminManageOrderAPI';
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: '#f4511e',
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+  '&:hover': {
+    backgroundColor: '#81d4fa',
+  },
+}));
 
 interface Order {
   id: number;
-  customer: string;
-  date: string;
-  service: string;
-  combo: string | null;
-  total: number;
+  invoiceCode: string;
+  createdDate: string;
+  completedDate: string;
+  finalAmount: string | null;
+ 
   status: string;
 }
 
-const mockOrders: Order[] = [
-  { id: 1, customer: 'John Doe', date: '2024-08-01', service: 'Full Grooming', combo: 'Basic Combo', total: 75000.0, status: 'Completed' },
-  { id: 2, customer: 'Jane Smith', date: '2024-08-02', service: 'Nail Clipping', combo: null, total: 25000.0, status: 'Processing' },
-  { id: 3, customer: 'Robert Johnson', date: '2024-08-03', service: 'Haircut', combo: 'Deluxe Combo', total: 100000.0, status: 'Completed' },
-  { id: 4, customer: 'Emily Davis', date: '2024-08-04', service: 'Bath', combo: null, total: 40000.0, status: 'Cancelled' },
-  { id: 5, customer: 'Michael Brown', date: '2024-08-05', service: 'Teeth Cleaning', combo: 'Premium Combo', total: 120000.0, status: 'Completed' },
-];
+
 
 const ManageOrderList = () => {
-  const [orders, setOrders] = useState<Order[]>(mockOrders);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [open, setOpen] = useState(false);
+ 
+  const [adminMangageOrder, setAdminMangageOrder] = useState<Order[]>([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showModalCreate, setShowModalCreate] = useState(false);
 
-  const handleDetail = (order: Order) => {
-    setSelectedOrder(order);
-    setOpen(true);
+  // const handleDetail = (order: Order) => {
+  //   setSelectedOrder(order);
+  //   setOpen(true);
+  // };
+
+  // const handleClose = () => {
+  //   setOpen(false);
+  //   setSelectedOrder(null);
+  // };
+  useEffect(() => {
+    const fetchOrder = async () => {
+      try {
+        const response:any = await AdminMangeOderAPi.getAll({ status: '' });
+        setAdminMangageOrder(response.items);
+        console.log(response);
+      } catch (error) {
+        console.error('Failed to fetch staff:', error);
+      }
+    };
+
+    fetchOrder();
+  }, []);
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
   };
-
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedOrder(null);
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
   };
+  const handleSearchName = (name: string) => {
+    setSearchTerm(name);
+  };
+  const fillterOrder = adminMangageOrder.filter((oder) =>
+    oder.status.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const totalAmount = orders.reduce((sum, order) => sum + order.total, 0);
+  const paginatedStaff = fillterOrder.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-  const columns: GridColDef<Order>[] = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'customer', headerName: 'Customer', width: 150 },
-    { field: 'date', headerName: 'Date', width: 130 },
-    { field: 'service', headerName: 'Service', width: 180 },
-    { field: 'combo', headerName: 'Combo', width: 150 },
-    { 
-      field: 'total', 
-      headerName: 'Total', 
-      width: 100, 
-      valueFormatter: (params) => {
-        const value = params;
-        return value !== undefined ? `VND${value}` : 'N/A';
-      } 
-    },
-    { field: 'status', headerName: 'Status', width: 130 },
-    {
-      field: 'actions',
-      headerName: 'Actions',
-      sortable: false,
-      renderCell: (params) => (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => handleDetail(params.row as Order)}
-        >
-          Detail
-        </Button>
-      ),
-      width: 150,
-    },
-  ];
+
 
   return (
-    <Box sx={{ height: 600, width: '100%' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h6">Total Amount: VND{totalAmount.toFixed(2)}</Typography>
-      </Box>
-
-      <DataGrid
-        rows={orders}
-        columns={columns}
-        checkboxSelection
-        disableRowSelectionOnClick
-      
+    <Paper sx={{ p: 2 }}>
+    <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <TextField
+        size="small"
+        placeholder="Nhập mã đơn hàng ..."
+        label="Tìm kiếm"
+        onChange={(e) => handleSearchName(e.target.value)}
+        sx={{ mt: 2, mb: 3, ml: 3, width: '345px' }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchOutlinedIcon />
+            </InputAdornment>
+          ),
+        }}
       />
+      
+    </Stack>
+    <TableContainer component={Paper} sx={{ minHeight: 600 }}>
+      <Table sx={{ minWidth: 700 }} aria-label="customized table">
+        <TableHead>
+          <TableRow>
+            <StyledTableCell align="center">STT</StyledTableCell>
+            <StyledTableCell align="center">Mã đơn hàng</StyledTableCell>
+            <StyledTableCell align="center">Ngày tạo</StyledTableCell>
+            <StyledTableCell align="center">Ngày hoàn thanh</StyledTableCell>
+            <StyledTableCell align="center">Tổng tiền</StyledTableCell>
+            <StyledTableCell align="center">Trạng thái</StyledTableCell>
+            <StyledTableCell align="center">Thao tác</StyledTableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {paginatedStaff.map((row, index) => (
+            <StyledTableRow key={row.id}>
+              <StyledTableCell align="center" size="small">
+                {page * rowsPerPage + index + 1}
+              </StyledTableCell>
+              <StyledTableCell align="center" size="small">
+                {row.invoiceCode}
+              </StyledTableCell>
+              
+              <StyledTableCell align="center" size="small">
+                {row.createdDate}
+              </StyledTableCell>
+              <StyledTableCell align="center" size="small">
+                {row.completedDate}
+              </StyledTableCell>
+              <StyledTableCell align="center" size="small">
+                {row.finalAmount}
+              </StyledTableCell>
+               
+              
+              <StyledTableCell align="center" size="small">
+                {row.status === 'COMPLETED' ? (
+                  <Chip label="Đã thanh toán" color="success" />
+                ) : (
+                  <Chip label="Chưa thanh " color="error" />
+                )}
+              </StyledTableCell>
+              <StyledTableCell align="center" size="small">
+                <MenuActionManageManager  /> 
+              </StyledTableCell>
+            </StyledTableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+    <TablePagination
+      rowsPerPageOptions={[5, 10, 25]}
+      component="div"
+      count={fillterOrder.length}
+      rowsPerPage={rowsPerPage}
+      page={page}
+      onPageChange={handleChangePage}
+      onRowsPerPageChange={handleChangeRowsPerPage}
+    />
 
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Order Details</DialogTitle>
-        <DialogContent>
-          {selectedOrder && (
-            <Box>
-              <Typography>ID: {selectedOrder.id}</Typography>
-              <Typography>Customer: {selectedOrder.customer}</Typography>
-              <Typography>Date: {selectedOrder.date}</Typography>
-              <Typography>Service: {selectedOrder.service}</Typography>
-              {selectedOrder.combo && <Typography>Combo: {selectedOrder.combo}</Typography>}
-              <Typography>Total: VND{selectedOrder.total.toFixed(2)}</Typography>
-              <Typography>Status: {selectedOrder.status}</Typography>
-            </Box>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+
+  </Paper>
   );
 };
 

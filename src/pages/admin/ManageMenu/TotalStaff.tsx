@@ -116,14 +116,7 @@ export default function TotalStaff() {
             ),
           }}
         />
-        <Button
-          variant="contained"
-          color="info"
-          startIcon={<PersonAddAltIcon />}
-          onClick={() => setShowModalCreate(true)}
-        >
-          Tạo nhân viên
-        </Button>
+       
       </Stack>
       <TableContainer component={Paper} sx={{ minHeight: 600 }}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -188,7 +181,7 @@ export default function TotalStaff() {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
-      <ModalCreateStaff open={showModalCreate} setOpen={setShowModalCreate} />
+      
     </Paper>
   );
 }
