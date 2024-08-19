@@ -1,13 +1,16 @@
-import { Box, Button, ButtonGroup, Chip, Grid, Stack } from "@mui/material";
+
+import { Box, Button, Chip, Grid, Stack } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { useNavigate, useParams } from "react-router-dom";
-import ProductAPI from "../../utils/ProductAPI";
 import { useEffect, useState } from "react";
-import { ComboType } from "../../types/Combo/ComboType";
+import { useNavigate, useParams } from "react-router-dom";
 import LoadingComponentVersion2 from "../../components/common/loading/Backdrop";
+import { renderStatusCombo } from "../../components/manager/SingleCombo";
+import { ComboType } from "../../types/Combo/ComboType";
+import ProductAPI from "../../utils/ProductAPI";
+
 
 export default function DetailCombo() {
   const { id } = useParams();
@@ -139,6 +142,19 @@ export default function DetailCombo() {
                   }}
                 />
               </Stack>
+
+              <Stack
+                direction={"row"}
+                alignItems={"center"}
+                sx={{ mb: 3, mt: 3 }}
+                spacing={1}
+              >
+                <Typography gutterBottom variant="h6">
+                  Trạng thái:
+                </Typography>
+                {renderStatusCombo(data?.status || "")}
+              </Stack>
+
               
                 <Button
                   sx={{ width: 200, mt: 3 }}

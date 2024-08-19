@@ -21,9 +21,12 @@ import TableRow from "@mui/material/TableRow";
 import * as React from "react";
 import useDebounce from "../../hook/useDebounce";
 import { PaginationType } from "../../types/CommonType";
-import { FilterUserType, UserType } from "../../types/User/UserType";
-import UserAPI from "../../utils/UserAPI";
+import { FilterOrderType, OrderType } from "../../types/Order/OrderType";
 import { TabContext, TabList } from "@mui/lab";
+import OrderAPI from "../../utils/OrderAPI";
+import moment from "moment";
+import MenuActionOrder from "../../components/manager/MenuAction/MenuActionOrder";
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -62,25 +65,29 @@ const TabName = styled('span')(({ theme }) => ({
   marginLeft: theme.spacing(2.4),
 }))
 
-const renderStatus = (status: string) => {
+export const renderStatusOrder = (status: string) => {
   switch (status) {
-    case "PENDING":
-      return <Chip sx={{minWidth:120}} label={"Đang chờ"} color="warning"/>
-    case "CONFIRMED":
-      return <Chip sx={{minWidth:120}}  label={"Đã xác nhận"} color="info"/>
-    case "PROCESSING":
-      return <Chip  sx={{minWidth:120}} label={"Đang tiến hành"} color="secondary"/>
+    case "UNPAID":
+      return <Chip sx={{minWidth:120}} label={"Chưa Thanh Toán"} color="warning" size="small"/>
+    case "PAID":
+      return <Chip sx={{minWidth:120}}  label={"Đã Thanh Toán"} color="info" size="small"/>
     case "COMPLETED":
-      return <Chip sx={{minWidth:120}}  label={"Hoàn thành"} color="success"/>
+      return <Chip sx={{minWidth:120}}  label={"Hoàn Thành"} color="success" size="small"/>
     case "CANCELLED":
-      return <Chip sx={{minWidth:120}}  label={"Đã hủy"} color="error"/>
+      return <Chip sx={{minWidth:120}}  label={"Đã Hủy"} color="error" size="small"/>
+
   }
 }
 export default function ListOrder() {
   const [isLoading, setIsLoading] = React.useState(false);
-  const [listUser, setListUser] = React.useState<UserType[] | []>(
+
+  const [listOrder, setListOrder] = React.useState<OrderType[] | []>(
     []
   );
+  const [showModalUpdate, setShowModalUpdate] = React.useState(false);
+  const [showModalDelete, setShowModalDelete] = React.useState(false);
+  const [selectedOrder, setSelectedOrder] = React.useState<OrderType | null>(null)
+
   const [pagination, setPagination] = React.useState<PaginationType>({
     page: 1,
     size: 10,
@@ -89,10 +96,11 @@ export default function ListOrder() {
   });
   const [searchName, setSearchName] = React.useState("");
   const [searchPhone, setSearchPhone] = React.useState("");
-  const [filter, setFilter] = React.useState<FilterUserType>({
+
+  const [filter, setFilter] = React.useState<FilterOrderType>({
     page: 1,
     size: 10,
-    Role: "User",
+
   });
   const debouncedInputValueName = useDebounce(searchName, 500); // Debounce with 500ms delay
   const debouncedInputValuePhone = useDebounce(searchPhone, 500);
@@ -116,12 +124,14 @@ export default function ListOrder() {
   const handleSearchPhone = (phone: string) => {
     setSearchPhone(phone);
   };
-  const fetchAllUser = React.useCallback(async () => {
+
+  const fetchAllOrder = React.useCallback(async () => {
     try {
       setIsLoading(true);
-      const data = await UserAPI.getAll(filter);
+      const data = await OrderAPI.getAll(filter);
       console.log({ data });
-      setListUser(data.items);
+      setListOrder(data.items);
+
       setPagination({
         page: data.page,
         size: data.size,
@@ -129,20 +139,22 @@ export default function ListOrder() {
         totalPages: data.totalPages,
       });
     } catch (error) {
-      console.log("Error get list User: ", error);
+      console.log("Error get list Order: ", error);
     } finally {
       setIsLoading(false);
     }
   }, [filter]);
+
   React.useEffect(() => {
-    fetchAllUser();
-  }, [fetchAllUser]);
+    fetchAllOrder();
+  }, [fetchAllOrder]);
 
   React.useEffect(() => {
     setFilter((prev) => ({ ...prev, FullName: debouncedInputValueName }));
   }, [debouncedInputValueName]);
 
   React.useEffect(() => {
+
     setFilter((prev) => ({ ...prev, PhoneNumber: debouncedInputValuePhone }));
   }, [debouncedInputValuePhone]);
 
@@ -225,19 +237,21 @@ export default function ListOrder() {
           <TableHead>
             <TableRow>
               <StyledTableCell align="center">STT</StyledTableCell>
-              <StyledTableCell align="center">Họ Và Tên</StyledTableCell>
-              <StyledTableCell align="center">Tên Đăng Nhập</StyledTableCell>  
-              <StyledTableCell align="center">Số Điện Thoại</StyledTableCell>  
-              <StyledTableCell align="center">Email</StyledTableCell>  
-              <StyledTableCell align="center">Hạng</StyledTableCell>  
-              <StyledTableCell align="center">Điểm tích lũy</StyledTableCell>  
+
+              <StyledTableCell align="center">Tên Khách Hàng</StyledTableCell>
+              <StyledTableCell align="center">Ngày Tạo</StyledTableCell>  
+              <StyledTableCell align="center">Ngày Hoàn Thành</StyledTableCell>  
+              <StyledTableCell align="center">Giá Tiền</StyledTableCell> 
+              <StyledTableCell align="center">Loại</StyledTableCell> 
               <StyledTableCell align="center">Trạng thái</StyledTableCell>   
+              <StyledTableCell align="center">Thao Tác</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {listUser.length === 0 && isLoading === false && (
+            {listOrder.length === 0 && isLoading === false && (
               <StyledTableRow>
-                <StyledTableCell colSpan={8} align="left">
+                <StyledTableCell colSpan={7} align="left">
+
                   <Typography align="center">Không có dữ liệu!</Typography>
                 </StyledTableCell>
               </StyledTableRow>
@@ -266,20 +280,21 @@ export default function ListOrder() {
                   <StyledTableCell align="left">
                     <Skeleton variant="rectangular" />
                   </StyledTableCell>
-                  <StyledTableCell align="left">
-                    <Skeleton variant="rectangular" />
-                  </StyledTableCell>
+
                 </StyledTableRow>
               ))}
-            {listUser.length > 0 &&
+            {listOrder.length > 0 &&
               isLoading === false &&
-              listUser.map((row, index) => (
+              listOrder.map((row, index) => (
+
                 <StyledTableRow key={index}>
                   <StyledTableCell align="center" size="small">
                     {(pagination.page - 1) * pagination.size + index + 1}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                    {row.fullName}
+
+                    {row.userInfo.fullName}
+
                   </StyledTableCell>
                   <StyledTableCell
                     align="center"
@@ -291,27 +306,29 @@ export default function ListOrder() {
                       maxWidth: "250px",
                     }}
                   >
-                    {row.username}
+
+                    {moment(row.createdDate).format("DD/MM/YYYY")}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                    {row.phoneNumber}
+                  {row.completedDate ? moment(row.completedDate).format("DD/MM/YYYY") : "-"}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                    {row.email ? row.email : "-"}
-                  </StyledTableCell>
+                    {row.finalAmount.toLocaleString()} VNĐ
+                  </StyledTableCell>  
                   <StyledTableCell align="center" size="small">
-                    {row.rank ? row.rank : "-"}
-                  </StyledTableCell>
+                    {row.petInfor.typePet.name}
+                  </StyledTableCell>    
                   <StyledTableCell align="center" size="small">
-                    {row.point ? row.point : "-"}
-                  </StyledTableCell>
-                  <StyledTableCell align="center" size="small">
-                    {row.status === "Activate" ? (
-                      <Chip label={"Đang hoạt động"} color="success" />
-                    ) : (
-                      <Chip label={"Ngưng hoạt động"} color="error" />
-                    )}
-                  </StyledTableCell>
+                    {renderStatusOrder(row.status)}
+                  </StyledTableCell> 
+                  <StyledTableCell align="center" size="small"> 
+                    <MenuActionOrder
+                     data={row}
+                     setOpenDelete={setShowModalDelete}
+                     setOpenUpdate={setShowModalUpdate}
+                     setSelectedOrder={setSelectedOrder}
+                  /></StyledTableCell>               
+
                 </StyledTableRow>
               ))}
           </TableBody>

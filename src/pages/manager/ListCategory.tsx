@@ -162,8 +162,10 @@ export default function ListCategory() {
                 }
               >
                 <MenuItem value={""}>Tất cả</MenuItem>
-                <MenuItem value={"Active"}>Đang hoạt động</MenuItem>
-                <MenuItem value={"Inactive"}>Ngưng hoạt động</MenuItem>
+
+                <MenuItem value={"ACTIVE"}>Đang hoạt động</MenuItem>
+                <MenuItem value={"INACTIVE"}>Ngưng hoạt động</MenuItem>
+
               </Select>
             </FormControl>
           </Box>
@@ -242,10 +244,12 @@ export default function ListCategory() {
                     {row.description}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                    {row.status === "Active" ? (
-                      <Chip label={"Đang hoạt động"} color="success" />
+
+                    {row.status === "ACTIVE" ? (
+                      <Chip label={"Đang hoạt động"} color="success" size="small"/>
                     ) : (
-                      <Chip label={"Ngưng hoạt động"} color="error" />
+                      <Chip label={"Ngưng hoạt động"} color="error" size="small"/>
+
                     )}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">

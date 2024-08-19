@@ -13,7 +13,9 @@ import {
   Stack,
   TablePagination,
   TextField,
-  Typography,
+
+  Typography
+
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
@@ -24,14 +26,18 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import * as React from "react";
-import useDebounce from "../../hook/useDebounce";
-import { PaginationType } from "../../types/CommonType";
-import { FilterProductType, ProductType } from "../../types/Product/ProductType";
-import SubProductAPI from "../../utils/SubProductAPI";
 import MenuActionProduct from "../../components/manager/MenuAction/MenuActionProduct";
 import ModalCreateProduct from "../../components/manager/Modal/Product/ModalCreateNewProduct";
-import ModalUpdateProduct from "../../components/manager/Modal/Product/ModalUpdateProduct";
 import ModalDeleteProduct from "../../components/manager/Modal/Product/ModalDeleteProduct";
+import ModalUpdateProduct from "../../components/manager/Modal/Product/ModalUpdateProduct";
+import useDebounce from "../../hook/useDebounce";
+import { PaginationType } from "../../types/CommonType";
+import {
+  FilterProductType,
+  ProductType,
+} from "../../types/Product/ProductType";
+import SubProductAPI from "../../utils/SubProductAPI";
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -61,9 +67,8 @@ export default function ListProduct() {
   const [showModalCreate, setShowModalCreate] = React.useState(false);
   const [showModalUpdate, setShowModalUpdate] = React.useState(false);
   const [showModalDelete, setShowModalDelete] = React.useState(false);
-  const [listProduct, setListProduct] = React.useState<ProductType[] | []>(
-    []
-  );
+  const [listProduct, setListProduct] = React.useState<ProductType[] | []>([]);
+
   const [pagination, setPagination] = React.useState<PaginationType>({
     page: 1,
     size: 10,
@@ -93,16 +98,34 @@ export default function ListProduct() {
   };
   const renderStatus = (status: string) => {
     switch (status) {
-      case "Available":
-        return <Chip sx={{minWidth:120}} label={"Đang hoạt động"} color="success"/>
-      case "UnAvailable":
-        return <Chip sx={{minWidth:120}}  label={"Ngưng hoạt động"} color="warning"/>
-      case "OutOfStock":
-        return <Chip  sx={{minWidth:120}} label={"Hết hàng"} color="error"/>
+
+      case "AVAILABLE":
+        return (
+          <Chip
+            sx={{ minWidth: 120 }}
+            label={"Đang hoạt động"}
+            color="success"
+            size="small"
+          />
+        );
+      case "UNAVAILABLE":
+        return (
+          <Chip
+            sx={{ minWidth: 120 }}
+            label={"Ngưng hoạt động"}
+            color="warning"
+            size="small"
+          />
+        );
+      case "OUTOFSTOCK":
+        return <Chip sx={{ minWidth: 120 }} label={"Hết hàng"} color="error" size="small"/>;
       default:
-        return <Chip  sx={{minWidth:120}} label={"Chưa xác định"} color="error"/>
+        return (
+          <Chip sx={{ minWidth: 120 }} label={"Chưa xác định"} color="error" />
+        );
     }
-  }
+  };
+
   const fetchAllProduct = React.useCallback(async () => {
     try {
       setIsLoading(true);
@@ -171,9 +194,11 @@ export default function ListProduct() {
                 }
               >
                 <MenuItem value={""}>Tất cả</MenuItem>
-                <MenuItem value={"Available"}>Đang Hoạt động</MenuItem>
-                <MenuItem value={"UnAvailable"}>Ngưng hoạt động</MenuItem>
-                <MenuItem value={"OutOfStock"}>Hết hàng</MenuItem>
+
+                <MenuItem value={"AVAILABLE"}>Đang Hoạt động</MenuItem>
+                <MenuItem value={"UNAVAILABLE"}>Ngưng hoạt động</MenuItem>
+                <MenuItem value={"OUTOFSTOCK"}>Hết hàng</MenuItem>
+
               </Select>
             </FormControl>
           </Box>
@@ -264,23 +289,27 @@ export default function ListProduct() {
                       maxWidth: "250px",
                     }}
                   >
-                    {row.description}
+
+                  {row.description}
+
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
                     {row.stockPrice.toLocaleString()} VNĐ
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                  {row.sellingPrice.toLocaleString()} VNĐ
+
+                    {row.sellingPrice.toLocaleString()} VNĐ
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                  {row.category.name}
+                    {row.category.name}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                {renderStatus(row.status)}
+                    {renderStatus(row.status)}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
                     <MenuActionProduct
-                      setOpenUpdate={setShowModalUpdate}                  
+                      setOpenUpdate={setShowModalUpdate}
+
                       setOpenDelete={setShowModalDelete}
                       setSelectedProduct={setSelectedProduct}
                       data={row}
@@ -304,25 +333,31 @@ export default function ListProduct() {
           return `${from}–${to} / ${count !== -1 ? count : `nhiều hơn ${to}`}`;
         }}
       />
-      
+
       <ModalCreateProduct
         open={showModalCreate}
         setOpen={setShowModalCreate}
         fetchAllProduct={fetchAllProduct}
       />
 
-      {selectedProduct && <ModalUpdateProduct
-        open={showModalUpdate}
-        setOpen={setShowModalUpdate}
-        fetchAllProduct={fetchAllProduct}
-        data={selectedProduct}
-      />}
-      {selectedProduct && <ModalDeleteProduct
-        open={showModalDelete}
-        setOpen={setShowModalDelete}
-        fetchAllProduct={fetchAllProduct}
-        data={selectedProduct}
-      />}
+
+      {selectedProduct && (
+        <ModalUpdateProduct
+          open={showModalUpdate}
+          setOpen={setShowModalUpdate}
+          fetchAllProduct={fetchAllProduct}
+          data={selectedProduct}
+        />
+      )}
+      {selectedProduct && (
+        <ModalDeleteProduct
+          open={showModalDelete}
+          setOpen={setShowModalDelete}
+          fetchAllProduct={fetchAllProduct}
+          data={selectedProduct}
+        />
+      )}
+
     </Paper>
   );
 }
