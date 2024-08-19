@@ -26,24 +26,12 @@ const Information: React.FC<InformationProps> = ({ product }) => {
         >
           Thông tin chi tiết
         </button>
-        <button
-          className={`tab-button ${activeTab === "comments" ? "active" : ""}`}
-          onClick={() => setActiveTab("comments")}
-        >
-          Bình luận
-        </button>
       </div>
 
       {activeTab === "detail" && detail && (
         <div className="tab-content">
+          {/* Hiển thị thông tin chi tiết sản phẩm */}
           {/* <div dangerouslySetInnerHTML={{ __html: detail.html }} /> */}
-        </div>
-      )}
-
-      {activeTab === "comments" && (
-        <div className="tab-content">
-          <h2>Bình luận</h2>
-          <p>Chưa có bình luận nào cho sản phẩm này.</p>
         </div>
       )}
     </div>

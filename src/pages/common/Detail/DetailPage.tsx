@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import "./DetailPage.css";
+import { Box, Typography } from "@mui/material";
+import styles from "./DetailPage.module.css"; // Import CSS Module
 import Sidebar from "../../../components/detail/component/sidebar/Sidebar";
 import Recommendation from "../../../components/detail/component/recommendation/Recommendation";
 import MainContent from "../../../components/detail/component/content/MainContent";
@@ -28,8 +29,9 @@ const DetailPage: React.FC = () => {
     },
     image: [
       {
-        imageURL: "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"
-      }
+        imageURL:
+          "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png",
+      },
     ],
   };
 
@@ -49,7 +51,10 @@ const DetailPage: React.FC = () => {
               ...defaultProductData.category,
               ...productData.category,
             },
-            image: productData.image.length > 0 ? productData.image : defaultProductData.image,
+            image:
+              productData.image.length > 0
+                ? productData.image
+                : defaultProductData.image,
           };
 
           setProduct(productWithDefaults);
@@ -66,21 +71,23 @@ const DetailPage: React.FC = () => {
   }, [id]);
 
   return (
-    <div className="detail-page">
+    <Box className={styles.detailPage}>
       <LoadingComponentVersion2 open={isLoading} />
-      <Sidebar />
-      <div className="main-content-area">
+      <Box className={styles.sidebar}>
+        <Sidebar />
+      </Box>
+      <Box className={styles.mainContentArea}>
         {isLoading ? (
-          <p>Loading...</p>
+          <Typography className={styles.loadingText}>Loading...</Typography>
         ) : (
           <>
             <MainContent product={product} />
             <Information product={product} />
-            <Recommendation />
+            {/* <Recommendation /> */}
           </>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

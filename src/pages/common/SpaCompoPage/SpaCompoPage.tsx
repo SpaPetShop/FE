@@ -7,6 +7,7 @@ import { ComboType, ComboResponse } from "../../../types/Combo/ComboType";
 import "./SpaCompoPage.css";
 import PetImageGallery from "../../../components/home/component/gallery/PetImageGallery";
 import LoadingComponentVersion2 from "../../../components/common/loading/Backdrop";
+import { toast } from "react-toastify";
 
 const SpaCompoPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -70,7 +71,7 @@ const SpaCompoPage: React.FC = () => {
                 >
                   Xem chi tiết
                 </Button>
-                <Button size="small" variant="outlined" color="primary">
+                <Button onClick={() => toast.info("Chức năng đang trong quá trình xây dựng")} size="small" variant="outlined" color="primary">
                   Đặt lịch
                 </Button>
               </CardActions>

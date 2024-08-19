@@ -1,8 +1,8 @@
-import { Grid } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import PetCard from "../../../components/home/component/card/PetCard";
 import FeaturedTitle from "../../../components/common/highlight/FeaturedTitle";
-import "./Home.css";
+import styles from "./Home.module.css"; // Import CSS Module
 import SubProductAPI from "../../../utils/SubProductAPI";
 import {
   FilterProductType,
@@ -32,7 +32,6 @@ const Home: React.FC = () => {
     try {
       setIsLoading(true);
       const data: ProductResponse = await SubProductAPI.getAll(filter);
-      console.log({ data });
       setListProduct(data.items);
       setPagination({
         page: data.page,
@@ -41,7 +40,7 @@ const Home: React.FC = () => {
         totalPages: data.totalPages,
       });
     } catch (error: any) {
-      console.log({ error });
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -54,117 +53,54 @@ const Home: React.FC = () => {
   const defaultPetData = {
     image: [
       {
-        imageURL: "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"
-      }
+        imageURL:
+          "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png",
+      },
     ],
-    duration: "30 phút",
-    rate: "4.5",
-    availability: "Còn chỗ",
   };
 
+  const renderProductGrid = (title: string, category: string) => (
+    <section className={styles.section}>
+      <h2 className={styles.title}>{title}</h2>
+      <Grid container spacing={3}>
+        {listProduct
+          .filter((product) => product.category.name === category)
+          .map((product) => (
+            <PetCard
+              key={product.id}
+              pet={{
+                id: product.id,
+                name: product.name,
+                stockPrice: product.stockPrice,
+                sellingPrice: product.sellingPrice,
+                status: product.status,
+                category: product.category,
+                image: product?.image?.[0]?.imageURL
+                  ? product.image[0].imageURL
+                  : defaultPetData.image[0].imageURL,
+              }}
+            />
+          ))}
+      </Grid>
+    </section>
+  );
+
   return (
-    <div className="container">
+    <div className={styles.container}>
       <LoadingComponentVersion2 open={isLoading} />
       <FeaturedTitle
-        title={"BOSS DỊCH VỤ"}
-        subtitle={"Các loại dịch vụ chăm sóc cho thú cưng của bạn"}
+        title="BOSS DỊCH VỤ"
+        subtitle="Các loại dịch vụ chăm sóc cho thú cưng của bạn"
       />
 
-      {/* Dịch vụ cho cún */}
-      <section className="section">
-        <h2 className="title">Dịch vụ cho cún</h2>
-        <Grid container spacing={3}>
-          {listProduct
-            .filter((product) => product.category.name === "Chó")
-            .map((product) => (
-              <PetCard
-                key={product.id}
-                pet={{
-                  id: product.id,
-                  name: product.name,
-                  stockPrice: product.stockPrice,
-                  sellingPrice: product.sellingPrice,
-                  status: product.status,
-                  category: product.category,
-                  image: product?.image?.[0]?.imageURL ? product.image[0].imageURL : defaultPetData.image[0].imageURL,
-                }}
-              />
-            ))}
-        </Grid>
-      </section>
-
-      {/* Dịch vụ cho mèo */}
-      <section className="section">
-        <h2 className="title">Dịch vụ cho mèo</h2>
-        <Grid container spacing={3}>
-          {listProduct
-            .filter((product) => product.category.name === "Mèo")
-            .map((product) => (
-              <PetCard
-                key={product.id}
-                pet={{
-                  id: product.id,
-                  name: product.name,
-                  stockPrice: product.stockPrice,
-                  sellingPrice: product.sellingPrice,
-                  status: product.status,
-                  category: product.category,
-                  image: product?.image?.[0]?.imageURL ? product.image[0].imageURL : defaultPetData.image[0].imageURL,
-                }}
-              />
-            ))}
-        </Grid>
-      </section>
-
-      {/* Dịch vụ cho vẹt */}
-      <section className="section">
-        <h2 className="title">Dịch vụ cho vẹt</h2>
-        <Grid container spacing={3}>
-          {listProduct
-            .filter((product) => product.category.name === "Vẹt")
-            .map((product) => (
-              <PetCard
-                key={product.id}
-                pet={{
-                  id: product.id,
-                  name: product.name,
-                  stockPrice: product.stockPrice,
-                  sellingPrice: product.sellingPrice,
-                  status: product.status,
-                  category: product.category,
-                  image: product?.image?.[0]?.imageURL ? product.image[0].imageURL : defaultPetData.image[0].imageURL,
-                }}
-              />
-            ))}
-        </Grid>
-      </section>
-
-      {/* Dịch vụ cho thỏ */}
-      <section className="section">
-        <h2 className="title">Dịch vụ cho thỏ</h2>
-        <Grid container spacing={3}>
-          {listProduct
-            .filter((product) => product.category.name === "Thỏ")
-            .map((product) => (
-              <PetCard
-                key={product.id}
-                pet={{
-                  id: product.id,
-                  name: product.name,
-                  stockPrice: product.stockPrice,
-                  sellingPrice: product.sellingPrice,
-                  status: product.status,
-                  category: product.category,
-                  image: product?.image?.[0]?.imageURL ? product.image[0].imageURL : defaultPetData.image[0].imageURL,
-                }}
-              />
-            ))}
-        </Grid>
-      </section>
+      {renderProductGrid("Dịch vụ cho cún", "Chó")}
+      {renderProductGrid("Dịch vụ cho mèo", "Mèo")}
+      {renderProductGrid("Dịch vụ cho vẹt", "Vẹt")}
+      {renderProductGrid("Dịch vụ cho thỏ", "Thỏ")}
 
       <FeaturedTitle
-        title={"KHOẢNH KHẮC THÚ CƯNG"}
-        subtitle={"PET LIKE US AND SO WILL YOU"}
+        title="KHOẢNH KHẮC THÚ CƯNG"
+        subtitle="PET LIKE US AND SO WILL YOU"
       />
       <PetImageGallery />
     </div>

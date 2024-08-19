@@ -1,41 +1,53 @@
 import React from "react";
-import "./MainContent.css";
+import { useNavigate } from "react-router-dom";
 import { ProductType } from "../../../../types/Product/ProductType";
+import styles from "./MainContent.module.css"; // Import CSS Module
 
 interface MainContentProps {
   product: ProductType | null;
 }
 
 const MainContent: React.FC<MainContentProps> = ({ product }) => {
+  const navigate = useNavigate();
+
+  const handleBookingClick = () => {
+    // Store the pet information in localStorage
+    localStorage.setItem("selectedPet", JSON.stringify(product));
+
+    // Navigate to the booking page
+    navigate("/booking");
+  };
+
   if (!product) return null;
+
+  const formattedPrice = new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(product.sellingPrice);
+
   return (
-    <div className="main-content">
-      <div className="product-detail">
+    <div className={styles.mainContent}>
+      <div className={styles.productDetail}>
         <img
-          src={product?.image[0]?.imageURL}
-          alt="Cắt tỉa lông cho cún"
+          src={product.image[0]?.imageURL}
+          alt={product.name}
+          className={styles.productImage} // Đảm bảo className này đang được áp dụng
         />
-        <div className="product-info">
-          <h1>{product.name}</h1>
-          <p>
-            <b>Mã dịch vụ:</b> {product.id}
-          </p>
-          <p>
+        <div className={styles.productInfo}>
+          <h1 className={styles.productTitle}>{product.name}</h1>
+          <p className={styles.productStatus}>
             <b>Tình trạng:</b>{" "}
             {product.status === "AVAILABLE" ? "Còn chỗ" : "Hết chỗ"}
           </p>
-          <p>
+          <p className={styles.productStatus}>
             <b>Lượt đánh giá:</b> 1880
           </p>
-          <p>
+          <p className={styles.productPrice}>
             <b>Giá bán:</b>{" "}
-            <span className="price">{product.sellingPrice} VNĐ</span>
+            <span className={styles.price}>{formattedPrice}</span>
           </p>
-          <button className="btn btn-add-cart">
-            <span>Thêm vào giỏ hàng</span>
-          </button>
-          <button className="btn btn-buy-now">
-            <span>Mua ngay</span>
+          <button onClick={handleBookingClick} className={styles.btnBuyNow}>
+            Đặt lịch
           </button>
         </div>
       </div>

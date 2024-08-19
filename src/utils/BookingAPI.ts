@@ -26,6 +26,7 @@ const BookingAPI = {
     });
   },
 
+  // Fetch bookings by customer ID
   getBookingsByCustomerId: (customerId: string) => {
     const url = `/orders?AccountId=${customerId}`;
     return axiosClient.get<any, OrderType>(url);
@@ -41,6 +42,12 @@ const BookingAPI = {
   createBooking: (payload: any) => {
     const url = "/orders";
     return axiosClient.post(url, payload);
+  },
+
+  // Update order status
+  updateOrderStatus: (orderId: string, payload: any) => {
+    const url = `/orders/${orderId}`;
+    return axiosClient.patch(url, payload);
   },
 };
 

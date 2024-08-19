@@ -1,12 +1,12 @@
 import React from "react";
-import "./PetCard.css";
+import styles from "./PetCard.module.css"; // Import CSS Module
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { Chip, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import { useNavigate, Link } from "react-router-dom";
 
 interface Pet {
@@ -30,40 +30,47 @@ const PetCard: React.FC<{ pet: Pet }> = ({ pet }) => {
   const handleBookingClick = () => {
     // Store the pet information in localStorage
     localStorage.setItem("selectedPet", JSON.stringify(pet));
-
-    // Navigate to the booking page
     navigate("/booking");
   };
 
   return (
-    <Grid item xs={6} sm={4} md={3} lg={2}>
-      <Card sx={{ maxWidth: 400, textAlign: "center" }}>
+    <Grid item xs={12} sm={6} md={4} lg={3} className={styles.cardContainer}>
+      <Card className={styles.card}>
         <CardMedia
-          sx={{ height: 200, objectFit: "cover" }}
+          className={styles.cardMedia}
           image={pet.image}
           title={pet.name}
         />
-        <CardContent sx={{ textAlign: "center" }}>
+        <CardActions className={styles.cardActions}>
+          <Link to={`/${pet.id}`} className={styles.detailButton}>
+            <Button className={styles.button} variant="outlined">
+              Xem chi tiết
+            </Button>
+          </Link>
+          <Button
+            className={styles.button}
+            variant="contained"
+            onClick={handleBookingClick}
+          >
+            Đặt lịch
+          </Button>
+        </CardActions>
+        <CardContent className={styles.cardContent}>
           <Typography
-            gutterBottom
             variant="h5"
             component="div"
             sx={{
               fontSize: "16px",
-              height: "40px",
-              color: "#272727",
-              lineHeight: "20px",
-              textAlign: "center",
               fontWeight: 600,
+              marginBottom: "10px",
+              color: "#272727",
             }}
           >
             {pet.name}
           </Typography>
           <Typography
             variant="body2"
-            color="text.secondary"
             sx={{
-              mb: 1,
               fontSize: "14px",
               fontWeight: "bold",
               color: "#e67e22",
@@ -71,40 +78,7 @@ const PetCard: React.FC<{ pet: Pet }> = ({ pet }) => {
           >
             {pet.sellingPrice.toLocaleString()} VNĐ
           </Typography>
-          <Chip
-            label={pet.status === "AVAILABLE" ? "Còn chỗ" : "Hết chỗ"}
-            color={pet.status === "AVAILABLE" ? "success" : "error"}
-          />
         </CardContent>
-        <CardActions sx={{ mb: 2, placeContent: "center" }}>
-          <Link to={`/${pet.id}`} className="detail-button">
-            <Button
-              size="small"
-              sx={{
-                borderRadius: "5px",
-                width: "90px",
-                fontSize: "8px",
-              }}
-              variant="outlined"
-              color="warning"
-            >
-              Xem chi tiết
-            </Button>
-          </Link>
-          <Button
-            size="small"
-            sx={{
-              borderRadius: "5px",
-              width: "90px",
-              fontSize: "8px",
-            }}
-            variant="contained"
-            color="warning"
-            onClick={handleBookingClick}
-          >
-            Đặt lịch
-          </Button>
-        </CardActions>
       </Card>
     </Grid>
   );

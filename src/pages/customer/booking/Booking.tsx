@@ -1,18 +1,30 @@
 import React, { useState, useEffect } from "react";
-import "./Booking.css";
+import styles from "./Booking.module.css"; // Import CSS Module
 import FeaturedTitle from "../../../components/common/highlight/FeaturedTitle";
 import PetAPI from "../../../utils/PetAPI";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
-import { addDays } from "date-fns";
+import { addDays, format } from "date-fns"; // Import format
 import { Pet, PetType } from "../../../types/PetType/PetType";
 import { StaffMember } from "../../../types/User/Staff";
 import { useNavigate } from "react-router-dom";
 import BookingAPI from "../../../utils/BookingAPI";
+import {
+  FormControl,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
+  Button,
+  TextField,
+  Checkbox,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 
-// Create a date that is 1 day after the current date
-const minDate = addDays(new Date(), 1);
+// Dates start from today onwards
+const minDate = addDays(new Date(), -1);
 
 // Yup validation schemas
 const petValidationSchema = Yup.object({
@@ -29,13 +41,29 @@ const petValidationSchema = Yup.object({
 const bookingValidationSchema = Yup.object({
   date: Yup.date()
     .required("Chọn ngày không được để trống!")
-    .min(
-      minDate,
-      "Ngày đặt lịch cần cách ngày hiện tại ít nhất 24h để chúng tôi chuẩn bị dịch vụ một cách tốt nhất ạ!"
-    ),
+    .min(minDate, "Ngày đặt lịch không hợp lệ!"),
   time: Yup.string().required("Chọn giờ không được để trống!"),
-  staffId: Yup.string().required("Chọn nhân viên không được để trống!"),
+  staffSelection: Yup.string().required("Chọn hình thức chọn nhân viên!"),
+  staffId: Yup.string().when("staffSelection", {
+    is: (value: string) => value === "manual", // This checks if the selected option is "manual"
+    then: (schema) => schema.required("Chọn nhân viên không được để trống!"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
 });
+
+const generateTimeSlots = () => {
+  const slots = [];
+  let start = new Date();
+  start.setHours(9, 0, 0, 0); // Set start time to 9:00 AM
+
+  while (start.getHours() < 21) {
+    // Until 9:00 PM
+    slots.push(new Date(start));
+    start.setMinutes(start.getMinutes() + 30); // Add 30 minutes
+  }
+
+  return slots;
+};
 
 const Booking: React.FC = () => {
   const selectedPet = JSON.parse(localStorage.getItem("selectedPet") || "{}");
@@ -48,7 +76,6 @@ const Booking: React.FC = () => {
   const [petTypes, setPetTypes] = useState<PetType[]>([]);
   const [staffList, setStaffList] = useState<StaffMember[]>([]);
 
-  // Formik for form handling and validation
   const formik = useFormik({
     initialValues: {
       petName: "",
@@ -57,9 +84,10 @@ const Booking: React.FC = () => {
       petTypeId: "",
       selectedPetId: "",
       serviceCategory: selectedPet.name || "",
-      date: "",
+      date: format(new Date(), "yyyy-MM-dd"),
       time: "",
       delivery: false,
+      staffSelection: "auto", // Default to auto-selection
       staffId: "",
       quantity: 1,
       note: "",
@@ -81,7 +109,6 @@ const Booking: React.FC = () => {
   });
 
   useEffect(() => {
-    // Fetch pet types from the API
     const fetchPetTypes = async () => {
       try {
         const response = await BookingAPI.getPetTypes();
@@ -91,7 +118,6 @@ const Booking: React.FC = () => {
       }
     };
 
-    // Fetch staff list from the API
     const fetchStaffList = async () => {
       try {
         const response = await BookingAPI.getStaffList();
@@ -107,7 +133,6 @@ const Booking: React.FC = () => {
     fetchPetTypes();
   }, []);
 
-  // Fetch pet list from the API
   useEffect(() => {
     const fetchPetList = async () => {
       try {
@@ -122,7 +147,6 @@ const Booking: React.FC = () => {
 
   const handlePetSubmit = async (values: any) => {
     try {
-      // If the pet is already in the list, show the service form
       const existingPet = petList.find((pet) => pet.name === values.petName);
       if (existingPet) {
         localStorage.setItem("petId", existingPet.id);
@@ -159,9 +183,12 @@ const Booking: React.FC = () => {
         excutionDate: `${values.date}T${values.time}`,
         note: values.note,
         description: values.description,
-        type: "CUSTOMERREQUEST",
+        type:
+          values.staffSelection === "auto"
+            ? "MANAGERREQUEST"
+            : "CUSTOMERREQUEST",
         petId: petId,
-        staffId: values.staffId,
+        staffId: values.staffSelection === "auto" ? null : values.staffId,
       });
       toast.success("Đặt lịch thành công!");
       setIsBookingSuccess(true);
@@ -171,115 +198,101 @@ const Booking: React.FC = () => {
     }
   };
 
-  // Handle Pet selection change
-  const handlePetChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedPetId = event.target.value;
-    const selectedPet = petList.find((pet) => pet.id === selectedPetId);
-
-    if (selectedPet) {
-      formik.setFieldValue("petName", selectedPet.name);
-      formik.setFieldValue("petWeight", selectedPet.weight);
-      formik.setFieldValue("petAge", selectedPet.age);
-      formik.setFieldValue("petTypeId", selectedPet.typePet.id);
-    }
-
-    formik.handleChange(event);
-  };
-
   const handleNavigateHome = () => {
     navigate("/");
   };
+
+  const handleNavigateProfile = () => {
+    navigate("/profile");
+  };
+
+  const timeSlots = generateTimeSlots();
+  const isToday = formik.values.date === format(new Date(), "yyyy-MM-dd");
+  const currentTime = new Date();
 
   return (
     <>
       <FeaturedTitle title="ĐĂNG KÝ DỊCH VỤ" />
       {!showServiceForm ? (
-        <form className="booking-form" onSubmit={formik.handleSubmit}>
+        <form className={styles.bookingForm} onSubmit={formik.handleSubmit}>
           <h2>THÔNG TIN CỦA BOSS</h2>
 
-          <label htmlFor="selectedPetId">Chọn Boss đã đăng ký:</label>
-          <select
-            name="selectedPetId"
-            value={formik.values.selectedPetId}
-            onChange={handlePetChange}
-            onBlur={formik.handleBlur}
-          >
-            <option value="">Chọn Boss</option>
-            {petList.map((pet) => (
-              <option key={pet.id} value={pet.id}>
-                {pet.name} - {pet.typePet.name}
-              </option>
-            ))}
-          </select>
-          {formik.touched.selectedPetId && formik.errors.selectedPetId && (
-            <div className="error">{formik.errors.selectedPetId}</div>
-          )}
-
-          <label htmlFor="petName">Họ và tên Boss:</label>
-          <input
-            type="text"
+          <TextField
+            fullWidth
+            label="Họ và tên Boss"
             name="petName"
             value={formik.values.petName}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            required
+            error={formik.touched.petName && Boolean(formik.errors.petName)}
+            helperText={formik.touched.petName && formik.errors.petName}
+            margin="normal"
           />
-          {formik.touched.petName && formik.errors.petName && (
-            <div className="error">{formik.errors.petName}</div>
-          )}
 
-          <label htmlFor="petTypeId">Boss là:</label>
-          <div>
-            {petTypes.map((petType) => (
-              <label key={petType.id}>
-                <input
-                  type="radio"
-                  name="petTypeId"
+          <FormControl component="fieldset" margin="normal">
+            <label>Boss là:</label>
+            <RadioGroup
+              name="petTypeId"
+              value={formik.values.petTypeId}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              row
+            >
+              {petTypes.map((petType) => (
+                <FormControlLabel
+                  key={petType.id}
                   value={petType.id}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  required
+                  control={<Radio />}
+                  label={petType.name}
                 />
-                {petType.name}
-              </label>
-            ))}
-          </div>
-          {formik.touched.petTypeId && formik.errors.petTypeId && (
-            <div className="error">{formik.errors.petTypeId}</div>
-          )}
+              ))}
+            </RadioGroup>
+            {formik.touched.petTypeId && formik.errors.petTypeId && (
+              <div className={styles.error}>{formik.errors.petTypeId}</div>
+            )}
+          </FormControl>
 
-          <label>Số kg của boss:</label>
-          <input
-            type="number"
+          <TextField
+            fullWidth
+            label="Số kg của boss"
             name="petWeight"
+            type="number"
             value={formik.values.petWeight}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            required
+            error={formik.touched.petWeight && Boolean(formik.errors.petWeight)}
+            helperText={formik.touched.petWeight && formik.errors.petWeight}
+            margin="normal"
           />
-          {formik.touched.petWeight && formik.errors.petWeight && (
-            <div className="error">{formik.errors.petWeight}</div>
-          )}
 
-          <label>Tuổi của boss:</label>
-          <input
-            type="number"
+          <TextField
+            fullWidth
+            label="Tuổi của boss"
             name="petAge"
+            type="number"
             value={formik.values.petAge}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            required
+            error={formik.touched.petAge && Boolean(formik.errors.petAge)}
+            helperText={formik.touched.petAge && formik.errors.petAge}
+            margin="normal"
           />
-          {formik.touched.petAge && formik.errors.petAge && (
-            <div className="error">{formik.errors.petAge}</div>
-          )}
 
-          <button type="submit" className="booking-submit-button">
+          <Button
+            variant="contained"
+            type="submit"
+            fullWidth
+            style={{
+              marginTop: "30px",
+              backgroundColor: "#FF914D",
+              color: "white",
+            }}
+          >
             Tiếp theo
-          </button>
+          </Button>
         </form>
       ) : (
-        <form className="booking-form" onSubmit={formik.handleSubmit}>
+        <form className={styles.bookingForm} onSubmit={formik.handleSubmit}>
           <h3>DỊCH VỤ ĐÃ CHỌN</h3>
 
           <h4>BOSS {formik.values.petName} đã đặt gói dịch vụ sau</h4>
@@ -287,112 +300,142 @@ const Booking: React.FC = () => {
           <label htmlFor="serviceCategory">Tên dịch vụ:</label>
           <p>{selectedPet.name}</p>
 
-          <label htmlFor="price">
-            Giá dịch vụ (cọc trước):{" "}
-            <span className="price-additional">
-              *Số tiền còn lại sẽ thanh toán khi Boss được chăm sóc xong nhé!
-            </span>
-          </label>
           <p>{(selectedPet.sellingPrice * 20) / 100} VNĐ</p>
 
-          <label htmlFor="date">Chọn ngày:</label>
-          <input
-            type="date"
+          <TextField
+            fullWidth
+            label="Chọn ngày"
             name="date"
+            type="date"
             value={formik.values.date}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            required
+            error={formik.touched.date && Boolean(formik.errors.date)}
+            helperText={formik.touched.date && formik.errors.date}
+            margin="normal"
+            InputLabelProps={{ shrink: true }}
           />
-          {formik.touched.date && formik.errors.date && (
-            <div className="error">{formik.errors.date}</div>
+
+          <div className={styles.timeSlotContainer}>
+            <label>Chọn khung giờ dịch vụ</label>
+            <div className={styles.timeSlots}>
+              {timeSlots.map((slot) => {
+                const slotTime = format(slot, "HH:mm");
+                const isDisabled =
+                  isToday && slot.getTime() < currentTime.getTime();
+                return (
+                  <Button
+                    key={slotTime}
+                    variant={
+                      formik.values.time === slotTime ? "contained" : "outlined"
+                    }
+                    color="primary"
+                    onClick={() => formik.setFieldValue("time", slotTime)}
+                    disabled={isDisabled}
+                    style={{ margin: "5px" }}
+                  >
+                    {slotTime}
+                  </Button>
+                );
+              })}
+            </div>
+            {/* Move the error message here, below the time slots */}
+            {formik.touched.time && formik.errors.time && (
+              <div className={styles.error}>{formik.errors.time}</div>
+            )}
+          </div>
+
+          <FormControl fullWidth margin="normal" variant="outlined">
+            <InputLabel shrink>Hình thức chọn nhân viên</InputLabel>
+            <Select
+              name="staffSelection"
+              value={formik.values.staffSelection}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              label="Hình thức chọn nhân viên"
+              style={{ padding: "10px 14px", fontSize: "16px" }}
+              inputProps={{ style: { padding: "10px 14px", fontSize: "16px" } }}
+            >
+              <MenuItem value="auto">Tiệm đề xuất thợ</MenuItem>
+              <MenuItem value="manual">Khách chọn thợ</MenuItem>
+            </Select>
+            {formik.touched.staffSelection && formik.errors.staffSelection && (
+              <div className={styles.error}>{formik.errors.staffSelection}</div>
+            )}
+          </FormControl>
+
+          {formik.values.staffSelection === "manual" && (
+            <FormControl fullWidth margin="normal" variant="outlined">
+              <InputLabel shrink>Chọn nhân viên</InputLabel>
+              <Select
+                name="staffId"
+                value={formik.values.staffId}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                label="Chọn nhân viên"
+                style={{ padding: "10px 14px", fontSize: "16px" }}
+                inputProps={{
+                  style: { padding: "10px 14px", fontSize: "16px" },
+                }}
+              >
+                <MenuItem value="">Chọn nhân viên</MenuItem>
+                {staffList.map((staff) => (
+                  <MenuItem key={staff.id} value={staff.id}>
+                    {staff.fullName}
+                  </MenuItem>
+                ))}
+              </Select>
+              {formik.touched.staffId && formik.errors.staffId && (
+                <div className={styles.error}>{formik.errors.staffId}</div>
+              )}
+            </FormControl>
           )}
 
-          <label htmlFor="time">Chọn giờ:</label>
-          <input
-            type="time"
-            name="time"
-            value={formik.values.time}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            required
-          />
-          {formik.touched.time && formik.errors.time && (
-            <div className="error">{formik.errors.time}</div>
-          )}
-
-          <label htmlFor="staffId">Chọn nhân viên:</label>
-          <select
-            name="staffId"
-            value={formik.values.staffId}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            required
-          >
-            <option value="">Chọn nhân viên</option>
-            {staffList.map((staff) => (
-              <option key={staff.id} value={staff.id}>
-                {staff.fullName}
-              </option>
-            ))}
-          </select>
-          {formik.touched.staffId && formik.errors.staffId && (
-            <div className="error">{formik.errors.staffId}</div>
-          )}
-
-          <label htmlFor="note">Ghi chú:</label>
-          <textarea
+          <TextField
+            fullWidth
+            label="Ghi chú"
             name="note"
+            multiline
+            rows={4}
             value={formik.values.note}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            required
+            margin="normal"
           />
-          {formik.touched.note && formik.errors.note && (
-            <div className="error">{formik.errors.note}</div>
-          )}
 
-          <label htmlFor="description">Mô tả:</label>
-          <textarea
-            name="description"
-            value={formik.values.description}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            required
-          />
-          {formik.touched.description && formik.errors.description && (
-            <div className="error">{formik.errors.description}</div>
-          )}
-
-          <div className="delivery-option">
-            <input
-              type="checkbox"
-              name="delivery"
-              checked={formik.values.delivery}
-              onChange={formik.handleChange}
-            />
-            <span className="delivery-option-additional">
-              Trạm qua tận nhà đưa đón bé (Freeship dưới 3km, trên 3km tính phí
-              ship theo giá Grab hiện tại)
-            </span>
-          </div>
-
-          <button type="submit" className="booking-submit-button">
+          <Button
+            variant="contained"
+            type="submit"
+            fullWidth
+            style={{
+              marginTop: "30px",
+              backgroundColor: "#FF914D",
+              color: "white",
+            }}
+          >
             Đặt lịch ngay
-          </button>
+          </Button>
 
           {isBookingSuccess && (
-            <div className="action-buttons">
-              <button
-                type="button"
-                className="navigate-button"
+            <div className={styles.actionButtons}>
+              <Button
+                variant="contained"
                 onClick={handleNavigateHome}
+                style={{ backgroundColor: "#FF914D", color: "white" }}
               >
                 Trở về trang chủ
-              </button>
-              <button type="button" className="navigate-button">
-                Xem dịch vụ của tôi
-              </button>
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleNavigateProfile}
+                style={{
+                  backgroundColor: "#FF914D",
+                  color: "white",
+                  marginLeft: "10px",
+                }}
+              >
+                Xem đơn hàng của tôi
+              </Button>
             </div>
           )}
         </form>
