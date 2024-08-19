@@ -102,7 +102,7 @@ export default function Login() {
                 );
                 currentUser.setUser({
                   accessToken: response.tokenModel.accessToken,
-                  avatarUrl: response.image,
+                  image: response.image,
                   email: "",
                   id: response.id,
                   name: response.fullName,
