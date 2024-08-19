@@ -126,7 +126,7 @@ export default function TotalStaff() {
               <StyledTableCell align="center">Tên nhân viên</StyledTableCell>
               <StyledTableCell align="center">Số điện thoại</StyledTableCell>
               <StyledTableCell align="center">Email</StyledTableCell>
-              <StyledTableCell align="center">Gioi tinh</StyledTableCell>
+              <StyledTableCell align="center">Giới tính</StyledTableCell>
               <StyledTableCell align="center">Trạng thái</StyledTableCell>
               <StyledTableCell align="center">Thao tác</StyledTableCell>
             </TableRow>

@@ -1,4 +1,4 @@
-import AdminOrderDetail from "../pages/admin/AdminOrderDetail";
+import AdminOrderDetail from "../pages/admin/AdminDetail/AdminOrderDetail";
 import Dashboard from "../pages/admin/Dashboard";
 import ManageOderList from "../pages/admin/ManageMenu/ManageOderList";
 import TotalCustomer from "../pages/admin/ManageMenu/ToltalCustomer";

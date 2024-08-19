@@ -175,7 +175,7 @@ const TotalManager = () => {
                   )}
                 </StyledTableCell>
                 <StyledTableCell align="center" size="small">
-                  <MenuActionManageManager  /> 
+                  {/* <MenuActionManageManager />   */}
                 </StyledTableCell>
               </StyledTableRow>
             ))}

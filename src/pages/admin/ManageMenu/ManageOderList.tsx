@@ -7,11 +7,11 @@ import {
   Stack,
   TablePagination,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
-import MuiTab, { TabProps } from '@mui/material/Tab';
+import MuiTab, { TabProps } from "@mui/material/Tab";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -26,7 +26,7 @@ import { TabContext, TabList } from "@mui/lab";
 import OrderAPI from "../../../utils/OrderAPI";
 import moment from "moment";
 import MenuActionOrder from "../../../components/manager/MenuAction/MenuActionOrder";
-import AdminOrderDetail from "../AdminOrderDetail";
+import AdminOrderDetail from "../AdminDetail/AdminOrderDetail";
 import AdminMenuActionOrder from "../../../components/manager/MenuAction/AdminMenuActionOder";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -52,45 +52,70 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 const Tab = styled(MuiTab)<TabProps>(({ theme }) => ({
-  [theme.breakpoints.down('md')]: {
-    minWidth: 100
+  [theme.breakpoints.down("md")]: {
+    minWidth: 100,
   },
-  [theme.breakpoints.down('sm')]: {
-    minWidth: 67
-  }
-}))
+  [theme.breakpoints.down("sm")]: {
+    minWidth: 67,
+  },
+}));
 
-const TabName = styled('span')(({ theme }) => ({
+const TabName = styled("span")(({ theme }) => ({
   lineHeight: 1.71,
-  fontSize: '0.875rem',
+  fontSize: "0.875rem",
   marginLeft: theme.spacing(2.4),
-}))
+}));
 
 export const renderStatusOrder = (status: string) => {
   switch (status) {
     case "UNPAID":
-      return <Chip sx={{minWidth:120}} label={"Chưa Thanh Toán"} color="warning" size="small"/>
+      return (
+        <Chip
+          sx={{ minWidth: 120 }}
+          label={"Chưa Thanh Toán"}
+          color="warning"
+          size="small"
+        />
+      );
     case "PAID":
-      return <Chip sx={{minWidth:120}}  label={"Đã Thanh Toán"} color="info" size="small"/>
+      return (
+        <Chip
+          sx={{ minWidth: 120 }}
+          label={"Đã Thanh Toán"}
+          color="info"
+          size="small"
+        />
+      );
     case "COMPLETED":
-      return <Chip sx={{minWidth:120}}  label={"Hoàn Thành"} color="success" size="small"/>
+      return (
+        <Chip
+          sx={{ minWidth: 120 }}
+          label={"Hoàn Thành"}
+          color="success"
+          size="small"
+        />
+      );
     case "CANCELLED":
-      return <Chip sx={{minWidth:120}}  label={"Đã Hủy"} color="error" size="small"/>
-
+      return (
+        <Chip
+          sx={{ minWidth: 120 }}
+          label={"Đã Hủy"}
+          color="error"
+          size="small"
+        />
+      );
   }
-}
-
+};
 
 const ManageOrderList = () => {
- 
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const [listOrder, setListOrder] = React.useState<OrderType[] | []>(
-    []
-  );
+  const [listOrder, setListOrder] = React.useState<OrderType[] | []>([]);
   const [showModalUpdate, setShowModalUpdate] = React.useState(false);
   const [showModalDelete, setShowModalDelete] = React.useState(false);
-  const [selectedOrder, setSelectedOrder] = React.useState<OrderType | null>(null)
+  const [selectedOrder, setSelectedOrder] = React.useState<OrderType | null>(
+    null
+  );
 
   const [pagination, setPagination] = React.useState<PaginationType>({
     page: 1,
@@ -104,14 +129,13 @@ const ManageOrderList = () => {
   const [filter, setFilter] = React.useState<FilterOrderType>({
     page: 1,
     size: 10,
-
   });
   const debouncedInputValueName = useDebounce(searchName, 500); // Debounce with 500ms delay
   const debouncedInputValuePhone = useDebounce(searchPhone, 500);
-  const [value, setValue] = React.useState<string>('ALL')
+  const [value, setValue] = React.useState<string>("ALL");
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue)
-  }
+    setValue(newValue);
+  };
   const handleChangePage = (event: unknown, newPage: number) => {
     setFilter((prev) => ({ ...prev, page: newPage }));
   };
@@ -158,201 +182,196 @@ const ManageOrderList = () => {
   }, [debouncedInputValueName]);
 
   React.useEffect(() => {
-
-    setFilter((prev: any) => ({ ...prev, PhoneNumber: debouncedInputValuePhone }));
+    setFilter((prev: any) => ({
+      ...prev,
+      PhoneNumber: debouncedInputValuePhone,
+    }));
   }, [debouncedInputValuePhone]);
-
-
 
   return (
     <Paper sx={{ p: 3 }}>
-    <TabContext value={value}>
-       <TabList
-         onChange={handleChange}
-         aria-label='account-settings tabs'
-         sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}
-       >
-         <Tab
-           value='ALL'
-           label={
-             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-               <TabName>Tất Cả Đơn Hàng</TabName>
-             </Box>
-           }
-         />       
-         <Tab
-           value='SELECT'
-           label={
-             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-               <TabName>Nhân Viên Được Chọn</TabName>
-             </Box>
-           }
-         />
-         <Tab
-           value='RANDOM'
-           label={
-             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-               <TabName>Nhân Viên Ngẫu Nhiên</TabName>
-             </Box>
-           }
-         />
-       </TabList>
-       </TabContext>
-     <Stack
-       direction={"row"}
-       alignItems={"center"}
-       spacing={3}
-       sx={{ mb: 3, mt: 2 }}
-     >
-       <TextField
-         size="small"
-         placeholder="Nhập tên khách hàng..."
-         label="Tìm kiếm"
-         value={searchName}
-         onChange={(e) => handleSearchName(e.target.value)}
-         sx={{ width: "300px" }}
-         InputProps={{
-           startAdornment: (
-             <InputAdornment position="start">
-               <SearchOutlinedIcon />
-             </InputAdornment>
-           ),
-         }}
-       />
-       <TextField
-         size="small"
-         placeholder="Nhập số điện thoại..."
-         label="Tìm kiếm"
-         value={searchPhone}
-         onChange={(e) => handleSearchPhone(e.target.value)}
-         sx={{ width: "300px" }}
-         InputProps={{
-           startAdornment: (
-             <InputAdornment position="start">
-               <SearchOutlinedIcon />
-             </InputAdornment>
-           ),
-         }}
-       />
-      <Box></Box>
-     </Stack>
+      <TabContext value={value}>
+        <TabList
+          onChange={handleChange}
+          aria-label="account-settings tabs"
+          sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
+        >
+          <Tab
+            value="ALL"
+            label={
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <TabName>Tất Cả Đơn Hàng</TabName>
+              </Box>
+            }
+          />
+          <Tab
+            value="SELECT"
+            label={
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <TabName>Nhân Viên Được Chọn</TabName>
+              </Box>
+            }
+          />
+          <Tab
+            value="RANDOM"
+            label={
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <TabName>Nhân Viên Ngẫu Nhiên</TabName>
+              </Box>
+            }
+          />
+        </TabList>
+      </TabContext>
+      <Stack
+        direction={"row"}
+        alignItems={"center"}
+        spacing={3}
+        sx={{ mb: 3, mt: 2 }}
+      >
+        <TextField
+          size="small"
+          placeholder="Nhập tên khách hàng..."
+          label="Tìm kiếm"
+          value={searchName}
+          onChange={(e) => handleSearchName(e.target.value)}
+          sx={{ width: "300px" }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchOutlinedIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <TextField
+          size="small"
+          placeholder="Nhập số điện thoại..."
+          label="Tìm kiếm"
+          value={searchPhone}
+          onChange={(e) => handleSearchPhone(e.target.value)}
+          sx={{ width: "300px" }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchOutlinedIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Box></Box>
+      </Stack>
 
-
-   <TableContainer component={Paper} sx={{ minHeight: 600 }}>
-     <Table sx={{ minWidth: 700 }} aria-label="customized table">
-       <TableHead>
-         <TableRow>
-           <StyledTableCell align="center">STT</StyledTableCell>
-           <StyledTableCell align="center">Tên Khách Hàng</StyledTableCell>
-           <StyledTableCell align="center">Ngày Tạo</StyledTableCell>  
-           <StyledTableCell align="center">Ngày Hoàn Thành</StyledTableCell>  
-           <StyledTableCell align="center">Giá Tiền</StyledTableCell> 
-           <StyledTableCell align="center">Loại</StyledTableCell> 
-           <StyledTableCell align="center">Trạng thái</StyledTableCell>   
-           <StyledTableCell align="center">Thao Tác</StyledTableCell>
-         </TableRow>
-       </TableHead>
-       <TableBody>
-         {listOrder.length === 0 && isLoading === false && (
-           <StyledTableRow>
-             <StyledTableCell colSpan={7} align="left">
-
-               <Typography align="center">Không có dữ liệu!</Typography>
-             </StyledTableCell>
-           </StyledTableRow>
-         )}
-         {isLoading &&
-           Array.from({ length: 10 }).map((data, index) => (
-             <StyledTableRow hover={true} key={index}>
-               <StyledTableCell align="left">
-                 <Skeleton variant="rectangular" />
-               </StyledTableCell>
-               <StyledTableCell align="left">
-                 <Skeleton variant="rectangular" />
-               </StyledTableCell>
-               <StyledTableCell align="left">
-                 <Skeleton variant="rectangular" />
-               </StyledTableCell>
-               <StyledTableCell align="left">
-                 <Skeleton variant="rectangular" />
-               </StyledTableCell>
-               <StyledTableCell align="left">
-                 <Skeleton variant="rectangular" />
-               </StyledTableCell>
-               <StyledTableCell align="left">
-                 <Skeleton variant="rectangular" />
-               </StyledTableCell>
-               <StyledTableCell align="left">
-                 <Skeleton variant="rectangular" />
-               </StyledTableCell>
-
-             </StyledTableRow>
-           ))}
-         {listOrder.length > 0 &&
-           isLoading === false &&
-           listOrder.map((row, index) => (
-
-             <StyledTableRow key={index}>
-               <StyledTableCell align="center" size="small">
-                 {(pagination.page - 1) * pagination.size + index + 1}
-               </StyledTableCell>
-               <StyledTableCell align="center" size="small">
-
-                 {row.userInfo.fullName}
-
-               </StyledTableCell>
-               <StyledTableCell
-                 align="center"
-                 size="small"
-                 sx={{
-                   overflow: "hidden",
-                   textOverflow: "ellipsis",
-                   whiteSpace: "nowrap",
-                   maxWidth: "250px",
-                 }}
-               >
-
-                 {moment(row.createdDate).format("DD/MM/YYYY")}
-               </StyledTableCell>
-               <StyledTableCell align="center" size="small">
-               {row.completedDate ? moment(row.completedDate).format("DD/MM/YYYY") : "-"}
-               </StyledTableCell>
-               <StyledTableCell align="center" size="small">
-                 {row.finalAmount.toLocaleString()} VNĐ
-               </StyledTableCell>  
-               <StyledTableCell align="center" size="small">
-                 {row.petInfor.typePet.name}
-               </StyledTableCell>    
-               <StyledTableCell align="center" size="small">
-                 {renderStatusOrder(row.status)}
-               </StyledTableCell> 
-               <StyledTableCell align="center" size="small"> 
-                 <AdminMenuActionOrder
-                  data={row}
-                  setOpenDelete={setShowModalDelete}
-                  setOpenUpdate={setShowModalUpdate}
-                  setSelectedOrder={setSelectedOrder}
-               /></StyledTableCell>               
-
-             </StyledTableRow>
-           ))}
-       </TableBody>
-     </Table>
-   </TableContainer>
-   <TablePagination
-     rowsPerPageOptions={[5, 10, 25]}
-     component="div"
-     count={pagination.total}
-     rowsPerPage={pagination.size}
-     page={pagination.page - 1}
-     onPageChange={handleChangePage}
-     onRowsPerPageChange={handleChangeRowsPerPage}
-     labelRowsPerPage="Hàng trên trang"
-     labelDisplayedRows={({ from, to, count }) => {
-       return `${from}–${to} / ${count !== -1 ? count : `nhiều hơn ${to}`}`;
-     }}
-   />
- </Paper>
+      <TableContainer component={Paper} sx={{ minHeight: 600 }}>
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell align="center">STT</StyledTableCell>
+              <StyledTableCell align="center">Tên Khách Hàng</StyledTableCell>
+              <StyledTableCell align="center">Ngày Tạo</StyledTableCell>
+              <StyledTableCell align="center">Ngày Hoàn Thành</StyledTableCell>
+              <StyledTableCell align="center">Giá Tiền</StyledTableCell>
+              <StyledTableCell align="center">Loại</StyledTableCell>
+              <StyledTableCell align="center">Trạng thái</StyledTableCell>
+              <StyledTableCell align="center">Thao Tác</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {listOrder.length === 0 && isLoading === false && (
+              <StyledTableRow>
+                <StyledTableCell colSpan={7} align="left">
+                  <Typography align="center">Không có dữ liệu!</Typography>
+                </StyledTableCell>
+              </StyledTableRow>
+            )}
+            {isLoading &&
+              Array.from({ length: 10 }).map((data, index) => (
+                <StyledTableRow hover={true} key={index}>
+                  <StyledTableCell align="left">
+                    <Skeleton variant="rectangular" />
+                  </StyledTableCell>
+                  <StyledTableCell align="left">
+                    <Skeleton variant="rectangular" />
+                  </StyledTableCell>
+                  <StyledTableCell align="left">
+                    <Skeleton variant="rectangular" />
+                  </StyledTableCell>
+                  <StyledTableCell align="left">
+                    <Skeleton variant="rectangular" />
+                  </StyledTableCell>
+                  <StyledTableCell align="left">
+                    <Skeleton variant="rectangular" />
+                  </StyledTableCell>
+                  <StyledTableCell align="left">
+                    <Skeleton variant="rectangular" />
+                  </StyledTableCell>
+                  <StyledTableCell align="left">
+                    <Skeleton variant="rectangular" />
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))}
+            {listOrder.length > 0 &&
+              isLoading === false &&
+              listOrder.map((row, index) => (
+                <StyledTableRow key={index}>
+                  <StyledTableCell align="center" size="small">
+                    {(pagination.page - 1) * pagination.size + index + 1}
+                  </StyledTableCell>
+                  <StyledTableCell align="center" size="small">
+                    {row.userInfo.fullName}
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align="center"
+                    size="small"
+                    sx={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      maxWidth: "250px",
+                    }}
+                  >
+                    {moment(row.createdDate).format("DD/MM/YYYY")}
+                  </StyledTableCell>
+                  <StyledTableCell align="center" size="small">
+                    {row.completedDate
+                      ? moment(row.completedDate).format("DD/MM/YYYY")
+                      : "-"}
+                  </StyledTableCell>
+                  <StyledTableCell align="center" size="small">
+                    {row.finalAmount.toLocaleString()} VNĐ
+                  </StyledTableCell>
+                  <StyledTableCell align="center" size="small">
+                    {row.petInfor.typePet.name}
+                  </StyledTableCell>
+                  <StyledTableCell align="center" size="small">
+                    {renderStatusOrder(row.status)}
+                  </StyledTableCell>
+                  <StyledTableCell align="center" size="small">
+                    <AdminMenuActionOrder
+                      data={row}
+                      setOpenDelete={setShowModalDelete}
+                      setOpenUpdate={setShowModalUpdate}
+                      setSelectedOrder={setSelectedOrder}
+                    />
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={pagination.total}
+        rowsPerPage={pagination.size}
+        page={pagination.page - 1}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        labelRowsPerPage="Hàng trên trang"
+        labelDisplayedRows={({ from, to, count }) => {
+          return `${from}–${to} / ${count !== -1 ? count : `nhiều hơn ${to}`}`;
+        }}
+      />
+    </Paper>
   );
 };
 
