@@ -1,3 +1,4 @@
+import AdminOrderDetail from "../pages/admin/AdminOrderDetail";
 import Dashboard from "../pages/admin/Dashboard";
 import ManageOderList from "../pages/admin/ManageMenu/ManageOderList";
 import TotalCustomer from "../pages/admin/ManageMenu/ToltalCustomer";
@@ -84,6 +85,10 @@ export const adminRoutes = [
   {
     path: "/admin-manage-oderList",
     element: <ManageOderList />,
+  },
+  {
+    path: "/admin-manage-oderDetail/:id",
+    element: <AdminOrderDetail />,
   },
 ];
 
