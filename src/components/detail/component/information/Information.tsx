@@ -36,7 +36,7 @@ const Information: React.FC<InformationProps> = ({ product }) => {
 
       {activeTab === "detail" && detail && (
         <div className="tab-content">
-          <div dangerouslySetInnerHTML={{ __html: detail.html }} />
+          {/* <div dangerouslySetInnerHTML={{ __html: detail.html }} /> */}
         </div>
       )}
 

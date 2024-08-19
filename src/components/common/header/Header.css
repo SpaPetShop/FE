@@ -72,6 +72,11 @@ nav a:hover {
   font-weight: normal;
 }
 
+.link {
+  text-decoration: none;
+  color: #000000DE;
+}
+
 .dropdown-menu li a:hover {
   background-color: red;
 }

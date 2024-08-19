@@ -60,7 +60,6 @@ const AppRoutes = () => {
         <Route path={"/:id"} element={<DetailPage />} />;
         <Route path="/spa-services" element={<SpaCompoPage />} />;
         <Route path="/spa-services/:id" element={<DetailSpaCompoPage />} />;
-        <Route path="/booking" element={<Booking />} />;
         <Route
           key={"customer_private"}
           element={<AuthRoute allowedRoles={[ROLES.CUSTOMER]} />}

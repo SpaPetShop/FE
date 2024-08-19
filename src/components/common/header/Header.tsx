@@ -90,11 +90,17 @@ const Header: React.FC = () => {
             onMouseEnter={(e) => setServiceMenuAnchor(e.currentTarget)}
             onMouseLeave={() => setServiceMenuAnchor(null)}
           >
-            <Link to={"/"} className="dropdown-link">Dịch vụ</Link>
+            <Link to={"/"} className="dropdown-link">
+              Dịch vụ
+            </Link>
             {openServiceMenu && (
               <ul className="dropdown-menu">
-                <li><Link to={"/spa-services"}>Dịch vụ spa</Link></li>
-                <li><Link to={"/"}>Dịch vụ đơn lẻ</Link></li>
+                <li>
+                  <Link to={"/spa-services"}>Dịch vụ spa</Link>
+                </li>
+                <li>
+                  <Link to={"/"}>Dịch vụ đơn lẻ</Link>
+                </li>
               </ul>
             )}
           </li>
@@ -113,7 +119,10 @@ const Header: React.FC = () => {
                     aria-haspopup="true"
                     aria-expanded={openMenu ? "true" : undefined}
                   >
-                    <Avatar sx={{ width: 32, height: 32 }} src={"/logo.png"}></Avatar>
+                    <Avatar
+                      sx={{ width: 32, height: 32 }}
+                      src={"/logo.png"}
+                    ></Avatar>
                   </IconButton>
                 </Tooltip>
               </Box>
@@ -152,7 +161,12 @@ const Header: React.FC = () => {
                 transformOrigin={{ horizontal: "right", vertical: "top" }}
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
               >
-                <Stack direction={"row"} alignItems={"cenetr"} spacing={1} sx={{ p: 1 }}>
+                <Stack
+                  direction={"row"}
+                  alignItems={"cenetr"}
+                  spacing={1}
+                  sx={{ p: 1 }}
+                >
                   <img
                     src={"/logo.png"}
                     alt="Avatar"
@@ -176,10 +190,12 @@ const Header: React.FC = () => {
                 </Stack>
                 <Divider />
                 <MenuItem onClick={handleClose}>
-                  <ListItemIcon>
-                    <PersonAdd fontSize="small" />
-                  </ListItemIcon>
-                  Thông tin cá nhân
+                  <Link to={"/profile"} className="link">
+                    <ListItemIcon>
+                      <PersonAdd fontSize="small" />
+                    </ListItemIcon>
+                    Thông tin cá nhân
+                  </Link>
                 </MenuItem>
                 <MenuItem
                   onClick={() => {

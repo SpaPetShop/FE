@@ -10,7 +10,8 @@ import DetailPage from "../pages/common/Detail/DetailPage";
 import Page401 from "../pages/common/ErrorPage/Page401";
 import Page403 from "../pages/common/ErrorPage/Page403";
 import Home from "../pages/common/Home/Home";
-import Profile from "../pages/customer/Profile";
+import Booking from "../pages/customer/booking/Booking";
+import Profile from "../pages/customer/profile/Profile";
 import CreateCombo from "../pages/manager/CreateCombo";
 import DetailCombo from "../pages/manager/DetailCombo";
 import DetailCustomer from "../pages/manager/DetailCustomer";
@@ -143,12 +144,11 @@ export const customerRoutes = [
     path: "/profile",
     element: <Profile />,
   },
-
-  // {
-  //   path: "/booking",
-  //   element: <Booking />,
-  //   isWrapLayout: false,
-  // },
+  {
+    path: "/booking",
+    element: <Booking />,
+    isWrapLayout: false,
+  },
 ];
 
 export const staffRoutes = [

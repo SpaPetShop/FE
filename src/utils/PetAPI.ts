@@ -1,4 +1,6 @@
+import { PetResponse } from "../types/PetType/PetType";
 import axiosClient from "./axiosClient";
+
 const petAPI = {
   getDataBookingOfCustomer: (params: any) => {
     const url = "/";
@@ -8,6 +10,10 @@ const petAPI = {
         indexes: null, // by default: false
       },
     });
+  },
+  getPetsByCustomerId: (customerId: string) => {
+    const url = `/pet?CustomerId=${customerId}`;
+    return axiosClient.get<any, PetResponse>(url);
   },
   createNewPet: (payload: any) => {
     const url = "/";

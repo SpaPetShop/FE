@@ -1,3 +1,4 @@
+/* Booking Form Styles */
 .booking-form {
     width: 100%;
     max-width: 600px;
@@ -11,12 +12,9 @@
 }
 
 .booking-form h2,
-.booking-form h3,
-.booking-form h4 {
+.booking-form h3 {
     text-align: center;
     margin-bottom: 20px;
-    color: #e89305; /* Primary color */
-    font-family: 'iciel-soup-of-justice', sans-serif;
 }
 
 .booking-form label {
@@ -27,60 +25,31 @@
 }
 
 .booking-form input[type="text"],
-.booking-form input[type="email"],
+.booking-form input[type="number"],
 .booking-form input[type="date"],
 .booking-form input[type="time"],
-.booking-form input[type="number"],
-.booking-form select {
+.booking-form select,
+.booking-form textarea {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box;
-    font-size: 14px;
+    font-family: inherit;
+    font-size: inherit;
+    color: #333;
 }
 
-.booking-form input[type="radio"],
-.booking-form input[type="checkbox"] {
+.booking-form input[type="radio"] {
     margin-right: 8px;
 }
 
-.booking-form div {
-    margin-bottom: 15px;
-}
-
-.service-price {
-    font-size: 18px;
-    font-weight: 600;
-    text-align: center;
-    margin-bottom: 15px;
-}
-
-.service-price span {
-    font-size: 20px;
-    font-weight: 700;
-    color: #f00;
-}
-
-.delivery-option {
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-}
-
-.delivery-option-addtional {
-    display: block;
-    color: #333;
+.booking-form .error {
+    color: red;
     font-size: 12px;
-    margin-left: 10px;
-}
-
-.price-addtional {
-    color: #333;
-    font-size: 12px;
-    font-style: italic;
-    font-weight: normal;
+    margin-top: -10px;
+    margin-bottom: 15px;
 }
 
 .booking-submit-button {
@@ -92,49 +61,47 @@
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s ease;
 }
 
 .booking-submit-button:hover {
     background-color: #d17b05;
 }
 
-.booking-form p {
-    font-size: 16px;
-    color: #555;
-    margin-bottom: 15px;
+.delivery-option {
+    margin-bottom: 20px;
 }
 
-.booking-form .service-price {
-    color: #555;
-    font-weight: 700;
-    margin-bottom: 15px;
+.delivery-option-additional {
+    font-size: 12px;
+    color: #333;
 }
 
-.booking-form .service-price span {
+.price-additional {
     color: #e89305;
+    font-size: 12px;
 }
 
-h4 {
-    color: #272727;
-    font-weight: 700;
-    font-size: 18px;
-    text-align: center;
-    margin-bottom: 1.5rem;
+textarea {
+    height: 80px;
 }
 
-.error {
-    color: red;
-    font-size: 12px; /* Smaller text */
-    margin-top: 4px;
-  }
-  
-  .full-width-input {
-    width: 100%; /* Full width */
-    padding: 10px; /* Add padding for better appearance */
-    margin-bottom: 15px; /* Space below the input */
-    border: 1px solid #ddd; /* Border styling */
-    border-radius: 4px; /* Slightly rounded corners */
-    box-sizing: border-box; /* Ensures padding doesn't affect the width */
-  }
-  
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.navigate-button {
+    width: 48%;
+    padding: 12px;
+    background-color: #e89305;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.navigate-button:hover {
+    background-color: #d17b05;
+}

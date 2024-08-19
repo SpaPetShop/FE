@@ -66,3 +66,7 @@
 .sidebar-menu ul li:hover {
     color: #ff8c00;
 }
+
+.link {
+    text-decoration: none;
+}

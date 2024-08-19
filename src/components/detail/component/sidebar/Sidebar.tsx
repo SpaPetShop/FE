@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import './Sidebar.css';
-import serviceData from '../../../../assets/data/detail/service.json';
+import React, { useState } from "react";
+import "./Sidebar.css";
+import serviceData from "../../../../assets/data/detail/service.json";
+import { Link } from "react-router-dom";
 
 const Sidebar: React.FC = () => {
-  const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({});
+  const [expandedSections, setExpandedSections] = useState<{
+    [key: string]: boolean;
+  }>({});
 
   const toggleSection = (category: string) => {
     setExpandedSections((prevState) => ({
@@ -16,7 +19,12 @@ const Sidebar: React.FC = () => {
     <aside className="sidebar">
       <h3>DANH MỤC DỊCH VỤ</h3>
       <ul className="sidebar-menu">
-        {serviceData.services.map((service, index) => (
+        <Link to="/spa-services" className="link">
+          <div className="category-header">
+            <span>Dịch vụ spa</span>
+          </div>
+        </Link>
+        {/* {serviceData.services.map((service, index) => (
           <li key={index}>
             <div className="category-header" onClick={() => toggleSection(service.category)}>
               <span>{service.category}</span>
@@ -30,7 +38,7 @@ const Sidebar: React.FC = () => {
               </ul>
             )}
           </li>
-        ))}
+        ))} */}
       </ul>
     </aside>
   );
