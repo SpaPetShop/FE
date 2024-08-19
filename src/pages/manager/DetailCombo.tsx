@@ -1,4 +1,3 @@
-
 import { Box, Button, Chip, Grid, Stack } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -10,11 +9,11 @@ import LoadingComponentVersion2 from "../../components/common/loading/Backdrop";
 import { renderStatusCombo } from "../../components/manager/SingleCombo";
 import { ComboType } from "../../types/Combo/ComboType";
 import ProductAPI from "../../utils/ProductAPI";
-
+import Carousel from "react-material-ui-carousel";
 
 export default function DetailCombo() {
   const { id } = useParams();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   console.log({ id });
   const [data, setData] = useState<ComboType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,22 +40,53 @@ export default function DetailCombo() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        position:"relative"
+        position: "relative",
       }}
     >
-       {isLoading && <LoadingComponentVersion2 open={isLoading}/>}
+      {isLoading && <LoadingComponentVersion2 open={isLoading} />}
       <Card sx={{ width: "90%" }}>
         <Grid container>
-          <Grid item xs={12} sm={12} md={12} lg={6}>
-            {" "}
+          <Grid item xs={12} sm={12} md={12} lg={12}>
+            {/* {" "}
             <CardMedia
               component="img"
               image="https://img5.thuthuatphanmem.vn/uploads/2021/12/27/hinh-nen-thu-cung-chat-luong-cao-2k-cho-may-tinh_050621563.jpg"
               alt="img combo"              
               sx={{ objectFit: "cover", width:"100%", height:"100%" }}
-            />
+            /> */}
+            <Carousel
+              sx={{ height: "100%" }}
+              indicatorContainerProps={{
+                style: {
+                  zIndex: 1,
+                  marginTop: "-24px",
+                  position: "relative",
+                },
+              }}
+            >
+              {data && data?.image.length > 0 ? (
+                data.image.map((i, index) => (
+                  <CardMedia
+                    key={index}
+                    component="img"
+                    image={i.imageURL}
+                    alt="combo img"
+                    sx={{ objectFit: "contain", width: "100%", height: 400 }}
+                  />
+                ))
+              ) : (
+                <CardMedia
+                  component="img"
+                  image={
+                    "https://img5.thuthuatphanmem.vn/uploads/2021/12/27/hinh-nen-thu-cung-chat-luong-cao-2k-cho-may-tinh_050621563.jpg"
+                  }
+                  alt="combo img"
+                  sx={{ objectFit: "contain", width: "100%", height: 400}}
+                />
+              )}
+            </Carousel>
           </Grid>
-          <Grid item xs={12} sm={6} md={6} lg={6}>
+          <Grid item xs={12} sm={6} md={12} lg={12}>
             <CardContent>
               <Typography
                 gutterBottom
@@ -69,7 +99,7 @@ export default function DetailCombo() {
               </Typography>
               <Grid container spacing={3}>
                 {data?.supProducts?.map((item, index) => (
-                  <Grid item xs={12} md={6} lg={6} key={item.id}>
+                  <Grid item xs={12} md={6} lg={3} key={item.id}>
                     {" "}
                     <Box
                       sx={{
@@ -142,7 +172,6 @@ export default function DetailCombo() {
                   }}
                 />
               </Stack>
-
               <Stack
                 direction={"row"}
                 alignItems={"center"}
@@ -155,19 +184,19 @@ export default function DetailCombo() {
                 {renderStatusCombo(data?.status || "")}
               </Stack>
 
-              
-                <Button
-                  sx={{ width: 200, mt: 3 }}
-                  style={{
-                    backgroundColor: "#ffa733",
-                    color: "black",
-                  }}
-                  variant="contained"
-                  onClick={()=>navigate(`/manager-manage-combo/update-combo/${id}`)}
-                >
-                  Cập nhật
-                </Button>
-              
+              <Button
+                sx={{ width: 200, mt: 3 }}
+                style={{
+                  backgroundColor: "#ffa733",
+                  color: "black",
+                }}
+                variant="contained"
+                onClick={() =>
+                  navigate(`/manager-manage-combo/update-combo/${id}`)
+                }
+              >
+                Cập nhật
+              </Button>
             </CardContent>
           </Grid>
         </Grid>

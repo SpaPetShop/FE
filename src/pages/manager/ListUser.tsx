@@ -170,10 +170,8 @@ export default function ListUser() {
                 }
               >
                 <MenuItem value={""}>Tất cả</MenuItem>
-
                 <MenuItem value={"ACTIVE"}>Đang hoạt động</MenuItem>
                 <MenuItem value={"DEACTIVE"}>Ngưng hoạt động</MenuItem>
-
               </Select>
             </FormControl>
           </Box>
@@ -235,15 +233,15 @@ export default function ListUser() {
               isLoading === false &&
               listUser.map((row, index) => (
                 <StyledTableRow key={index}>
-                  <StyledTableCell align="center" size="small">
+                  <StyledTableCell align="center" >
                     {(pagination.page - 1) * pagination.size + index + 1}
                   </StyledTableCell>
-                  <StyledTableCell align="center" size="small">
+                  <StyledTableCell align="center" >
                     {row.fullName}
                   </StyledTableCell>
                   <StyledTableCell
                     align="center"
-                    size="small"
+                    
                     sx={{
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -253,25 +251,23 @@ export default function ListUser() {
                   >
                     {row.username}
                   </StyledTableCell>
-                  <StyledTableCell align="center" size="small">
+                  <StyledTableCell align="center" >
                     {row.phoneNumber}
                   </StyledTableCell>
-                  <StyledTableCell align="center" size="small">
+                  <StyledTableCell align="center" >
                     {row.email ? row.email : "-"}
                   </StyledTableCell>
-                  <StyledTableCell align="center" size="small">
+                  <StyledTableCell align="center" >
                     {row.rank ? row.rank : "-"}
                   </StyledTableCell>
-                  <StyledTableCell align="center" size="small">
+                  <StyledTableCell align="center" >
                     {row.point ? row.point : "-"}
                   </StyledTableCell>
-                  <StyledTableCell align="center" size="small">
-
+                  <StyledTableCell align="center" >
                     {row.status === "ACTIVE" ? (
                       <Chip label={"Đang hoạt động"} color="success" size="small"/>
                     ) : (
                       <Chip label={"Ngưng hoạt động"} color="error" size="small"/>
-
                     )}
                   </StyledTableCell>
                 </StyledTableRow>

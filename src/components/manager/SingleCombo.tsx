@@ -48,7 +48,6 @@ export default function SingleCombo({ data }: SingleComboProps) {
         onClick={() => navigate(`/manager-manage-combo/${data.id}`)}
       >
         <CardActionArea>
-
         <Carousel sx={{ margin: 'auto', border: 'none' }}
 					indicatorContainerProps={{
 						style: {
@@ -68,7 +67,6 @@ export default function SingleCombo({ data }: SingleComboProps) {
           <CardContent>
             <Stack direction={"row"} alignItems={"flex-start"} spacing={1}>
           {renderStatusCombo(data.status)} 
-
             <Typography
               gutterBottom
               variant="h6"
@@ -78,7 +76,6 @@ export default function SingleCombo({ data }: SingleComboProps) {
               {data.name}
             </Typography>
             </Stack>
-
 
             <Stack
               direction={"row"}
@@ -100,6 +97,7 @@ export default function SingleCombo({ data }: SingleComboProps) {
                 }}
               />
             </Stack>
+
             <Stack
               direction={"row"}
               alignItems={"center"}
@@ -120,9 +118,7 @@ export default function SingleCombo({ data }: SingleComboProps) {
             <Stack
               direction={"row"}
               alignItems={"center"}
-
               sx={{ mt: 3 }}
-
               spacing={1}
             >
               <Typography gutterBottom variant="h6" sx={{fontSize:16}}>
@@ -136,6 +132,7 @@ export default function SingleCombo({ data }: SingleComboProps) {
                 }}
               />
             </Stack>
+        
           </CardContent>
         </CardActionArea>
       </Card>

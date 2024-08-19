@@ -61,9 +61,7 @@ export default function ModalUpdateCategory({
               try {
                 const submitData = {
                   ...values,
-
                   status: checked ? "ACTIVE" : "INACTIVE",
-
                   masterCategoryId: data.masterCategoryId
                 }
                 const response = await CategoryAPI.update(data.id, submitData);
