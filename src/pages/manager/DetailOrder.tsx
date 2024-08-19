@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   CardMedia,
   Chip,
   Grid,
@@ -10,12 +11,14 @@ import {
 } from "@mui/material";
 import PetsIcon from "@mui/icons-material/Pets";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import LoadingComponentVersion2 from "../../components/common/loading/Backdrop";
 import { OrderType } from "../../types/Order/OrderType";
 import OrderAPI from "../../utils/OrderAPI";
 import { renderStatusOrder } from "./ListOrder";
+import ModalUpdateOrder from "../../components/manager/Modal/Order/ModalUpdateOrder";
+import { toast } from "react-toastify";
 
 export default function DetailOrder() {
   const { id } = useParams();
@@ -23,24 +26,40 @@ export default function DetailOrder() {
   console.log({ id });
   const [data, setData] = useState<OrderType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const handleSelectStaff = async ()=> {
-    console.log("abc");
+  const [showUpdate, setShowUpdate] = useState(false);
+  const handleSelectStaff = () => {
+    setShowUpdate(true)
+  };
+  const handleCancelOrder = async() => {
+   const isConfirmed = window.confirm("Bạn muốn hủy đơn hàng này ?")
+   if(isConfirmed && data) {
+    try {
+      await OrderAPI.update(
+        data.orderId,
+        {status: "CANCELED"}
+      );
+      toast.success("Hủy đơn hàng thành công.")
+      fetchOrder()
+    } catch (error) {
+      toast.error("Hủy đơn hàng thất bại!")
+    }
+   }
   }
-  useEffect(() => {
-    const fetchOrder = async () => {
-      try {
-        setIsLoading(true);
-        const data = await OrderAPI.getDetail(id || "");
-        console.log({ data }, "Order detail");
-        setData(data);
-      } catch (error) {
-        console.log("Error get detail Order: ", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    if (id) fetchOrder();
+  const fetchOrder = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const data = await OrderAPI.getDetail(id || "");
+      console.log({ data }, "Order detail");
+      setData(data);
+    } catch (error) {
+      console.log("Error get detail Order: ", error);
+    } finally {
+      setIsLoading(false);
+    }
   }, [id]);
+  useEffect(() => {
+    if (id) fetchOrder();
+  }, [fetchOrder, id]);
   return (
     <Paper sx={{ p: 5 }}>
       {isLoading && <LoadingComponentVersion2 open={isLoading} />}
@@ -117,24 +136,29 @@ export default function DetailOrder() {
                       </Box>
                     </Stack>
                   ) : (
-                    <Box display={"flex"} flexDirection={"column"} alignItems={"center"}>
+                    <Box
+                      display={"flex"}
+                      flexDirection={"column"}
+                      alignItems={"center"}
+                    >
                       <Typography
-                        sx={{ fontSize: 17, mb: 2, textAlign: "center" }}
+                        sx={{ fontSize: 17, mb: 1, textAlign: "center" }}
                       >
                         Hiện chưa có nhân viên nhận đơn hàng này!
                       </Typography>
-                      <Box
+                     {data.status !== "CANCELED" && <Box
                         sx={{
                           textDecoration: "underline",
-                          "&:hover": {
-                            color: "blue",
-                          },
-                          cursor:"pointer",                         
+                          color: "#4fc3f7",
+                          // "&:hover": {
+                          //   color: "blue",
+                          // },
+                          cursor: "pointer",
                         }}
-                       onClick={handleSelectStaff}
+                        onClick={handleSelectStaff}
                       >
                         Chỉ định nhân viên
-                      </Box>
+                      </Box>} 
                     </Box>
                   )}
                 </Grid>
@@ -222,92 +246,116 @@ export default function DetailOrder() {
                     </strong>
                   </Typography>
                 )}
-                <Typography variant="h6" sx={{ fontSize: 17, mb: 1 }}>
+                <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
                   Mô tả: <strong>{data.description}</strong>
                 </Typography>
 
-                <Typography variant="h6" sx={{ fontSize: 17, mb: 1 }}>
+                <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
                   Tổng giá tiền:{" "}
                   <strong>{data.totalAmount.toLocaleString()} VNĐ</strong>
                 </Typography>
-                <Typography variant="h6" sx={{ fontSize: 17, mb: 1 }}>
+                <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
                   Tổng giá tiền:{" "}
                   <strong>{data.finalAmount.toLocaleString()} VNĐ</strong>
                 </Typography>
                 <Typography variant="h6" sx={{ fontSize: 17, mb: 1 }}>
                   Trạng thái: {renderStatusOrder(data.status)}
                 </Typography>
+                {data.status !== "CANCELED" && <Button variant="contained" color="error" sx={{mt: 10}}
+                onClick={handleCancelOrder}
+                >Hủy Đơn Hàng</Button>}
               </Box>
             </Grid>
           </Grid>
 
-          {/* render note */}
-          {data.note.length > 0 && <Typography>Các ghi chú</Typography>}
-          {data.note.length > 0 &&
-            data.note.map((note, index) => (
-              <Box key={index}>
-                <Typography>
-                  Ngày tạo:{" "}
-                  {moment(note.createDate).format("DD/MM/YYYY - hh:mm")}
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              {" "}
+              {/* render list combo */}
+              <Typography variant="h5" align="center" sx={{ mb: 3 }}>
+                Thông tin sản gói/sản phẩm
+              </Typography>
+              <Grid container spacing={2}>
+                {data.productList.map((product, index) =>
+                  product.productId ? (
+                    <Grid key={product.productId} item xs={12} md={6} lg={6}>
+                      <Box
+                        sx={{
+                          backgroundImage:
+                            "linear-gradient(to right, #7ff3fd, #82f6fc, #86f8fb, #8bfbf9, #8ffdf8)",
+                          p: 2,
+                          borderRadius: 5,
+                        }}
+                      >
+                        <Typography sx={{ fontSize: 17, mb: 1 }}>
+                          Tên gói: <strong>{product.productName}</strong>
+                        </Typography>
+                        <Typography sx={{ fontSize: 17 }}>
+                          Giá bán:{" "}
+                          <strong>
+                            {product.sellingPrice.toLocaleString()} VNĐ
+                          </strong>
+                        </Typography>
+                        <Typography></Typography>
+                        <Typography></Typography>
+                      </Box>
+                    </Grid>
+                  ) : (
+                    <Grid key={product.supProductId} item xs={12} md={6} lg={6}>
+                      <Box
+                        sx={{
+                          backgroundImage:
+                            "linear-gradient(to right top, #ffab91, #ffbc8e, #ffce8f, #ffe193, #fff59d)",
+                          p: 2,
+                          borderRadius: 5,
+                        }}
+                        key={product.supProductId}
+                      >
+                        <Typography>
+                          Tên sản phẩm: {product.supProductName}
+                        </Typography>
+                        <Typography>
+                          Giá bán: {product.sellingPrice.toLocaleString()} VNĐ
+                        </Typography>
+                        <Typography></Typography>
+                        <Typography></Typography>
+                      </Box>
+                    </Grid>
+                  )
+                )}
+              </Grid>
+            </Grid>
+            <Grid item xs={6} sx={{ borderLeft: "1px solid" }}>
+              <Typography variant="h5" align="center" sx={{ mb: 3 }}>
+                Danh sách ghi chú
+              </Typography>
+              {/* render note */}
+              {!data.note.length && (
+                <Typography sx={{ textAlign: "center", fontSize: 20 }}>
+                  Hiện chưa có ghi chú cho đơn hàng này!
                 </Typography>
-                <Typography>Nội dung: {note.description}</Typography>
-              </Box>
-            ))}
-
-          {/* render list combo */}
-          <Typography variant="h5" align="center" sx={{ mb: 3 }}>
-            Thông tin sản gói/sản phẩm
-          </Typography>
-          <Grid container>
-            {data.productList.map((product, index) =>
-              product.productId ? (
-                <Grid key={product.productId} item xs={12} md={6} lg={6}>
-                  <Box
-                    sx={{
-                      backgroundImage:
-                        "linear-gradient(to right, #7ff3fd, #82f6fc, #86f8fb, #8bfbf9, #8ffdf8)",
-                      p: 2,
-                      borderRadius: 5,
-                    }}
-                  >
-                    <Typography sx={{ fontSize: 17, mb: 1 }}>
-                      Tên gói: <strong>{product.productName}</strong>
+              )}
+              {data.note.length > 0 &&
+                data.note.map((note, index) => (
+                  <Box key={index} sx={{ mb: 2 }}>
+                    <Typography sx={{ mb: 1 }}>
+                      Ngày tạo:{" "}
+                      {moment(note.createDate).format("DD/MM/YYYY - hh:mm")}
                     </Typography>
-                    <Typography sx={{ fontSize: 17 }}>
-                      Giá bán:{" "}
-                      <strong>
-                        {product.sellingPrice.toLocaleString()} VNĐ
-                      </strong>
-                    </Typography>
-                    <Typography></Typography>
-                    <Typography></Typography>
+                    <Typography>Nội dung: {note.description}</Typography>
                   </Box>
-                </Grid>
-              ) : (
-                <Grid key={product.supProductId} item xs={12} md={6} lg={6}>
-                  <Box
-                    sx={{
-                      backgroundImage:
-                        "linear-gradient(to right top, #ffab91, #ffbc8e, #ffce8f, #ffe193, #fff59d)",
-                      p: 2,
-                      borderRadius: 5,
-                    }}
-                    key={product.supProductId}
-                  >
-                    <Typography>
-                      Tên sản phẩm: {product.supProductName}
-                    </Typography>
-                    <Typography>
-                      Giá bán: {product.sellingPrice.toLocaleString()} VNĐ
-                    </Typography>
-                    <Typography></Typography>
-                    <Typography></Typography>
-                  </Box>
-                </Grid>
-              )
-            )}
+                ))}
+            </Grid>
           </Grid>
         </Box>
+      )}
+      {data && (
+        <ModalUpdateOrder
+          data={data}
+          fetchOrder={fetchOrder}
+          open={showUpdate}
+          setOpen={setShowUpdate}
+        />
       )}
     </Paper>
   );

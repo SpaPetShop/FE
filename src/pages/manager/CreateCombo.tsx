@@ -79,9 +79,7 @@ export default function CreateCombo() {
           description: "",
           stockPrice: "",
           sellingPrice: "",
-
           status: "AVAILABLE",
-
           categoryId: "",
           image:[""]
         }}
@@ -267,11 +265,9 @@ export default function CreateCombo() {
                     onBlur={handleBlur}
                     value={values.status}
                   >
-
                     <MenuItem value="AVAILABLE">Sẵn có</MenuItem>
                     <MenuItem value="UNAVAILABLE">Không sẵn có</MenuItem>
                     <MenuItem value="OUTOFSTOCK">Hết hàng</MenuItem>
-
                   </Field>
                   <FormHelperText>
                     * Vui lòng chọn trạng thái gói

@@ -118,9 +118,7 @@ export default function UpdateCombo() {
                 toast.error("Vui lòng chọn sản phẩm cho gói!");
                 return;
               }
-
               await ProductAPI.update(id || "", {
-
                 ...values,
                 priority: 0,
                 supProductId: listProductSelected,
@@ -297,18 +295,15 @@ export default function UpdateCombo() {
                       onBlur={handleBlur}
                       value={values.status}
                     >
-
                       <MenuItem value="AVAILABLE">Sẵn có</MenuItem>
                       <MenuItem value="UNAVAILABLE">Không sẵn có</MenuItem>
                       <MenuItem value="OUTOFSTOCK">Hết hàng</MenuItem>
-
                     </Field>
                     <FormHelperText>Vui lòng chọn trạng thái</FormHelperText>
                   </FormControl>
                 </Grid>
               </Grid>
               <Box mb={2}></Box>
-
             {data?.image[0]?.imageURL && (
                     <>
                       <Grid container spacing={3}>
@@ -329,7 +324,6 @@ export default function UpdateCombo() {
                   <Box mb={2}></Box>
             <Typography variant="subtitle2" sx={{ color: "black", mb: 1 }}>Nhập link ảnh:</Typography>
            
-
             <FieldArray name="image">
                     {({ push, remove }: any) => (
                       <Box>

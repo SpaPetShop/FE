@@ -27,7 +27,6 @@ import OrderAPI from "../../utils/OrderAPI";
 import moment from "moment";
 import MenuActionOrder from "../../components/manager/MenuAction/MenuActionOrder";
 
-
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#f4511e",
@@ -73,40 +72,32 @@ export const renderStatusOrder = (status: string) => {
       return <Chip sx={{minWidth:120}}  label={"Đã Thanh Toán"} color="info" size="small"/>
     case "COMPLETED":
       return <Chip sx={{minWidth:120}}  label={"Hoàn Thành"} color="success" size="small"/>
-    case "CANCELLED":
+    case "CANCELED":
       return <Chip sx={{minWidth:120}}  label={"Đã Hủy"} color="error" size="small"/>
-
   }
 }
 export default function ListOrder() {
   const [isLoading, setIsLoading] = React.useState(false);
-
   const [listOrder, setListOrder] = React.useState<OrderType[] | []>(
     []
   );
-  const [showModalUpdate, setShowModalUpdate] = React.useState(false);
-  const [showModalDelete, setShowModalDelete] = React.useState(false);
-  const [selectedOrder, setSelectedOrder] = React.useState<OrderType | null>(null)
-
   const [pagination, setPagination] = React.useState<PaginationType>({
     page: 1,
     size: 10,
     total: 10,
     totalPages: 1,
   });
-  const [searchName, setSearchName] = React.useState("");
-  const [searchPhone, setSearchPhone] = React.useState("");
-
+  const [searchCreateDate, setSearchCreateDate] = React.useState("");
   const [filter, setFilter] = React.useState<FilterOrderType>({
     page: 1,
     size: 10,
-
   });
-  const debouncedInputValueName = useDebounce(searchName, 500); // Debounce with 500ms delay
-  const debouncedInputValuePhone = useDebounce(searchPhone, 500);
+  const debouncedInputValueDate = useDebounce(searchCreateDate, 500); // Debounce with 500ms delay
+
   const [value, setValue] = React.useState<string>('ALL')
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue)
+    setFilter((prev) => ({ ...prev, Type: newValue === "ALL" ? "" : newValue}))
   }
   const handleChangePage = (event: unknown, newPage: number) => {
     setFilter((prev) => ({ ...prev, page: newPage }));
@@ -117,12 +108,8 @@ export default function ListOrder() {
   ) => {
     setFilter((prev) => ({ ...prev, page: 1, size: +event.target.value }));
   };
-  const handleSearchName = (name: string) => {
-    setSearchName(name);
-  };
-
-  const handleSearchPhone = (phone: string) => {
-    setSearchPhone(phone);
+  const handleSearchCreateDate = (date: string) => {
+    setSearchCreateDate(date ? moment(date).format("YYYY-MM-DD") : "");
   };
 
   const fetchAllOrder = React.useCallback(async () => {
@@ -131,7 +118,6 @@ export default function ListOrder() {
       const data = await OrderAPI.getAll(filter);
       console.log({ data });
       setListOrder(data.items);
-
       setPagination({
         page: data.page,
         size: data.size,
@@ -144,19 +130,14 @@ export default function ListOrder() {
       setIsLoading(false);
     }
   }, [filter]);
-
   React.useEffect(() => {
     fetchAllOrder();
   }, [fetchAllOrder]);
 
   React.useEffect(() => {
-    setFilter((prev) => ({ ...prev, FullName: debouncedInputValueName }));
-  }, [debouncedInputValueName]);
+    setFilter((prev) => ({ ...prev, CreateDate: debouncedInputValueDate }));
+  }, [debouncedInputValueDate]);
 
-  React.useEffect(() => {
-
-    setFilter((prev) => ({ ...prev, PhoneNumber: debouncedInputValuePhone }));
-  }, [debouncedInputValuePhone]);
 
   return (
     <Paper sx={{ p: 3 }}>
@@ -170,28 +151,29 @@ export default function ListOrder() {
               value='ALL'
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <TabName>Tất Cả Đơn Hàng</TabName>
+                  <TabName>Tất Cả</TabName>
                 </Box>
               }
             />       
             <Tab
-              value='SELECT'
+              value='CUSTOMERREQUEST'
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <TabName>Nhân Viên Được Chọn</TabName>
+                  <TabName>Nhân Viên Được Chọn Bởi Khách</TabName>
                 </Box>
               }
             />
             <Tab
-              value='RANDOM'
+              value='MANAGERREQUEST'
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <TabName>Nhân Viên Ngẫu Nhiên</TabName>
+                  <TabName>Nhân Viên Do Quản Lý Chọn</TabName>
                 </Box>
               }
             />
           </TabList>
           </TabContext>
+          <Box mb={5}></Box>
         <Stack
           direction={"row"}
           alignItems={"center"}
@@ -200,10 +182,11 @@ export default function ListOrder() {
         >
           <TextField
             size="small"
-            placeholder="Nhập tên khách hàng..."
-            label="Tìm kiếm"
-            value={searchName}
-            onChange={(e) => handleSearchName(e.target.value)}
+            placeholder="Nhập ngày tạo đơn..."
+            label="Ngày tạo đơn"
+            type="date"
+            value={searchCreateDate}
+            onChange={(e) => handleSearchCreateDate(e.target.value)}
             sx={{ width: "300px" }}
             InputProps={{
               startAdornment: (
@@ -213,22 +196,6 @@ export default function ListOrder() {
               ),
             }}
           />
-          <TextField
-            size="small"
-            placeholder="Nhập số điện thoại..."
-            label="Tìm kiếm"
-            value={searchPhone}
-            onChange={(e) => handleSearchPhone(e.target.value)}
-            sx={{ width: "300px" }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchOutlinedIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-         <Box></Box>
         </Stack>
 
 
@@ -237,7 +204,6 @@ export default function ListOrder() {
           <TableHead>
             <TableRow>
               <StyledTableCell align="center">STT</StyledTableCell>
-
               <StyledTableCell align="center">Tên Khách Hàng</StyledTableCell>
               <StyledTableCell align="center">Ngày Tạo</StyledTableCell>  
               <StyledTableCell align="center">Ngày Hoàn Thành</StyledTableCell>  
@@ -250,8 +216,7 @@ export default function ListOrder() {
           <TableBody>
             {listOrder.length === 0 && isLoading === false && (
               <StyledTableRow>
-                <StyledTableCell colSpan={7} align="left">
-
+                <StyledTableCell colSpan={8} align="left">
                   <Typography align="center">Không có dữ liệu!</Typography>
                 </StyledTableCell>
               </StyledTableRow>
@@ -280,21 +245,20 @@ export default function ListOrder() {
                   <StyledTableCell align="left">
                     <Skeleton variant="rectangular" />
                   </StyledTableCell>
-
+                  <StyledTableCell align="left">
+                    <Skeleton variant="rectangular" />
+                  </StyledTableCell>
                 </StyledTableRow>
               ))}
             {listOrder.length > 0 &&
               isLoading === false &&
               listOrder.map((row, index) => (
-
                 <StyledTableRow key={index}>
                   <StyledTableCell align="center" size="small">
                     {(pagination.page - 1) * pagination.size + index + 1}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-
                     {row.userInfo.fullName}
-
                   </StyledTableCell>
                   <StyledTableCell
                     align="center"
@@ -306,7 +270,6 @@ export default function ListOrder() {
                       maxWidth: "250px",
                     }}
                   >
-
                     {moment(row.createdDate).format("DD/MM/YYYY")}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
@@ -324,11 +287,7 @@ export default function ListOrder() {
                   <StyledTableCell align="center" size="small"> 
                     <MenuActionOrder
                      data={row}
-                     setOpenDelete={setShowModalDelete}
-                     setOpenUpdate={setShowModalUpdate}
-                     setSelectedOrder={setSelectedOrder}
                   /></StyledTableCell>               
-
                 </StyledTableRow>
               ))}
           </TableBody>

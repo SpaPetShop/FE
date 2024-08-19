@@ -10,9 +10,9 @@ import { OrderType } from "../../../types/Order/OrderType";
 import { useNavigate } from "react-router-dom";
 
 interface MenuProps {
-    setOpenUpdate: React.Dispatch<React.SetStateAction<boolean>>
-    setOpenDelete: React.Dispatch<React.SetStateAction<boolean>>
-    setSelectedOrder: React.Dispatch<React.SetStateAction<OrderType | null>>
+    setOpenUpdate?: React.Dispatch<React.SetStateAction<boolean>>
+    setOpenDelete?: React.Dispatch<React.SetStateAction<boolean>>
+    setSelectedOrder?: React.Dispatch<React.SetStateAction<OrderType | null>>
     data:OrderType
 }
 
@@ -27,17 +27,7 @@ export default function MenuActionOrder({data, setOpenUpdate, setSelectedOrder, 
   const handleClose = () => {
     setAnchorEl(null);
   };
-  // const handleClickUpdate = () => {
-  //   console.log(data,"update");
-  //   setAnchorEl(null);
-  //   setSelectedOrder(data)
-  //   setOpenUpdate(true);
-  // };
-  const handleClickDelete = () => {
-    setAnchorEl(null);
-    setSelectedOrder(data)
-    setOpenDelete(true);
-  };
+
 
   return (
     <div>
@@ -79,10 +69,10 @@ export default function MenuActionOrder({data, setOpenUpdate, setSelectedOrder, 
           <span>Cập nhật</span>
         </MenuItem> */}
 
-        <MenuItem onClick={handleClickDelete}>
+        {/* <MenuItem onClick={handleClickDelete}>
           <CancelOutlinedIcon sx={{ mr: "4px" }} color="error" />
           <span>Hủy Đơn</span>
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
     </div>
   );
