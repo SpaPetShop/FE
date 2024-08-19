@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "./Information.css";
 import detailData from "../../../../assets/data/detail/index.json";
+import { ProductType } from "../../../../types/Product/ProductType";
 
-const Information: React.FC = () => {
+interface InformationProps {
+  product: ProductType | null;
+}
+
+const Information: React.FC<InformationProps> = ({ product }) => {
   const [activeTab, setActiveTab] = useState("detail");
   const [detail, setDetail] = useState<any>(null);
 

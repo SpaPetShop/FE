@@ -16,6 +16,7 @@ export type ComboType = {
     name: string;
     stockPrice: number;
     sellingPrice: number;
+    image: any[];
   }[];
 };
 

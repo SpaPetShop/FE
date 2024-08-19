@@ -15,6 +15,8 @@ import Home from "../pages/common/Home/Home";
 import CheckAuthenticate from "../components/common/wrapper/CheckAuthenticate";
 import DetailPage from "../pages/common/Detail/DetailPage";
 import Booking from "../pages/customer/booking/Booking";
+import SpaCompoPage from "../pages/common/SpaCompoPage/SpaCompoPage";
+import DetailSpaCompoPage from "../pages/common/DetailSpaCompoPage/DetailSpaCompoPage";
 
 type commonRouteType = {
   path: string;
@@ -56,7 +58,9 @@ const AppRoutes = () => {
       <Route key={"wrap_layout2"} element={<WrapLayoutCustomer />}>
         <Route path={"/"} element={<Home />} />;
         <Route path={"/:id"} element={<DetailPage />} />;
-        <Route path="/booking" element={<Booking />} />
+        <Route path="/spa-services" element={<SpaCompoPage />} />;
+        <Route path="/spa-services/:id" element={<DetailSpaCompoPage />} />;
+        <Route path="/booking" element={<Booking />} />;
         <Route
           key={"customer_private"}
           element={<AuthRoute allowedRoles={[ROLES.CUSTOMER]} />}

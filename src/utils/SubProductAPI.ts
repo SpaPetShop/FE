@@ -11,6 +11,10 @@ const SubProductAPI = {
       },
     });
   },
+  getOne: (id: string) => {
+    const url = `/supProducts/${id}`;
+    return axiosClient.get(url);
+  },
   create: (payload: any) => {
     const url = "/supProducts";
     return axiosClient.post(url, payload);
