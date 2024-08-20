@@ -20,6 +20,7 @@ import {
   Paper,
   Table,
   TableBody,
+  Grid,
  
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -120,7 +121,7 @@ export const StaffCalendar: React.FC = () => {
       <Stack direction={"row"} alignItems={"center"} spacing={3} sx={{ mb: 3, mt: 2 }}>
         <TextField
           size="small"
-          placeholder="Nhập tên khách hàng..."
+          placeholder="Nhập mã đơn hàng..."
           label="Tìm kiếm"
           value={searchName}
           onChange={(e) => handleSearchName(e.target.value)}
@@ -133,21 +134,7 @@ export const StaffCalendar: React.FC = () => {
             ),
           }}
         />
-        <TextField
-          size="small"
-          placeholder="Nhập số điện thoại..."
-          label="Tìm kiếm"
-          value={searchPhone}
-          onChange={(e) => handleSearchPhone(e.target.value)}
-          sx={{ width: "300px" }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchOutlinedIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
+     
         <Box sx={{ minWidth: 120 }}>
           <FormControl sx={{ width: "300px" }} size="small">
             <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
@@ -158,8 +145,10 @@ export const StaffCalendar: React.FC = () => {
               onChange={(e) => console.log(e.target.value)}
             >
               <MenuItem value={""}>Tất cả</MenuItem>
-              <MenuItem value={"Activate"}>Đang hoạt động</MenuItem>
-              <MenuItem value={"Deactivate"}>Ngưng hoạt động</MenuItem>
+              <MenuItem value={"PENDING"}>Đang Chờ</MenuItem>
+              <MenuItem value={"PROCESS"}>Xử Lý</MenuItem>
+              <MenuItem value={"COMPLETED"}>Hoàn Thành</MenuItem>
+
             </Select>
           </FormControl>
         </Box>
@@ -280,18 +269,43 @@ export const StaffCalendar: React.FC = () => {
         <DialogContent>
           {selectedTask ? (
             <Stack spacing={2}>
-              <Typography>Mã hóa đơn: {selectedTask.order.invoiceCode}</Typography>
-              <Typography>Thú cưng: {selectedTask.pets.name}</Typography>
-              <Typography>Nhân viên phụ trách: {selectedTask.staff.fullName}</Typography>
-              <Typography>Ngày tạo: {selectedTask.createDate}</Typography>
-              <Typography>Ngày thực thi: {selectedTask.excutionDate}</Typography>
-              <Typography>Trạng thái: {selectedTask.status}</Typography>
-              <div style={{ display: "flex", justifyContent: "center" }}>
-              <Button style={{backgroundColor:'green', color:'white', marginRight:'10px'}}>Approve</Button>
-            <Button style={{backgroundColor:'red', color:'white'}}>Reject</Button>
-
-              </div>
-            </Stack>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <Typography> <strong>Mã hóa đơn:</strong> {selectedTask.order.invoiceCode}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography><strong>Tổng tiền:</strong> {selectedTask.order.finalAmount}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography><strong>Ngày tạo:</strong> {selectedTask.createDate}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography><strong>Ngày thực thi:</strong> {selectedTask.excutionDate}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography><strong>Trạng thái:</strong> {selectedTask.status}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography><strong>Nhân viên phụ trách:</strong> {selectedTask.staff.fullName}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography><strong>Tên thú cưng:</strong> {selectedTask.pets.name}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography><strong>Loại thú cưng:</strong> {selectedTask.pets.typePet}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography>Ảnh: {selectedTask.pets.image}</Typography>
+              </Grid>
+            </Grid>
+          
+            <div style={{ display: "flex", justifyContent: "center", marginTop: '20px' }}>
+              <Button style={{ backgroundColor: "green", color: "white", marginRight: "10px" }}>
+                Approve
+              </Button>
+              <Button style={{ backgroundColor: "red", color: "white" }}>Reject</Button>
+            </div>
+          </Stack>
           ) : null}
         </DialogContent>
         <DialogActions>
