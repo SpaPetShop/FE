@@ -10,7 +10,7 @@ const CategoryAPI = {
     });
   },
   create: (payload: any) => {
-    const url = "/staff";
+    const url = "/";
     return axiosClient.post(url, payload);
   },
   update: (id: string, payload: any) => {

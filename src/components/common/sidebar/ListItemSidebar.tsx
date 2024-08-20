@@ -7,6 +7,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import StyleOutlinedIcon from "@mui/icons-material/StyleOutlined";
 import FormatListNumberedOutlinedIcon from "@mui/icons-material/FormatListNumberedOutlined";
 import PetsIcon from '@mui/icons-material/Pets';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 export const managerSidebarItems = [
   {
@@ -18,6 +19,11 @@ export const managerSidebarItems = [
     title: "Danh sách khách hàng",
     path: "/manager-manage-customer",
     icon: <PeopleIcon />,
+  },
+  {
+    title: "Danh sách yều cầu",
+    path: "/manage-customer-request",
+    icon: <InfoOutlinedIcon />,
   },
   {
     title: "Danh sách loại gói",
@@ -78,3 +84,4 @@ export const adminSidebarItems = [
     icon: <InventoryOutlinedIcon />,
   },
 ];
+

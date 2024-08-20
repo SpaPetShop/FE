@@ -297,10 +297,10 @@ export default function ListOrder() {
                       maxWidth: "250px",
                     }}
                   >
-                    {moment(row.createdDate).format("DD/MM/YYYY")}
+                    {moment(row.createdDate).format("DD/MM/YYYY - hh:mm:A")}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                  {row.completedDate ? moment(row.completedDate).format("DD/MM/YYYY") : "-"}
+                  {row.completedDate ? moment(row.completedDate).format("DD/MM/YYYY - hh:mm:A") : "-"}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
                     {row.finalAmount.toLocaleString()} VNĐ

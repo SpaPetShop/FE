@@ -1,4 +1,5 @@
-import { CardActionArea, Chip, Grid, Stack, Tooltip } from "@mui/material";
+import { Button, CardActionArea, CardActions, Chip, Grid, Stack, Tooltip } from "@mui/material";
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import PetsIcon from '@mui/icons-material/Pets';
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -10,6 +11,8 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import Carousel from "react-material-ui-carousel";
 import { ComboType } from "../../../../types/Combo/ComboType";
+import useCart from "../../../../hook/useCart";
+import { toast } from "react-toastify";
 export type ComboCardProps = {
   data: ComboType;
 };
@@ -39,16 +42,40 @@ export type ComboCardProps = {
 };
 export default function ComboCard({ data }: ComboCardProps) {
   const navigate = useNavigate();
-  
+  const {cartItems, setCartItems} = useCart()
+  const handleAddComboToCart = () =>{
+    if(data && cartItems){
+      const currentListProductInCart = [...cartItems.listProduct]
+      const currentListComboInCart = [...cartItems.listCombo]
+      const checkExists = currentListComboInCart.filter((combo)=>combo.id === data.id)
+      if(checkExists.length > 0){
+        toast.warning("Gói sản phẩm này đã có trong giỏ hàng của bạn!")
+        return
+      } 
+      currentListComboInCart.push(data)
+      setCartItems((prev)=>({
+        ...prev,
+        listCombo: currentListComboInCart
+      }))  
+      localStorage.removeItem('userDataCart')
+      localStorage.setItem("userDataCart",
+        JSON.stringify({
+        listProduct: currentListProductInCart,
+      listCombo: currentListComboInCart
+      })
+    )
+    toast.success("Thêm gói sản phẩm vào giỏ hàng thành công!")
+    }
+  }
 
   return (
     <Grid item xs={4} sm={3} md={3} lg={2}>
       <Card
+      elevation={8}
         sx={{ maxWidth: 400 }}
-        onClick={() => navigate(`/detail-combo/${data.id}`)}
       >
-        <CardActionArea>
-        <Carousel sx={{ margin: 'auto', border: 'none' }}
+        <CardActionArea  onClick={() => navigate(`/detail-combo/${data.id}`)}>
+        <Carousel sx={{ margin: 'auto', border: 'none', minHeight:200 }}
 					indicatorContainerProps={{
 						style: {
 							zIndex: 1,
@@ -132,9 +159,22 @@ export default function ComboCard({ data }: ComboCardProps) {
                 }}
               />
             </Stack>
-        
+           
           </CardContent>
         </CardActionArea>
+        <CardActions>
+        <Button
+               fullWidth
+                variant="contained"
+                color="warning"
+                onClick={
+                  handleAddComboToCart
+                }
+                startIcon={<AddShoppingCartIcon/>}
+              >
+                Thêm vào giỏ hàng
+              </Button>
+        </CardActions>
       </Card>
     </Grid>
   );

@@ -13,7 +13,7 @@ import {
   Stack,
   TablePagination,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
@@ -113,7 +113,14 @@ export default function ListProduct() {
           />
         );
       case "OUTOFSTOCK":
-        return <Chip sx={{ minWidth: 120 }} label={"Hết hàng"} color="error" size="small"/>;
+        return (
+          <Chip
+            sx={{ minWidth: 120 }}
+            label={"Hết hàng"}
+            color="error"
+            size="small"
+          />
+        );
       default:
         return (
           <Chip sx={{ minWidth: 120 }} label={"Chưa xác định"} color="error" />
@@ -202,7 +209,7 @@ export default function ListProduct() {
           style={{
             backgroundColor: "#33eaff",
             color: "black",
-            borderRadius:"15px"
+            borderRadius: "15px",
           }}
           onClick={() => {
             setShowModalCreate(true);
@@ -261,9 +268,6 @@ export default function ListProduct() {
                   <StyledTableCell align="left">
                     <Skeleton variant="rectangular" />
                   </StyledTableCell>
-                  <StyledTableCell align="left">
-                    <Skeleton variant="rectangular" />
-                  </StyledTableCell>
                 </StyledTableRow>
               ))}
             {listProduct.length > 0 &&
@@ -286,7 +290,7 @@ export default function ListProduct() {
                       maxWidth: "250px",
                     }}
                   >
-                  {row.description}
+                    {row.description}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
                     {row.stockPrice.toLocaleString()} VNĐ
