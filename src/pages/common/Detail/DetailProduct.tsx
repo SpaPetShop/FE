@@ -5,41 +5,44 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import LoadingComponentVersion2 from "../../components/common/loading/Backdrop";
-import { renderStatusCombo } from "../../components/manager/SingleCombo";
-import { ComboType } from "../../types/Combo/ComboType";
-import ProductAPI from "../../utils/ProductAPI";
+
 import Carousel from "react-material-ui-carousel";
-import { UserContext } from "../../context/AuthContext";
+
 import PetsIcon from '@mui/icons-material/Pets';
-import { ROLES } from "../../routes/roles";
+
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import { UserContext } from "../../../context/AuthContext";
+import { ProductType } from "../../../types/Product/ProductType";
+import LoadingComponentVersion2 from "../../../components/common/loading/Backdrop";
+import SubProductAPI from "../../../utils/SubProductAPI";
+import { renderStatusProduct } from "../../../components/manager/SingleProduct";
+import { ROLES } from "../../../routes/roles";
 import { toast } from "react-toastify";
 
-export default function DetailCombo() {
+export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const currentUser = useContext(UserContext)
-  const [data, setData] = useState<ComboType | null>(null);
+  const [data, setData] = useState<ProductType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
-    const fetchAllCombo = async () => {
+    const fetchAllProduct = async () => {
       try {
         setIsLoading(true);
-        const data = await ProductAPI.getDetail(id || "");
-        console.log({ data }, "combo detail");
+        const data = await SubProductAPI.getDetail(id || "");
+        console.log({ data }, "Product detail");
         setData(data);
       } catch (error) {
-        console.log("Error get detail Combo: ", error);
+        console.log("Error get detail Product: ", error);
       } finally {
         setIsLoading(false);
       }
     };
-    if (id) fetchAllCombo();
+    if (id) fetchAllProduct();
   }, [id]);
   return (
-    <> <Typography sx={{mt: 5, textAlign:"center", mb: 3}} variant="h5">Chi tiết gói sản phẩm</Typography>
+    <> <Typography sx={{mt: 5, textAlign:"center"}} variant="h5">Chi tiết sản phẩm</Typography>
     <Box
       sx={{
         width: "100%",
@@ -54,16 +57,16 @@ export default function DetailCombo() {
       {isLoading && <LoadingComponentVersion2 open={isLoading} />}
       <Card sx={{ width: "90%" }}>
         <Grid container>
-          <Grid item xs={12} sm={12} md={12} lg={12}>
+          <Grid item xs={12} sm={12} md={12} lg={6}>
             {/* {" "}
             <CardMedia
               component="img"
               image="https://img5.thuthuatphanmem.vn/uploads/2021/12/27/hinh-nen-thu-cung-chat-luong-cao-2k-cho-may-tinh_050621563.jpg"
-              alt="img combo"              
+              alt="img Product"              
               sx={{ objectFit: "cover", width:"100%", height:"100%" }}
             /> */}
             <Carousel
-              sx={{ minHeight:500 }}
+              sx={{ height: "100%" }}
               indicatorContainerProps={{
                 style: {
                   zIndex: 1,
@@ -78,8 +81,8 @@ export default function DetailCombo() {
                     key={index}
                     component="img"
                     image={i.imageURL}
-                    alt="combo img"
-                    sx={{ objectFit: "cover", width: "100%", height: 500 }}
+                    alt="Product img"
+                    sx={{ objectFit: "cover", width: "100%", height: 400 }}
                   />
                 ))
               ) : (
@@ -88,13 +91,13 @@ export default function DetailCombo() {
                   image={
                     "https://img5.thuthuatphanmem.vn/uploads/2021/12/27/hinh-nen-thu-cung-chat-luong-cao-2k-cho-may-tinh_050621563.jpg"
                   }
-                  alt="combo img"
-                  sx={{ objectFit: "cover", width: "100%", height: 500}}
+                  alt="Product img"
+                  sx={{ objectFit: "cover", width: "100%", height: 400}}
                 />
               )}
             </Carousel>
           </Grid>
-          <Grid item xs={12} sm={6} md={12} lg={12}>
+          <Grid item xs={12} sm={6} md={12} lg={6}>
             <CardContent>
               <Typography
                 gutterBottom
@@ -105,49 +108,6 @@ export default function DetailCombo() {
               >
                 {data?.name}
               </Typography>
-              <Grid container spacing={3}>
-                {data?.supProducts?.map((item, index) => (
-                  <Grid item xs={12} md={6} lg={3} key={item.id}>
-                    {" "}
-                    <Box
-                      sx={{
-                        backgroundImage:
-                          index === 0 || index % 2 === 0
-                            ? "linear-gradient(to right top, #ffab91, #ffbc8e, #ffce8f, #ffe193, #fff59d)"
-                            : "linear-gradient(to right, #7ff3fd, #82f6fc, #86f8fb, #8bfbf9, #8ffdf8)",
-                        p: 2,
-                        borderRadius: 5,
-                      }}
-                    >
-                      <Typography
-                        sx={{ lineHeight: 3, fontSize: 16 }}
-                        variant="body2"
-                        align="center"
-                      >
-                        Sản phẩm {index + 1}
-                      </Typography>
-                      <Typography
-                        sx={{ lineHeight: 3, fontSize: 14 }}
-                        variant="body2"
-                      >
-                        Tên sản phẩm: {item.name}
-                      </Typography>
-                      <Typography
-                        sx={{ lineHeight: 3, fontSize: 14 }}
-                        variant="body2"
-                      >
-                        Giá gốc sản phẩm: {item.stockPrice.toLocaleString()} VNĐ
-                      </Typography>
-                      <Typography
-                        sx={{ lineHeight: 3, fontSize: 14 }}
-                        variant="body2"
-                      >
-                        Giá bán sản phẩm: {item.stockPrice.toLocaleString()} VNĐ
-                      </Typography>
-                    </Box>
-                  </Grid>
-                ))}
-              </Grid>
               <Stack
               direction={"row"}
               alignItems={"center"}
@@ -175,23 +135,7 @@ export default function DetailCombo() {
                 spacing={1}
               >
                 <Typography gutterBottom variant="h6">
-                  Giá gói gốc:
-                </Typography>
-                <Chip
-                  label={`${data?.stockPrice?.toLocaleString()} VNĐ`}
-                  style={{
-                    backgroundColor: "#ff6d00",
-                  }}
-                />
-              </Stack>
-              <Stack
-                direction={"row"}
-                alignItems={"center"}
-                sx={{ mb: 3, mt: 3 }}
-                spacing={1}
-              >
-                <Typography gutterBottom variant="h6">
-                  Giá gói bán:
+                  Giá bán:
                 </Typography>
                 <Chip
                   label={`${data?.sellingPrice?.toLocaleString()} VNĐ`}
@@ -209,22 +153,8 @@ export default function DetailCombo() {
                 <Typography gutterBottom variant="h6">
                   Trạng thái:
                 </Typography>
-                {renderStatusCombo(data?.status || "")}
+                {renderStatusProduct(data?.status || "")}
               </Stack>
-
-             {currentUser.user?.role === ROLES.MANAGER &&  <Button
-                sx={{ width: 200, mt: 3 }}
-                style={{
-                  backgroundColor: "#ffa733",
-                  color: "black",
-                }}
-                variant="contained"
-                onClick={() =>
-                  navigate(`/manager-manage-combo/update-combo/${id}`)
-                }
-              >
-                Cập nhật
-              </Button>}
               {currentUser.user?.role === ROLES.CUSTOMER &&  
               <Stack direction={"row"} spacing={2}>
               <Button

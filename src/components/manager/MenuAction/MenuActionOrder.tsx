@@ -1,4 +1,3 @@
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 // import EditIcon from "@mui/icons-material/Edit";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -6,8 +5,8 @@ import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import * as React from "react";
-import { OrderType } from "../../../types/Order/OrderType";
 import { useNavigate } from "react-router-dom";
+import { OrderType } from "../../../types/Order/OrderType";
 
 interface MenuProps {
     setOpenUpdate?: React.Dispatch<React.SetStateAction<boolean>>

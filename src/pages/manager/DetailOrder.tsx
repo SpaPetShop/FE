@@ -1,4 +1,5 @@
 import {
+  Alert,
   Avatar,
   Box,
   Button,
@@ -19,6 +20,7 @@ import OrderAPI from "../../utils/OrderAPI";
 import { renderStatusOrder } from "./ListOrder";
 import ModalUpdateOrder from "../../components/manager/Modal/Order/ModalUpdateOrder";
 import { toast } from "react-toastify";
+import ModalCancelOrder from "../../components/manager/Modal/Order/ModalCancelOrder";
 
 export default function DetailOrder() {
   const { id } = useParams();
@@ -26,31 +28,42 @@ export default function DetailOrder() {
   console.log({ id });
   const [data, setData] = useState<OrderType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [showUpdate, setShowUpdate] = useState(false);
+  const [isCancelOrder, setIsCancelOrder] = useState(false);
+  const [isShowAlert, setIsShowAlert] = useState(false);
+  const [isAssignStaff, setIsAssignStaff] = useState(false);
   const handleSelectStaff = () => {
-    setShowUpdate(true)
+    console.log("zo");
+    setIsAssignStaff(true);
   };
-  const handleCancelOrder = async() => {
-   const isConfirmed = window.confirm("Bạn muốn hủy đơn hàng này ?")
-   if(isConfirmed && data) {
-    try {
-      await OrderAPI.update(
-        data.orderId,
-        {status: "CANCELED"}
-      );
-      toast.success("Hủy đơn hàng thành công.")
-      fetchOrder()
-    } catch (error) {
-      toast.error("Hủy đơn hàng thất bại!")
+  const handleCancelOrder = async () => {
+    const isConfirmed = window.confirm("Bạn muốn hủy đơn hàng này ?");
+    if (isConfirmed && data) {
+      try {
+        await OrderAPI.update(data.orderId, { status: "CANCELED" });
+        toast.success("Hủy đơn hàng thành công.");
+        fetchOrder();
+      } catch (error) {
+        toast.error("Hủy đơn hàng thất bại!");
+      }
     }
-   }
-  }
+  };
   const fetchOrder = useCallback(async () => {
     try {
       setIsLoading(true);
       const data = await OrderAPI.getDetail(id || "");
       console.log({ data }, "Order detail");
       setData(data);
+      const createdDateTime = moment(data.createdDate);
+
+  // Lấy thời gian hiện tại
+  const now = moment();
+
+  // Tính toán sự khác biệt giữa thời gian hiện tại và thời gian createdDate
+  const duration = moment.duration(now.diff(createdDateTime));
+
+  // Kiểm tra xem sự khác biệt có lớn hơn 30 phút không
+  const isOver30Minutes = duration.asMinutes() > 30;
+  setIsShowAlert(isOver30Minutes);
     } catch (error) {
       console.log("Error get detail Order: ", error);
     } finally {
@@ -93,7 +106,7 @@ export default function DetailOrder() {
                   </Typography>
                   <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     <Avatar
-                      src={"/logo.png"}
+                      src={data.userInfo.image || "/logo.png"}
                       sx={{ width: 50, height: 50 }}
                       alt="avatar"
                     />
@@ -104,7 +117,7 @@ export default function DetailOrder() {
                       <Typography sx={{ fontSize: 17 }}>
                         Số điện thoại:{" "}
                         <strong>
-                          {data.userInfo.phoneNumber || "0123456789"}
+                          {data.userInfo.phoneNumber || "Chưa có thông tin"}
                         </strong>
                       </Typography>
                     </Box>
@@ -119,22 +132,52 @@ export default function DetailOrder() {
                     Nhân viên
                   </Typography>
                   {data.staff ? (
-                    <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                      <Avatar
-                        src={"/logo.png"}
-                        sx={{ width: 50, height: 50 }}
-                        alt="avatar"
-                      />
-                      <Box>
-                        <Typography sx={{ fontSize: 17, mb: 1 }}>
-                          Họ tên: <strong>{data?.staff?.fullName}</strong>
-                        </Typography>
-                        <Typography sx={{ fontSize: 17 }}>
-                          Số điện thoại:{" "}
-                          <strong>{data?.staff?.fullName}</strong>
-                        </Typography>
-                      </Box>
-                    </Stack>
+                    <>
+                      <Stack
+                        direction={"row"}
+                        alignItems={"center"}
+                        spacing={2}
+                      >
+                        <Avatar
+                          src={data.staff.image || "/logo.png"}
+                          sx={{ width: 50, height: 50 }}
+                          alt="avatar"
+                        />
+                        <Box>
+                          <Typography sx={{ fontSize: 17, mb: 1 }}>
+                            Họ tên: <strong>{data?.staff?.fullName}</strong>
+                          </Typography>
+                          <Typography sx={{ fontSize: 17 }}>
+                            Số điện thoại:{" "}
+                            <strong>
+                              {data?.staff?.phoneNumber || "Chưa có thông tin"}
+                            </strong>
+                          </Typography>
+                        </Box>
+                      </Stack>
+                      {(data?.staff && data.status==="PAID" && data.type === "MANAGERREQUEST" && isAssignStaff === false) && (
+                        <Box
+                          display={"flex"}
+                          flexDirection={"column"}
+                          alignItems={"center"}
+                        >
+                          <Box
+                            sx={{
+                              textDecoration: "underline",
+                              color: "#4fc3f7",
+                              // "&:hover": {
+                              //   color: "blue",
+                              // },
+                              cursor: "pointer",
+                              mt:1
+                            }}
+                            onClick={handleSelectStaff}
+                          >
+                            Đổi nhân viên
+                          </Box>
+                        </Box>
+                      )}
+                    </>
                   ) : (
                     <Box
                       display={"flex"}
@@ -146,21 +189,39 @@ export default function DetailOrder() {
                       >
                         Hiện chưa có nhân viên nhận đơn hàng này!
                       </Typography>
-                     {data.status !== "CANCELED" && <Box
-                        sx={{
-                          textDecoration: "underline",
-                          color: "#4fc3f7",
-                          // "&:hover": {
-                          //   color: "blue",
-                          // },
-                          cursor: "pointer",
-                        }}
-                        onClick={handleSelectStaff}
-                      >
-                        Chỉ định nhân viên
-                      </Box>} 
+                      {
+                      (data?.staff && data.status==="PAID" && data.type === "MANAGERREQUEST" && isAssignStaff === false) && (
+                        <Box
+                          sx={{
+                            textDecoration: "underline",
+                            color: "#4fc3f7",
+                            // "&:hover": {
+                            //   color: "blue",
+                            // },
+                            cursor: "pointer",
+                          }}
+                          onClick={handleSelectStaff}
+                        >
+                          Chỉ định nhân viên
+                        </Box>
+                      )}
+                     
                     </Box>
                   )}
+                   <Box
+                      display={"flex"}
+                      flexDirection={"column"}
+                      alignItems={"center"}
+                    >
+                   {data && isAssignStaff && (
+                        <ModalUpdateOrder
+                          data={data}
+                          fetchOrder={fetchOrder}
+                          open={isAssignStaff}
+                          setOpen={setIsAssignStaff}
+                        />
+                      )}
+                      </Box>
                 </Grid>
               </Grid>
 
@@ -177,10 +238,13 @@ export default function DetailOrder() {
                 <Grid item xs={6}>
                   {" "}
                   <CardMedia
-                    image="https://img5.thuthuatphanmem.vn/uploads/2021/12/27/hinh-nen-thu-cung-chat-luong-cao-2k-cho-may-tinh_050621563.jpg"
+                    image={
+                      data.petInfor.image ||
+                      "https://img5.thuthuatphanmem.vn/uploads/2021/12/27/hinh-nen-thu-cung-chat-luong-cao-2k-cho-may-tinh_050621563.jpg"
+                    }
                     component={"img"}
                     alt="img pet"
-                    sx={{ width: "100%", height: 180, borderRadius: 2.5 }}
+                    sx={{ maxWidth: "100%", height: 200, borderRadius: 2.5 }}
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -229,10 +293,18 @@ export default function DetailOrder() {
                 <Typography variant="h5" align="center" sx={{ mb: 3 }}>
                   THÔNG TIN ĐƠN HÀNG
                 </Typography>
-                <Typography variant="h6" sx={{ fontSize: 17, mb: 1 }}>
+                <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
                   Mã hóa đơn: <strong>{data.invoiceCode}</strong>
                 </Typography>
-                <Typography variant="h6" sx={{ fontSize: 17, mb: 1 }}>
+                <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
+                  Loại đơn hàng:{" "}
+                  <strong>
+                    {data.type === "CUSTOMERREQUEST"
+                      ? "Khách hàng chọn nhân viên"
+                      : "Quản lí chọn nhân viên"}
+                  </strong>
+                </Typography>
+                <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
                   Ngày tạo đơn:{" "}
                   <strong>
                     {moment(data.createdDate).format("DD/MM/YYYY - hh:mm")}
@@ -247,23 +319,36 @@ export default function DetailOrder() {
                   </Typography>
                 )}
                 <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
-                  Mô tả: <strong>{data.description}</strong>
+                  Mô tả: <strong>{data.description || "Chưa có thông tin"}</strong>
                 </Typography>
 
-                <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
+                {/* <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
                   Tổng giá tiền:{" "}
                   <strong>{data.totalAmount.toLocaleString()} VNĐ</strong>
-                </Typography>
+                </Typography> */}
                 <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
                   Tổng giá tiền:{" "}
                   <strong>{data.finalAmount.toLocaleString()} VNĐ</strong>
                 </Typography>
-                <Typography variant="h6" sx={{ fontSize: 17, mb: 1 }}>
+                <Typography variant="h6" sx={{ fontSize: 17}}>
                   Trạng thái: {renderStatusOrder(data.status)}
                 </Typography>
-                {data.status !== "CANCELED" && <Button variant="contained" color="error" sx={{mt: 10}}
-                onClick={handleCancelOrder}
-                >Hủy Đơn Hàng</Button>}
+
+                {isShowAlert && data.status === "UNPAID" && <Box sx={{mt:2}}>
+                   <Alert severity="warning">
+                      Hóa đơn này đã tạo được 30 phút nhưng vẫn chưa thanh toán!  
+                    </Alert>
+                </Box>}
+                {data.status !== "CANCELED" && (
+                  <Button
+                    variant="contained"
+                    color="error"
+                    sx={{ mt: 10 }}
+                    onClick={()=>setIsCancelOrder(true)}
+                  >
+                    Hủy Đơn Hàng
+                  </Button>
+                )}
               </Box>
             </Grid>
           </Grid>
@@ -347,16 +432,37 @@ export default function DetailOrder() {
                 ))}
             </Grid>
           </Grid>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              mt: 3,
+            }}
+          >
+            {" "}
+            <Button
+              variant="contained"
+              // color="primary"
+              sx={{ mt: 3 }}
+              style={{
+                borderRadius: 35,
+                backgroundColor: "#33eaff",
+                color: "black",
+                fontSize: "15px",
+              }}
+              onClick={() => navigate(-1)}
+            >
+              Quay về
+            </Button>
+          </Box>
         </Box>
       )}
-      {data && (
-        <ModalUpdateOrder
-          data={data}
-          fetchOrder={fetchOrder}
-          open={showUpdate}
-          setOpen={setShowUpdate}
-        />
-      )}
+      {data && <ModalCancelOrder
+      data={data}
+      fetchOrder={fetchOrder}
+      open={isCancelOrder}
+      setOpen={setIsCancelOrder}
+      />}
     </Paper>
   );
 }

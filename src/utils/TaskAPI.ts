@@ -1,9 +1,9 @@
-import { TaskResponse } from "../types/Task/TaskType";
+import { TaskType } from "../types/Task/TaskType";
 import axiosClient from "./axiosClient";
 const TaskAPI = {
   getAll: (params: any) => {
-    const url = "/accounts";
-    return axiosClient.get<any, TaskResponse>(url, {
+    const url = "/task";
+    return axiosClient.get<any, TaskType[]>(url, {
       params,
       paramsSerializer: {
         indexes: null, // by default: false
@@ -11,15 +11,15 @@ const TaskAPI = {
     });
   },
   create: (payload: any) => {
-    const url = "/staff";
+    const url = "/task";
     return axiosClient.post(url, payload);
   },
   update: (id: string, payload: any) => {
-    const url = `/accounts/${id}`;
+    const url = `/task/${id}`;
     return axiosClient.put(url, payload);
   },
   delete: (id: string) => {
-    const url = `/accounts/${id}`;
+    const url = `/task/${id}`;
     return axiosClient.delete(url);
   },
 };

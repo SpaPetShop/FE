@@ -83,7 +83,7 @@ export default function ListPetType() {
     React.useState<TPetType | null>(null);
   const debouncedInputValue = useDebounce(searchName, 1000); // Debounce with 1000ms delay
   const handleChangePage = (event: unknown, newPage: number) => {
-    setFilter((prev) => ({ ...prev, page: newPage }));
+    setFilter((prev) => ({ ...prev, page: newPage + 1 }));
   };
 
   const handleChangeRowsPerPage = (

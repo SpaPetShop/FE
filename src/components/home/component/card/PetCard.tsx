@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./PetCard.css";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -8,6 +8,8 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Chip, Grid } from "@mui/material";
 import { Link } from "react-router-dom";
+import { ROLES } from "../../../../routes/roles";
+import { UserContext } from "../../../../context/AuthContext";
 
 interface Pet {
   type: string;
@@ -20,6 +22,7 @@ interface Pet {
 }
 
 const PetCard: React.FC<{ pet: Pet }> = ({ pet }) => {
+  const currentUser = useContext(UserContext)
   return (
     <Grid item xs={6} sm={4} md={3} lg={2}>
       <Card sx={{ maxWidth: 400, textAlign: "center" }}>
@@ -76,7 +79,7 @@ const PetCard: React.FC<{ pet: Pet }> = ({ pet }) => {
               Xem chi tiết
             </Button>
           </Link>
-          <Button
+          {currentUser.user?.role === ROLES.CUSTOMER &&<Button
             size="small"
             sx={{
               borderRadius: "5px",
@@ -87,7 +90,7 @@ const PetCard: React.FC<{ pet: Pet }> = ({ pet }) => {
             color="warning"
           >
             Đặt lịch
-          </Button>
+          </Button>}
         </CardActions>
       </Card>
     </Grid>

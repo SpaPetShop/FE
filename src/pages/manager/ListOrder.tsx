@@ -2,7 +2,11 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import {
   Box,
   Chip,
+  FormControl,
   InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
   Skeleton,
   Stack,
   TablePagination,
@@ -100,7 +104,7 @@ export default function ListOrder() {
     setFilter((prev) => ({ ...prev, Type: newValue === "ALL" ? "" : newValue}))
   }
   const handleChangePage = (event: unknown, newPage: number) => {
-    setFilter((prev) => ({ ...prev, page: newPage }));
+    setFilter((prev) => ({ ...prev, page: newPage + 1 }));
   };
 
   const handleChangeRowsPerPage = (
@@ -196,6 +200,29 @@ export default function ListOrder() {
               ),
             }}
           />
+           <Box sx={{ minWidth: 120 }}>
+            <FormControl sx={{ width: "300px" }} size="small">
+              <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={filter.Status}
+                label="Trạng thái"
+                onChange={(e) =>
+                  setFilter((prev) => ({
+                    ...prev,
+                    Status: e.target.value as string,
+                  }))
+                }
+              >
+                <MenuItem value={""}>Tất cả</MenuItem>
+                <MenuItem value={"UNPAID"}>Chưa thanh toán</MenuItem>
+                <MenuItem value={"PAID"}>Đã thanh toán</MenuItem>
+                <MenuItem value={"COMPLETED"}>Hoàn thành</MenuItem>
+                <MenuItem value={"CANCELED"}>Đã hủy</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
         </Stack>
 
 

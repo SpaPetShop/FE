@@ -130,31 +130,29 @@
 //   );
 // }
 
-import AddIcon from "@mui/icons-material/Add";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Pagination,
-  Select,
-  Stack,
-  TextField
+    Box,
+    FormControl,
+    Grid,
+    InputAdornment,
+    InputLabel,
+    MenuItem,
+    Pagination,
+    Select,
+    Stack,
+    TextField
 } from "@mui/material";
-import Paper from "@mui/material/Paper";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import SingleCombo from "../../components/manager/SingleCombo";
-import useDebounce from "../../hook/useDebounce";
-import { ComboType, FilterComboType } from "../../types/Combo/ComboType";
-import { PaginationType } from "../../types/CommonType";
-import ProductAPI from "../../utils/ProductAPI";
+import useDebounce from "../../../hook/useDebounce";
+import { ComboType, FilterComboType } from "../../../types/Combo/ComboType";
+import { PaginationType } from "../../../types/CommonType";
+import ProductAPI from "../../../utils/ProductAPI";
+import ComboCard from "./card/ComboCard";
 
-export default function ListProduct() {
+
+export default function ListComboForCustomer() {
   const navigate = useNavigate()
 
   const [isLoading, setIsLoading] = React.useState(false);
@@ -165,8 +163,8 @@ export default function ListProduct() {
 
   const [pagination, setPagination] = React.useState<PaginationType>({
     page: 1,
-    size: 10,
-    total: 10,
+    size: 18,
+    total: 18,
     totalPages: 1,
   });
 
@@ -174,7 +172,7 @@ export default function ListProduct() {
 
   const [filter, setFilter] = React.useState<FilterComboType>({
     page: 1,
-    size: 10,
+    size: 18,
     Status: "",
   });
 
@@ -214,7 +212,7 @@ export default function ListProduct() {
     setFilter((prev) => ({ ...prev, Name: debouncedInputValue }));
   }, [debouncedInputValue]);
   return (
-    <Paper sx={{ p: 3 }}>
+    <Box sx={{width:"90vw", margin:"auto"}}>
       <Stack
         direction={"row"}
         justifyContent={"space-between"}
@@ -228,7 +226,7 @@ export default function ListProduct() {
         >
           <TextField
             size="small"
-            placeholder="Nhập tên gói..."
+            placeholder="Nhập tên gói sản phẩm..."
             label="Tìm kiếm"
             value={searchName}
             onChange={(e) => handleSearchName(e.target.value)}
@@ -257,33 +255,18 @@ export default function ListProduct() {
                 }
               >
                 <MenuItem value={""}>Tất cả</MenuItem>
-                <MenuItem value={"AVAILABLE"}>Đang Hoạt động</MenuItem>
-                <MenuItem value={"UNAVAILABLE"}>Ngưng hoạt động</MenuItem>
-                <MenuItem value={"OUTOFSTOCK"}>Hết hàng</MenuItem>
+                <MenuItem value={"AVAILABLE"}>Đang hoạt động</MenuItem>
+                <MenuItem value={"UNAVAILABLE"}>Không có sẵn</MenuItem>
+                {/* <MenuItem value={"OUTOFSTOCK"}>Hết hàng</MenuItem> */}
               </Select>
             </FormControl>
           </Box>
         </Stack>
-        <Button
-          variant="contained"
-          color="info"
-          startIcon={<AddIcon />}
-          style={{
-            backgroundColor: "#33eaff",
-            color: "black",
-            borderRadius:"15px"
-          }}
-          onClick={() => {
-            navigate("/manager-manage-combo/create-combo");
-          }}
-        >
-          Tạo gói
-        </Button>
       </Stack>
 
-      <Grid container spacing={3} sx={{ minHeight: 600 }}>
+      <Grid container spacing={3} sx={{ minHeight: 400 }}>
          {listCombo.map((combo, index) => (
-           <SingleCombo key={index} data={combo} />
+           <ComboCard key={index} data={combo} />
          ))}
        </Grid>
       <Stack
@@ -299,6 +282,6 @@ export default function ListProduct() {
           onChange={handleChangePage}
         />
       </Stack>
-    </Paper>
+    </Box>
   );
 }
