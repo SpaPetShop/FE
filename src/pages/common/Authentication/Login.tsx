@@ -37,7 +37,7 @@ export default function Login() {
       case ROLES.CUSTOMER:
         return navigate("/");
       case ROLES.STAFF:
-        return navigate("/");
+        return navigate("/staff-manage-task");
     }
   };
 
@@ -102,7 +102,7 @@ export default function Login() {
                 );
                 currentUser.setUser({
                   accessToken: response.tokenModel.accessToken,
-                  avatarUrl: response.image,
+                  image: response.image,
                   email: "",
                   id: response.id,
                   name: response.fullName,

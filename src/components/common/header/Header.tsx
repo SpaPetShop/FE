@@ -1,5 +1,4 @@
 
-
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import Logout from "@mui/icons-material/Logout";
@@ -75,6 +74,8 @@ const Header: React.FC = () => {
           <li>
             <Link to={"/"}>Trang chủ</Link>
           </li>
+          {currentUser.user?.role === ROLES.MANAGER &&<li><Link to={"/manager-manage-order"}>Bảng điều khiển</Link></li>}
+          {currentUser.user?.role === ROLES.ADMIN &&<li><Link to={"/admin-dashboard"}>Bảng điều khiển</Link></li>}
           <li>
             <Link to={"/"}>Giới thiệu</Link>
           </li>
@@ -101,7 +102,7 @@ const Header: React.FC = () => {
                   >
                     <Avatar
                       sx={{ width: 32, height: 32 }}
-                      src={"/logo.png"}
+                      src={currentUser.user.image || "/logo.png"}
                     ></Avatar>
                   </IconButton>
                 </Tooltip>
@@ -198,4 +199,3 @@ const Header: React.FC = () => {
 };
 
 export default Header;
-

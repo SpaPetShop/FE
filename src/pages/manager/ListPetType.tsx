@@ -24,17 +24,17 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import * as React from "react";
-import MenuActionCategory from "../../components/manager/MenuAction/MenuActionCategory";
-import ModalCreateCategory from "../../components/manager/Modal/Category/ModalCreateNewCategory";
-import ModalUpdateCategory from "../../components/manager/Modal/Category/ModalUpdateCategory";
+import MenuActionPetType from "../../components/manager/MenuAction/MenuActionPetType";
+import ModalCreatePetType from "../../components/manager/Modal/PetType/ModalCreatePetType";
+import ModalUpdatePetType from "../../components/manager/Modal/PetType/ModalUpdatePetType";
 import useDebounce from "../../hook/useDebounce";
 import {
-  CategoryType,
-  FilterCategoryType,
-} from "../../types/Category/CategoryType";
+  TPetType,
+  FilterTPetType,
+} from "../../types/Pet/PetType";
 import { PaginationType } from "../../types/CommonType";
-import CategoryAPI from "../../utils/CategoryAPI";
-import ModalDeleteCategory from "../../components/manager/Modal/Category/ModalDeleteCategory";
+import PetAPI from "../../utils/PetAPI";
+import ModalDeletePetType from "../../components/manager/Modal/PetType/ModalDeletePetType";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -59,12 +59,12 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function ListCategory() {
+export default function ListPetType() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [showModalCreate, setShowModalCreate] = React.useState(false);
   const [showModalUpdate, setShowModalUpdate] = React.useState(false);
   const [showModalDelete, setShowModalDelete] = React.useState(false);
-  const [listCategory, setListCategory] = React.useState<CategoryType[] | []>(
+  const [listPetType, setListPetType] = React.useState<TPetType[] | []>(
     []
   );
   const [pagination, setPagination] = React.useState<PaginationType>({
@@ -74,13 +74,13 @@ export default function ListCategory() {
     totalPages: 1,
   });
   const [searchName, setSearchName] = React.useState("");
-  const [filter, setFilter] = React.useState<FilterCategoryType>({
+  const [filter, setFilter] = React.useState<FilterTPetType>({
     page: 1,
     size: 10,
     Status: "",
   });
-  const [selectedCategory, setSelectedCategory] =
-    React.useState<CategoryType | null>(null);
+  const [selectedPetType, setSelectedPetType] =
+    React.useState<TPetType | null>(null);
   const debouncedInputValue = useDebounce(searchName, 1000); // Debounce with 1000ms delay
   const handleChangePage = (event: unknown, newPage: number) => {
     setFilter((prev) => ({ ...prev, page: newPage }));
@@ -94,12 +94,12 @@ export default function ListCategory() {
   const handleSearchName = (name: string) => {
     setSearchName(name);
   };
-  const fetchAllCategory = React.useCallback(async () => {
+  const fetchAllPetType = React.useCallback(async () => {
     try {
       setIsLoading(true);
-      const data = await CategoryAPI.getAll(filter);
+      const data = await PetAPI.getAllPetType(filter);
       console.log({ data });
-      setListCategory(data.items);
+      setListPetType(data.items);
       setPagination({
         page: data.page,
         size: data.size,
@@ -107,14 +107,14 @@ export default function ListCategory() {
         totalPages: data.totalPages,
       });
     } catch (error) {
-      console.log("Error get list Category: ", error);
+      console.log("Error get list PetType: ", error);
     } finally {
       setIsLoading(false);
     }
   }, [filter]);
   React.useEffect(() => {
-    fetchAllCategory();
-  }, [fetchAllCategory]);
+    fetchAllPetType();
+  }, [fetchAllPetType]);
   React.useEffect(() => {
     setFilter((prev) => ({ ...prev, Name: debouncedInputValue }));
   }, [debouncedInputValue]);
@@ -197,7 +197,7 @@ export default function ListCategory() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {listCategory.length === 0 && isLoading === false && (
+            {listPetType.length === 0 && isLoading === false && (
               <StyledTableRow>
                 <StyledTableCell colSpan={5} align="left">
                   <Typography align="center">Không có dữ liệu!</Typography>
@@ -224,9 +224,9 @@ export default function ListCategory() {
                   </StyledTableCell>
                 </StyledTableRow>
               ))}
-            {listCategory.length > 0 &&
+            {listPetType.length > 0 &&
               isLoading === false &&
-              listCategory.map((row, index) => (
+              listPetType.map((row, index) => (
                 <StyledTableRow key={index}>
                   <StyledTableCell align="center" size="small">
                     {(pagination.page - 1) * pagination.size + index + 1}
@@ -254,10 +254,10 @@ export default function ListCategory() {
                     )}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                    <MenuActionCategory
+                    <MenuActionPetType
                       setOpenUpdate={setShowModalUpdate}                  
                       setOpenDelete={setShowModalDelete}
-                      setSelectedCategory={setSelectedCategory}
+                      setSelectedPetType={setSelectedPetType}
                       data={row}
                     />
                   </StyledTableCell>
@@ -279,23 +279,23 @@ export default function ListCategory() {
           return `${from}–${to} / ${count !== -1 ? count : `nhiều hơn ${to}`}`;
         }}
       />
-      <ModalCreateCategory
+      <ModalCreatePetType
         open={showModalCreate}
         setOpen={setShowModalCreate}
-        fetchAllCategory={fetchAllCategory}
+        fetchAllPetType={fetchAllPetType}
       />
 
-      {selectedCategory && <ModalUpdateCategory
+      {selectedPetType && <ModalUpdatePetType
         open={showModalUpdate}
         setOpen={setShowModalUpdate}
-        fetchAllCategory={fetchAllCategory}
-        data={selectedCategory}
+        fetchAllPetType={fetchAllPetType}
+        data={selectedPetType}
       />}
-      {selectedCategory && <ModalDeleteCategory
+      {selectedPetType && <ModalDeletePetType
         open={showModalDelete}
         setOpen={setShowModalDelete}
-        fetchAllCategory={fetchAllCategory}
-        data={selectedCategory}
+        fetchAllPetType={fetchAllPetType}
+        data={selectedPetType}
       />}
     </Paper>
   );

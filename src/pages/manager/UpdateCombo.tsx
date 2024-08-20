@@ -37,7 +37,11 @@ const validationSchema = Yup.object({
     .min(1000, "Giá gốc không thể nhỏ hơn 1000 VNĐ!"),
   sellingPrice: Yup.number()
     .required("*Giá bán không được để trống!")
-    .min(1000, "Giá bán không thể nhỏ hơn 1000 VNĐ!"),
+    .min(1000, "Giá bán không thể nhỏ hơn 1000 VNĐ!")
+    .max(
+      Yup.ref('stockPrice'),
+      '*Giá bán phải nhỏ hơn hoặc bằng giá gốc!'
+    ),
   status: Yup.string().required("*Trạng thái không được để trống !"),
   categoryId: Yup.string().required("*Loại sản phẩm không được để trống !"),
   image: Yup.array().of(
@@ -118,9 +122,7 @@ export default function UpdateCombo() {
                 toast.error("Vui lòng chọn sản phẩm cho gói!");
                 return;
               }
-
               await ProductAPI.update(id || "", {
-
                 ...values,
                 priority: 0,
                 supProductId: listProductSelected,
@@ -297,18 +299,15 @@ export default function UpdateCombo() {
                       onBlur={handleBlur}
                       value={values.status}
                     >
-
                       <MenuItem value="AVAILABLE">Sẵn có</MenuItem>
                       <MenuItem value="UNAVAILABLE">Không sẵn có</MenuItem>
                       <MenuItem value="OUTOFSTOCK">Hết hàng</MenuItem>
-
                     </Field>
                     <FormHelperText>Vui lòng chọn trạng thái</FormHelperText>
                   </FormControl>
                 </Grid>
               </Grid>
               <Box mb={2}></Box>
-
             {data?.image[0]?.imageURL && (
                     <>
                       <Grid container spacing={3}>
@@ -329,7 +328,6 @@ export default function UpdateCombo() {
                   <Box mb={2}></Box>
             <Typography variant="subtitle2" sx={{ color: "black", mb: 1 }}>Nhập link ảnh:</Typography>
            
-
             <FieldArray name="image">
                     {({ push, remove }: any) => (
                       <Box>

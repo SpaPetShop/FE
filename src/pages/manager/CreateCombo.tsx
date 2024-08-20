@@ -33,7 +33,11 @@ const validationSchema = Yup.object({
     .min(1000, "Giá gốc không thể nhỏ hơn 1000 VNĐ!"),
   sellingPrice: Yup.number()
     .required("*Giá bán không được để trống!")
-    .min(1000, "Giá bán không thể nhỏ hơn 1000 VNĐ!"),
+    .min(1000, "Giá bán không thể nhỏ hơn 1000 VNĐ!")
+    .max(
+      Yup.ref('stockPrice'),
+      '*Giá bán phải nhỏ hơn hoặc bằng giá gốc!'
+    ),
   status: Yup.string().required("*Trạng thái không được để trống !"),
   categoryId: Yup.string().required("*Loại sản phẩm không được để trống !"),
   image: Yup.array().of(
@@ -79,9 +83,7 @@ export default function CreateCombo() {
           description: "",
           stockPrice: "",
           sellingPrice: "",
-
           status: "AVAILABLE",
-
           categoryId: "",
           image:[""]
         }}
@@ -267,11 +269,9 @@ export default function CreateCombo() {
                     onBlur={handleBlur}
                     value={values.status}
                   >
-
                     <MenuItem value="AVAILABLE">Sẵn có</MenuItem>
                     <MenuItem value="UNAVAILABLE">Không sẵn có</MenuItem>
                     <MenuItem value="OUTOFSTOCK">Hết hàng</MenuItem>
-
                   </Field>
                   <FormHelperText>
                     * Vui lòng chọn trạng thái gói

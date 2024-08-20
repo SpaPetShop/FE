@@ -257,11 +257,9 @@ export default function ListProduct() {
                 }
               >
                 <MenuItem value={""}>Tất cả</MenuItem>
-
                 <MenuItem value={"AVAILABLE"}>Đang Hoạt động</MenuItem>
                 <MenuItem value={"UNAVAILABLE"}>Ngưng hoạt động</MenuItem>
                 <MenuItem value={"OUTOFSTOCK"}>Hết hàng</MenuItem>
-
               </Select>
             </FormControl>
           </Box>
@@ -270,6 +268,11 @@ export default function ListProduct() {
           variant="contained"
           color="info"
           startIcon={<AddIcon />}
+          style={{
+            backgroundColor: "#33eaff",
+            color: "black",
+            borderRadius:"15px"
+          }}
           onClick={() => {
             navigate("/manager-manage-combo/create-combo");
           }}

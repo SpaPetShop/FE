@@ -7,26 +7,25 @@ import TotalStaff from "../pages/admin/ManageMenu/TotalStaff";
 import Login from "../pages/common/Authentication/Login";
 import Register from "../pages/common/Authentication/Register";
 import ContactPage from "../pages/common/Contact";
-import DetailPage from "../pages/common/Detail/DetailPage";
 import Page401 from "../pages/common/ErrorPage/Page401";
 import Page403 from "../pages/common/ErrorPage/Page403";
 import Home from "../pages/common/Home/Home";
+import PaymentSuccess from "../pages/common/PaymentSuccess";
 import Profile from "../pages/customer/Profile";
 import CreateCombo from "../pages/manager/CreateCombo";
 import DetailCombo from "../pages/manager/DetailCombo";
 import DetailCustomer from "../pages/manager/DetailCustomer";
-
 import DetailOrder from "../pages/manager/DetailOrder";
-
 import ListCategory from "../pages/manager/ListCategory";
 import ListCombo from "../pages/manager/ListCombo";
 import ListOrder from "../pages/manager/ListOrder";
+import ListPetType from "../pages/manager/ListPetType";
 import ListProduct from "../pages/manager/ListProduct";
 import ListStaff from "../pages/manager/ListStaff";
 import ListTask from "../pages/manager/ListTask";
 import ListUser from "../pages/manager/ListUser";
 import UpdateCombo from "../pages/manager/UpdateCombo";
-import StaffCalendar from "../pages/staff/StaffCalendar";
+import {StaffCalendar} from "../pages/staff/StaffCalendar";
 
 export const commonRoutes = [
   {
@@ -52,6 +51,11 @@ export const commonRoutes = [
   {
     path: "/403",
     element: <Page403 />,
+    isWrapLayout: false,
+  },
+  {
+    path: "/payment",
+    element: <PaymentSuccess />,
     isWrapLayout: false,
   },
 ];
@@ -122,6 +126,10 @@ export const managerRoutes = [
     element: <ListCategory />,
   },
   {
+    path: "/manager-manage-pet-type",
+    element: <ListPetType />,
+  },
+  {
     path: "/manager-manage-combo/:id",
     element: <DetailCombo />,
   },
@@ -158,7 +166,7 @@ export const customerRoutes = [
 
 export const staffRoutes = [
   {
-    path: "/staff-calendar",
+    path: "/staff-manage-task",
     element: <StaffCalendar />,
   },
 ];

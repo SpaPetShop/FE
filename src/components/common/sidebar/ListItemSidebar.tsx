@@ -6,6 +6,7 @@ import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
 import PeopleIcon from "@mui/icons-material/People";
 import StyleOutlinedIcon from "@mui/icons-material/StyleOutlined";
 import FormatListNumberedOutlinedIcon from "@mui/icons-material/FormatListNumberedOutlined";
+import PetsIcon from '@mui/icons-material/Pets';
 
 export const managerSidebarItems = [
   {
@@ -19,9 +20,14 @@ export const managerSidebarItems = [
     icon: <PeopleIcon />,
   },
   {
-    title: "Danh sách thể loại",
+    title: "Danh sách loại gói",
     path: "/manager-manage-category",
     icon: <ListAltOutlinedIcon />,
+  },
+  {
+    title: "Danh sách loại thú cưng",
+    path: "/manager-manage-pet-type",
+    icon: <PetsIcon />,
   },
   {
     title: "Quản lý sản phẩm",

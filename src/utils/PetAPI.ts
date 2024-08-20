@@ -1,24 +1,25 @@
+import { TPetResponse } from "../types/Pet/PetType";
 import axiosClient from "./axiosClient";
 const petAPI = {
-  getDataBookingOfCustomer: (params: any) => {
-    const url = "/";
-    return axiosClient.get(url, {
+  getAllPetType: (params: any) => {
+    const url = "/typePet";
+    return axiosClient.get<any, TPetResponse>(url, {
       params,
       paramsSerializer: {
         indexes: null, // by default: false
       },
     });
   },
-  createNewPet: (payload: any) => {
-    const url = "/";
+  createNewTypePet: (payload: any) => {
+    const url = "/typePet";
     return axiosClient.post(url, payload);
   },
-  updatePet: (payload: any) => {
-    const url = "/";
+  updateTypePet: (id: string, payload: any) => {
+    const url = `/typePet/${id}`;
     return axiosClient.put(url, payload);
   },
-  deletePet: (payload: any) => {
-    const url = "/";
+  deleteTypePet: (payload: any) => {
+    const url = "/typePet";
     return axiosClient.delete(url, payload);
   },
 };

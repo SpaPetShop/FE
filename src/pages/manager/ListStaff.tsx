@@ -191,7 +191,6 @@ export default function ListStaff() {
                 <MenuItem value={""}>Tất cả</MenuItem>
                 <MenuItem value={"ACTIVE"}>Đang hoạt động</MenuItem>
                 <MenuItem value={"DEACTIVE"}>Ngưng hoạt động</MenuItem>
-
               </Select>
             </FormControl>
           </Box>
@@ -201,11 +200,16 @@ export default function ListStaff() {
           color="info"
           startIcon={<AddIcon />}
           sx={{mb: 3, mt: 2 }}
+          style={{
+            backgroundColor: "#33eaff",
+            color: "black",
+            borderRadius:"15px"
+          }}
           onClick={() => {
             setShowModalCreate(true);
           }}
         >
-          Thêm
+          Tạo nhân viên
         </Button>
       </Stack>
 
@@ -282,12 +286,10 @@ export default function ListStaff() {
                     {row.email ? row.email : "-"}
                   </StyledTableCell>           
                   <StyledTableCell align="center" size="small">
-
                     {row.status === "ACTIVE" ? (
                       <Chip label={"Đang hoạt động"} color="success" size="small"/>
                     ) : (
                       <Chip label={"Ngưng hoạt động"} color="error" size="small"/>
-
                     )}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">

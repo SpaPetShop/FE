@@ -8,10 +8,12 @@ import * as React from "react";
 import { UserType } from "../../../types/User/UserType";
 interface MenuProps {
   setOpenUpdate: React.Dispatch<React.SetStateAction<boolean>>
-  setOpenDelete: React.Dispatch<React.SetStateAction<boolean>>
-  setSelectedUser: React.Dispatch<React.SetStateAction<UserType | null>>
-  data:UserType
+    setOpenDelete: React.Dispatch<React.SetStateAction<boolean>>
+    setSelectedUser: React.Dispatch<React.SetStateAction<UserType | null>>
+    data:UserType
 }
+
+
 export default function MenuActionManageManager({data, setOpenUpdate, setSelectedUser, setOpenDelete}: MenuProps) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -33,7 +35,6 @@ export default function MenuActionManageManager({data, setOpenUpdate, setSelecte
     setSelectedUser(data)
     setOpenDelete(true);
   };
-
   return (
     <div>
     <Button
