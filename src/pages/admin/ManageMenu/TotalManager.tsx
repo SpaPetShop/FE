@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Avatar,
   Button,
@@ -16,19 +16,25 @@ import {
   TextField,
   TablePagination,
   tableCellClasses,
-} from '@mui/material';
-import { styled } from '@mui/material/styles';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
-import moment from 'moment';
-import AdminManageStaffAPI from '../../../utils/AdminMangeStaffAPI';
-import ModalCreateStaff from '../../../components/manager/Modal/ModalCreateStaff';
-import MenuActionManageStaff from '../../../components/manager/MenuAction/MenuActionManageStaff';
-import { GridRowSelectionModel } from '@mui/x-data-grid';
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+import moment from "moment";
+import AdminManageStaffAPI from "../../../utils/AdminMangeStaffAPI";
+import ModalCreateManager from "../ModalCreateManager";
+import {
+  UserType,
+  FilterUserType,
+} from "../../../types/User/UserType";
+import MenuActionManageManager from "../../../components/manager/MenuAction/MenuActionManageManager";
+import ModalCreateUser from "../../../components/manager/Modal/User/ModalCreateUser";
+import ModalUpdateUser from "../../../components/manager/Modal/User/ModalUpdateUser";
+import ModalDeleteUser from "../../../components/manager/Modal/User/ModalDeleteUser";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: '#f4511e',
+    backgroundColor: "#f4511e",
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
@@ -37,14 +43,14 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
+  "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },
-  '&:last-child td, &:last-child th': {
+  "&:last-child td, &:last-child th": {
     border: 0,
   },
-  '&:hover': {
-    backgroundColor: '#81d4fa',
+  "&:hover": {
+    backgroundColor: "#81d4fa",
   },
 }));
 
@@ -61,33 +67,34 @@ interface Manager {
   image?: string | null;
 }
 
-
-
 const TotalManager = () => {
   const [manager, setManager] = useState<Manager[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [showModalCreate, setShowModalCreate] = useState(false);
 
   useEffect(() => {
     const fetchManager = async () => {
       try {
-        const response:any = await AdminManageStaffAPI.getAll({ role: 'Manager' });
+        const response: any = await AdminManageStaffAPI.getAll({
+          role: "Manager",
+        });
         setManager(response.items);
       } catch (error) {
-        console.error('Failed to fetch staff:', error);
+        console.error("Failed to fetch staff:", error);
       }
     };
 
     fetchManager();
   }, []);
 
-
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
@@ -98,11 +105,10 @@ const TotalManager = () => {
     user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const paginatedStaff = filteredManager.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-
-  
- 
-  
+  const paginatedStaff = filteredManager.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   return (
     <Paper sx={{ p: 2 }}>
@@ -112,7 +118,7 @@ const TotalManager = () => {
           placeholder="Nhập tên nhân viên ..."
           label="Tìm kiếm"
           onChange={(e) => handleSearchName(e.target.value)}
-          sx={{ mt: 2, mb: 3, ml: 3, width: '345px' }}
+          sx={{ mt: 2, mb: 3, ml: 3, width: "345px" }}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -138,7 +144,7 @@ const TotalManager = () => {
               <StyledTableCell align="center">Tên nhân viên</StyledTableCell>
               <StyledTableCell align="center">Số điện thoại</StyledTableCell>
               <StyledTableCell align="center">Email</StyledTableCell>
-              <StyledTableCell align="center">Gioi tinh</StyledTableCell>
+              <StyledTableCell align="center">Giới tính</StyledTableCell>
               <StyledTableCell align="center">Trạng thái</StyledTableCell>
               <StyledTableCell align="center">Thao tác</StyledTableCell>
             </TableRow>
@@ -151,7 +157,7 @@ const TotalManager = () => {
                 </StyledTableCell>
                 <StyledTableCell component="th" scope="row" size="small">
                   <Stack direction="row" alignItems="center" spacing={2}>
-                    <Avatar src={row.image || '/default-avatar.png'} />
+                    <Avatar src={row.image || "/default-avatar.png"} />
                     <Typography>{row.fullName}</Typography>
                   </Stack>
                 </StyledTableCell>
@@ -169,14 +175,17 @@ const TotalManager = () => {
                 </StyledTableCell>
                 */}
                 <StyledTableCell align="center" size="small">
-                  {row.status === 'Activate' ? (
+                  {row.status === "Activate" ? (
                     <Chip label="Đang hoạt động" color="success" />
                   ) : (
                     <Chip label="Ngưng hoạt động" color="error" />
                   )}
                 </StyledTableCell>
                 <StyledTableCell align="center" size="small">
-                  <MenuActionManageStaff />
+                  {/* <MenuActionManageManager /> */}
+
+
+                  
                 </StyledTableCell>
               </StyledTableRow>
             ))}
@@ -193,7 +202,7 @@ const TotalManager = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
-      <ModalCreateStaff open={showModalCreate} setOpen={setShowModalCreate} />
+      <ModalCreateManager open={showModalCreate} setOpen={setShowModalCreate} />
     </Paper>
   );
 };

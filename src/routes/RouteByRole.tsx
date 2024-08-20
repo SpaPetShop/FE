@@ -1,3 +1,4 @@
+import AdminOrderDetail from "../pages/admin/AdminDetail/AdminOrderDetail";
 import Dashboard from "../pages/admin/Dashboard";
 import ManageOderList from "../pages/admin/ManageMenu/ManageOderList";
 import TotalCustomer from "../pages/admin/ManageMenu/ToltalCustomer";
@@ -26,7 +27,7 @@ import ListStaff from "../pages/manager/ListStaff";
 import ListTask from "../pages/manager/ListTask";
 import ListUser from "../pages/manager/ListUser";
 import UpdateCombo from "../pages/manager/UpdateCombo";
-import StaffCalendar from "../pages/staff/StaffCalendar";
+import {StaffCalendar} from "../pages/staff/StaffCalendar";
 
 export const commonRoutes = [
   {
@@ -101,6 +102,10 @@ export const adminRoutes = [
     path: "/admin-manage-oderList",
     element: <ManageOderList />,
   },
+  {
+    path: "/admin-manage-oderDetail/:id",
+    element: <AdminOrderDetail />,
+  },
 ];
 
 export const managerRoutes = [
@@ -171,7 +176,7 @@ export const customerRoutes = [
 
 export const staffRoutes = [
   {
-    path: "/staff-calendar",
+    path: "/staff-manage-task",
     element: <StaffCalendar />,
   },
 ];

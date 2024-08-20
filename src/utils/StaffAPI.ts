@@ -1,9 +1,17 @@
-import { CategoryResponse } from "../types/Category/CategoryType";
 import axiosClient from "./axiosClient";
-const AdminMangeOderAPi = {
+const StaffAPI = {
   getAll: (params: any) => {
-    const url = "/orders";
-    return axiosClient.get<any>(url, {
+    const url = "/task";
+    return axiosClient.get<any >(url, {
+      params,
+      paramsSerializer: {
+        indexes: null, // by default: false
+      },
+    });
+  },
+  getDetail: (id: string,params: any) => {
+    const url = `/task/${id}`;
+    return axiosClient.get<any >(url, {
       params,
       paramsSerializer: {
         indexes: null, // by default: false
@@ -11,16 +19,16 @@ const AdminMangeOderAPi = {
     });
   },
   create: (payload: any) => {
-    const url = "/categories";
+    const url = "/";
     return axiosClient.post(url, payload);
   },
   update: (id: string, payload: any) => {
-    const url = `/categories/${id}`;
+    const url = `//${id}`;
     return axiosClient.put(url, payload);
   },
   delete: (id: string) => {
-    const url = `/categories/${id}`;
+    const url = `//${id}`;
     return axiosClient.delete(url);
   },
 };
-export default AdminMangeOderAPi;
+export default StaffAPI;

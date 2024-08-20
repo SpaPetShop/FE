@@ -37,7 +37,7 @@ export default function Login() {
       case ROLES.CUSTOMER:
         return navigate("/");
       case ROLES.STAFF:
-        return navigate("/");
+        return navigate("/staff-manage-task");
     }
   };
 
