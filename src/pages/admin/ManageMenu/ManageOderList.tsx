@@ -137,7 +137,7 @@ const ManageOrderList = () => {
     setValue(newValue);
   };
   const handleChangePage = (event: unknown, newPage: number) => {
-    setFilter((prev) => ({ ...prev, page: newPage }));
+    setFilter((prev) => ({ ...prev, page: newPage+1 }));
   };
 
   const handleChangeRowsPerPage = (

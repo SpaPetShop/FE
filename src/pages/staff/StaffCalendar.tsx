@@ -20,17 +20,18 @@ import {
   Paper,
   Table,
   TableBody,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Snackbar,
+  Alert,
   Grid,
- 
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import { PaginationType } from "../../types/CommonType";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import StaffAPI from "../../utils/StaffAPI";
+import { PaginationType } from "../../types/CommonType";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -41,6 +42,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontSize: 14,
   },
 }));
+
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
@@ -61,10 +63,13 @@ export const StaffCalendar: React.FC = () => {
     total: 10,
     totalPages: 1,
   });
-  const userData = JSON.parse(localStorage.getItem("userData") || "null");
-
   const [searchName, setSearchName] = useState("");
   const [searchPhone, setSearchPhone] = useState("");
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const userData = JSON.parse(localStorage.getItem("userData") || "null");
 
   const handleSearchName = (name: string) => {
     setSearchName(name);
@@ -74,15 +79,18 @@ export const StaffCalendar: React.FC = () => {
     setSearchPhone(phone);
   };
 
+  const handleApprove = () => {
+    updateTaskStatus("COMPLETED");
+  };
+
   const fetchTasks = useCallback(async () => {
     try {
       setIsLoading(true);
       const data: any = await StaffAPI.getAll({
         accountId: userData?.id,
-       
       });
-
       setTasks(data);
+      console.log(data)
       setPagination({
         page: data.page,
         size: data.size,
@@ -94,7 +102,32 @@ export const StaffCalendar: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [pagination.page, pagination.size, searchName, searchPhone]);
+  }, [userData?.id, pagination.page, pagination.size, searchName, searchPhone]);
+
+  const updateTaskStatus = async (status: string) => {
+    if (!selectedTask) return;
+
+    try {
+      setIsLoading(true);
+      await StaffAPI.update(selectedTask.id, {
+        accountId: userData?.id,
+        excutionDate: new Date().toISOString(), 
+        status,
+      });
+
+      setSnackbarMessage("Task status updated successfully!");
+      setSnackbarSeverity("success");
+      fetchTasks();
+      handleCloseDetail();
+    } catch (error) {
+      setSnackbarMessage("Error updating task status.");
+      setSnackbarSeverity("error");
+      console.log("Error updating task status: ", error);
+    } finally {
+      setIsLoading(false);
+      setOpenSnackbar(true);
+    }
+  };
 
   useEffect(() => {
     fetchTasks();
@@ -116,6 +149,10 @@ export const StaffCalendar: React.FC = () => {
     setPagination((prev) => ({ ...prev, size: +event.target.value, page: 1 }));
   };
 
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
   return (
     <Paper sx={{ p: 3 }}>
       <Stack direction={"row"} alignItems={"center"} spacing={3} sx={{ mb: 3, mt: 2 }}>
@@ -134,7 +171,6 @@ export const StaffCalendar: React.FC = () => {
             ),
           }}
         />
-     
         <Box sx={{ minWidth: 120 }}>
           <FormControl sx={{ width: "300px" }} size="small">
             <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
@@ -148,7 +184,6 @@ export const StaffCalendar: React.FC = () => {
               <MenuItem value={"PENDING"}>Đang Chờ</MenuItem>
               <MenuItem value={"PROCESS"}>Xử Lý</MenuItem>
               <MenuItem value={"COMPLETED"}>Hoàn Thành</MenuItem>
-
             </Select>
           </FormControl>
         </Box>
@@ -225,7 +260,7 @@ export const StaffCalendar: React.FC = () => {
                     ) : task.status === "COMPLETED" ? (
                       <Chip label={"Hoàn thành"} color="success" />
                     ) : (
-                      <Chip label={"Đã hủy"} color="error" />
+                      <Chip label={"Đang xử lý"} color="info" />
                     )}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
@@ -234,7 +269,7 @@ export const StaffCalendar: React.FC = () => {
                       color="primary"
                       onClick={() => handleDetailClick(task)}
                     >
-                      Detail
+                      Xem chi tiết
                     </Button>
                   </StyledTableCell>
                 </StyledTableRow>
@@ -242,15 +277,16 @@ export const StaffCalendar: React.FC = () => {
             ) : (
               <StyledTableRow>
                 <StyledTableCell colSpan={8} align="center">
-                  <Typography align="center">Không có dữ liệu!</Typography>
+                  <Typography variant="body2">Không có dữ liệu</Typography>
                 </StyledTableCell>
               </StyledTableRow>
             )}
           </TableBody>
         </Table>
       </TableContainer>
+
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25, 50]}
         component="div"
         count={pagination.total}
         rowsPerPage={pagination.size}
@@ -259,7 +295,21 @@ export const StaffCalendar: React.FC = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
-      <Dialog
+      <Dialog open={!!selectedTask} onClose={handleCloseDetail}>
+        <DialogTitle>Chi tiết công việc</DialogTitle>
+        <DialogContent>
+        
+        </DialogContent>
+        {/* <DialogActions>
+          <Button onClick={() => updateTaskStatus("COMPLETED")} color="primary">
+            Hoàn thành
+          </Button>
+          <Button onClick={() => updateTaskStatus("PENDING")} color="secondary">
+            Đặt lại
+          </Button>
+          <Button onClick={handleCloseDetail}>Đóng</Button>
+        </DialogActions> */}
+         <Dialog
         open={Boolean(selectedTask)}
         onClose={handleCloseDetail}
         maxWidth="md"
@@ -300,10 +350,10 @@ export const StaffCalendar: React.FC = () => {
             </Grid>
           
             <div style={{ display: "flex", justifyContent: "center", marginTop: '20px' }}>
-              <Button style={{ backgroundColor: "green", color: "white", marginRight: "10px" }}>
-                Approve
-              </Button>
-              <Button style={{ backgroundColor: "red", color: "white" }}>Reject</Button>
+            <Button style={{backgroundColor:'green', color:'white'}} onClick={() => updateTaskStatus("PROCESS")} >
+            Hoàn thành
+          </Button>
+             
             </div>
           </Stack>
           ) : null}
@@ -314,6 +364,18 @@ export const StaffCalendar: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+    
+      </Dialog>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Paper>
   );
 };
