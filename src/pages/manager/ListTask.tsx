@@ -1,5 +1,7 @@
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {
+  Autocomplete,
   Box,
   Chip,
   FormControl,
@@ -9,8 +11,8 @@ import {
   Select,
   Skeleton,
   Stack,
-  TablePagination,
   TextField,
+  Tooltip,
   Typography
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
@@ -21,10 +23,13 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import moment from "moment";
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import useDebounce from "../../hook/useDebounce";
-import { PaginationType } from "../../types/CommonType";
-import { FilterUserType, UserType } from "../../types/User/UserType";
+import { FilterTaskType, TaskType } from "../../types/Task/TaskType";
+import { UserType } from "../../types/User/UserType";
+import TaskAPI from "../../utils/TaskAPI";
 import UserAPI from "../../utils/UserAPI";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -50,54 +55,65 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+export const renderStatusTask = (status: string) => {
+  switch (status) {
+    case "PENDING":
+      return <Chip sx={{minWidth:120}} label={"Đang chờ"} color="warning" size="small"/>
+    case "PROCESS":
+      return <Chip sx={{minWidth:120}}  label={"Đang xử lí"} color="info" size="small"/>
+    case "COMPLETED":
+      return <Chip sx={{minWidth:120}}  label={"Hoàn Thành"} color="success" size="small"/>
+  }
+}
 export default function ListTask() {
+  const navigate = useNavigate()
   const [isLoading, setIsLoading] = React.useState(false);
-  const [listUser, setListUser] = React.useState<UserType[] | []>(
+  const [listTask, setListTask] = React.useState<TaskType[] | []>(
     []
   );
-  const [pagination, setPagination] = React.useState<PaginationType>({
+  const [listStaff, setListStaff] = React.useState<UserType[] | []>([]);
+  // const [pagination, setPagination] = React.useState<PaginationType>({
+  //   page: 1,
+  //   size: 10,
+  //   total: 10,
+  //   totalPages: 1,
+  // });
+  const [searchStaff, setSearchStaff] = React.useState("");
+  const [filter, setFilter] = React.useState<FilterTaskType>({
     page: 1,
     size: 10,
-    total: 10,
-    totalPages: 1,
   });
-  const [searchName, setSearchName] = React.useState("");
-  const [searchPhone, setSearchPhone] = React.useState("");
-  const [filter, setFilter] = React.useState<FilterUserType>({
-    page: 1,
-    size: 10,
-    Role: "User",
-  });
-  const debouncedInputValueName = useDebounce(searchName, 500); // Debounce with 500ms delay
-  const debouncedInputValuePhone = useDebounce(searchPhone, 500);
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setFilter((prev) => ({ ...prev, page: newPage }));
+  const [searchCreateDate, setSearchCreateDate] = React.useState("");
+  const debouncedInputValueStaff = useDebounce(searchStaff, 500); // Debounce with 500ms delay
+  const debouncedInputValueDate = useDebounce(searchCreateDate, 500); // Debounce with 500ms delay
+  // const handleChangePage = (event: unknown, newPage: number) => {
+  //   setFilter((prev) => ({ ...prev, page: newPage }));
+  // };
+
+  // const handleChangeRowsPerPage = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   setFilter((prev) => ({ ...prev, page: 1, size: +event.target.value }));
+  // };
+  // const handleSearchStaff = (staffId: string) => {
+  //   setSearchStaff(staffId);
+  // };
+  const handleSearchCreateDate = (date: string) => {
+    setSearchCreateDate(date ? moment(date).format("YYYY-MM-DD") : "");
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setFilter((prev) => ({ ...prev, page: 1, size: +event.target.value }));
-  };
-  const handleSearchName = (name: string) => {
-    setSearchName(name);
-  };
-
-  const handleSearchPhone = (phone: string) => {
-    setSearchPhone(phone);
-  };
   const fetchAllUser = React.useCallback(async () => {
     try {
       setIsLoading(true);
-      const data = await UserAPI.getAll(filter);
+      const data = await TaskAPI.getAll(filter);
       console.log({ data });
-      setListUser(data.items);
-      setPagination({
-        page: data.page,
-        size: data.size,
-        total: data.total,
-        totalPages: data.totalPages,
-      });
+      setListTask(data);
+      // setPagination({
+      //   page: 1,
+      //   size: 10,
+      //   total: 10,
+      //   totalPages: 10,
+      // });
     } catch (error) {
       console.log("Error get list User: ", error);
     } finally {
@@ -107,44 +123,97 @@ export default function ListTask() {
   React.useEffect(() => {
     fetchAllUser();
   }, [fetchAllUser]);
+  React.useEffect(() => {
+    const fetchAllStaff = async () => {
+      try {
+        const data = await UserAPI.getAll({
+          page: 1,
+          size: 100,
+          Role: "STAFF",
+        });
+        setListStaff(data.items);
+      } catch (error) {
+        console.log("Error get list staff: ", error);
+      }
+    };
+    fetchAllStaff();
+  }, []);
 
   React.useEffect(() => {
-    setFilter((prev) => ({ ...prev, FullName: debouncedInputValueName }));
-  }, [debouncedInputValueName]);
+    setFilter((prev) => ({ ...prev, AccountId: debouncedInputValueStaff }));
+  }, [debouncedInputValueStaff]);
 
   React.useEffect(() => {
-    setFilter((prev) => ({ ...prev, PhoneNumber: debouncedInputValuePhone }));
-  }, [debouncedInputValuePhone]);
+    setFilter((prev) => ({ ...prev, ExcutionDate: debouncedInputValueDate }));
+  }, [debouncedInputValueDate]);
+
 
   return (
-    <Paper sx={{ p: 3 }}>
+    <Paper sx={{ p: 3, minHeight:"85vh" }}>
         <Stack
           direction={"row"}
           alignItems={"center"}
           spacing={3}
           sx={{ mb: 3, mt: 2 }}
         >
-          <TextField
-            size="small"
-            placeholder="Nhập tên khách hàng..."
-            label="Tìm kiếm"
-            value={searchName}
-            onChange={(e) => handleSearchName(e.target.value)}
-            sx={{ width: "300px" }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchOutlinedIcon />
-                </InputAdornment>
-              ),
-            }}
+ <Autocomplete
+      id="country-select-demo"
+      sx={{ width: "300px" }}
+      options={listStaff}
+      autoHighlight
+      size="small"
+      getOptionLabel={(option) => option.fullName}
+      onChange={(event, value) => {
+        console.log(value, event);
+        if (value) {
+          setSearchStaff(value.id);
+        } else {
+          setSearchStaff("")
+        }
+      }}
+      renderOption={(props, option) => (
+        <Box
+          component="li"
+          sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+          {...props}
+          key={option.id}
+        >
+          <img
+            loading="lazy"
+            width="50"
+            height={"50"}
+            src={`${option.image}`}
+            alt="imageProduct"
+            style={{ objectFit: "contain" }}
           />
-          <TextField
+          {option.fullName}
+        </Box>
+      )}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label="Tìm kiếm theo nhân viên"
+          // InputProps={{
+          //   startAdornment: (
+          //     <InputAdornment position="start">
+          //       <SearchOutlinedIcon />
+          //     </InputAdornment>
+          //   ),
+          // }}
+          inputProps={{
+            ...params.inputProps,
+            autoComplete: "off", // disable autocomplete and autofill
+          }}
+        />
+      )}
+    />
+         <TextField
             size="small"
-            placeholder="Nhập số điện thoại..."
-            label="Tìm kiếm"
-            value={searchPhone}
-            onChange={(e) => handleSearchPhone(e.target.value)}
+            placeholder="Nhập ngày thực thi..."
+            label="Ngày thực thi"
+            type="date"
+            value={searchCreateDate}
+            onChange={(e) => handleSearchCreateDate(e.target.value)}
             sx={{ width: "300px" }}
             InputProps={{
               startAdornment: (
@@ -170,8 +239,9 @@ export default function ListTask() {
                 }
               >
                 <MenuItem value={""}>Tất cả</MenuItem>
-                <MenuItem value={"Activate"}>Đang hoạt động</MenuItem>
-                <MenuItem value={"Deactivate"}>Ngưng hoạt động</MenuItem>
+                <MenuItem value={"PENDING"}>Đang chờ</MenuItem>
+                <MenuItem value={"PROCESS"}>Đang xử lí</MenuItem>
+                <MenuItem value={"COMPLETED"}>Hoàn thành</MenuItem>
               </Select>
             </FormControl>
           </Box>
@@ -183,19 +253,18 @@ export default function ListTask() {
           <TableHead>
             <TableRow>
               <StyledTableCell align="center">STT</StyledTableCell>
-              <StyledTableCell align="center">Họ Và Tên</StyledTableCell>
-              <StyledTableCell align="center">Tên Đăng Nhập</StyledTableCell>  
-              <StyledTableCell align="center">Số Điện Thoại</StyledTableCell>  
-              <StyledTableCell align="center">Email</StyledTableCell>  
-              <StyledTableCell align="center">Hạng</StyledTableCell>  
-              <StyledTableCell align="center">Điểm tích lũy</StyledTableCell>  
-              <StyledTableCell align="center">Trạng thái</StyledTableCell>   
+              <StyledTableCell align="center">Tên Nhân Viên</StyledTableCell>
+              <StyledTableCell align="center">Ngày Tạo</StyledTableCell>  
+              <StyledTableCell align="center">Ngày Thực Thi</StyledTableCell>  
+              <StyledTableCell align="center">Ngày Hoàn Thành</StyledTableCell>  
+              <StyledTableCell align="center">Trạng thái</StyledTableCell>  
+              <StyledTableCell align="center">Hóa Đơn</StyledTableCell>   
             </TableRow>
           </TableHead>
           <TableBody>
-            {listUser.length === 0 && isLoading === false && (
+            {listTask.length === 0 && isLoading === false && (
               <StyledTableRow>
-                <StyledTableCell colSpan={8} align="left">
+                <StyledTableCell colSpan={7} align="left">
                   <Typography align="center">Không có dữ liệu!</Typography>
                 </StyledTableCell>
               </StyledTableRow>
@@ -224,58 +293,44 @@ export default function ListTask() {
                   <StyledTableCell align="left">
                     <Skeleton variant="rectangular" />
                   </StyledTableCell>
-                  <StyledTableCell align="left">
-                    <Skeleton variant="rectangular" />
-                  </StyledTableCell>
                 </StyledTableRow>
               ))}
-            {listUser.length > 0 &&
+            {listTask.length > 0 &&
               isLoading === false &&
-              listUser.map((row, index) => (
+              listTask.map((row, index) => (
                 <StyledTableRow key={index}>
                   <StyledTableCell align="center" size="small">
-                    {(pagination.page - 1) * pagination.size + index + 1}
+                    {/* {(pagination.page - 1) * pagination.size + index + 1} */}
+                    {index + 1}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                    {row.fullName}
-                  </StyledTableCell>
-                  <StyledTableCell
-                    align="center"
-                    size="small"
-                    sx={{
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                      maxWidth: "250px",
-                    }}
-                  >
-                    {row.username}
+                    {row.staff.fullName}
+                  </StyledTableCell>              
+                  <StyledTableCell align="center" size="small">
+                    {row.createDate ? moment(row.createDate).format("DD/MM/YYYY - HH:mm") :"-"}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                    {row.phoneNumber}
+                  {row.excutionDate ? moment(row.excutionDate).format("DD/MM/YYYY - HH:mm") :"-"}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                    {row.email ? row.email : "-"}
+                  {row.completedDate ? moment(row.completedDate).format("DD/MM/YYYY - HH:mm") :"-"}
+                  </StyledTableCell>             
+                  <StyledTableCell align="center" size="small">
+                    {renderStatusTask(row.status)}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                    {row.rank ? row.rank : "-"}
-                  </StyledTableCell>
-                  <StyledTableCell align="center" size="small">
-                    {row.point ? row.point : "-"}
-                  </StyledTableCell>
-                  <StyledTableCell align="center" size="small">
-                    {row.status === "Activate" ? (
-                      <Chip label={"Đang hoạt động"} color="success" />
-                    ) : (
-                      <Chip label={"Ngưng hoạt động"} color="error" />
-                    )}
+                    <Tooltip title={"Xem chi tiết"} sx={{cursor:"pointer"}}
+                    onClick={()=>navigate(`/manager-manage-order/${row.order.id}`)}
+                    >
+                      <VisibilityOutlinedIcon color="success"/>
+                    </Tooltip>
                   </StyledTableCell>
                 </StyledTableRow>
               ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
+      {/* <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
         count={pagination.total}
@@ -287,7 +342,7 @@ export default function ListTask() {
         labelDisplayedRows={({ from, to, count }) => {
           return `${from}–${to} / ${count !== -1 ? count : `nhiều hơn ${to}`}`;
         }}
-      />
+      /> */}
     </Paper>
   );
 }

@@ -70,23 +70,59 @@ const Header: React.FC = () => {
       </div>
       <nav>
         <ul>
-          <li>
+          <Stack
+            alignItems={"center"}
+            justifyContent={"center"}
+            flexDirection={"column"}
+          >
             <Link to={"/"}>Trang chủ</Link>
-          </li>
-          {currentUser.user?.role === ROLES.MANAGER &&<li><Link to={"/manager-manage-order"}>Bảng điều khiển</Link></li>}
-          {currentUser.user?.role === ROLES.ADMIN &&<li><Link to={"/admin-dashboard"}>Bảng điều khiển</Link></li>}
-          <li>
+          </Stack>
+          {currentUser.user?.role === ROLES.MANAGER && (
+            <Stack
+            alignItems={"center"}
+            justifyContent={"center"}
+            flexDirection={"column"}
+          >
+              <Link to={"/manager-manage-order"}>Bảng điều khiển</Link>
+            </Stack>
+          )}
+          {currentUser.user?.role === ROLES.ADMIN && (
+            <li>
+              <Link to={"/admin-dashboard"}>Bảng điều khiển</Link>
+            </li>
+          )}
+          <Stack
+            alignItems={"center"}
+            justifyContent={"center"}
+            flexDirection={"column"}
+          >
             <Link to={"/"}>Giới thiệu</Link>
-          </li>
-          <li>
+          </Stack>
+
+          <Stack
+            alignItems={"center"}
+            justifyContent={"center"}
+            flexDirection={"column"}
+          >
             <Link to={"/"}>Dịch vụ</Link>
-          </li>
-          <li>
-            <Link to={"/"}>Đặt lịch</Link>
-          </li>
-          <li>
+          </Stack>
+
+          {currentUser.user?.role === ROLES.CUSTOMER && (
+            <Stack
+              alignItems={"center"}
+              justifyContent={"center"}
+              flexDirection={"column"}
+            >
+              <Link to={"/booking"}>Đặt lịch</Link>
+            </Stack>
+          )}
+          <Stack
+            alignItems={"center"}
+            justifyContent={"center"}
+            flexDirection={"column"}
+          >
             <Link to={"/contact"}>Liên hệ</Link>
-          </li>
+          </Stack>
           {currentUser.user ? (
             <Box>
               <Box>
@@ -94,7 +130,7 @@ const Header: React.FC = () => {
                   <IconButton
                     onClick={handleClick}
                     size="small"
-                    sx={{ ml: 2 }}
+                    // sx={{ ml: 2 }}
                     aria-controls={open ? "account-menu" : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? "true" : undefined}
@@ -145,10 +181,10 @@ const Header: React.FC = () => {
                   direction={"row"}
                   alignItems={"cenetr"}
                   spacing={1}
-                  sx={{ p: 1 }}
+                  sx={{ p: 1, minWidth:234 }}
                 >
                   <img
-                    src={"/logo.png"}
+                    src={currentUser.user.image || "/logo.png"}
                     alt="Avatar"
                     style={{
                       width: "50px",

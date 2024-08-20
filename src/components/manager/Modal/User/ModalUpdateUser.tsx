@@ -92,7 +92,7 @@ export default function ModalCreateUser({
               });
               setOpen(false);
               toast.success("Tạo thành công !");
-              fetchAllUser()
+              fetchAllUser();
             } catch (error) {
               toast.error("Tạo thất bại !");
             }
@@ -100,7 +100,14 @@ export default function ModalCreateUser({
         >
           {({ values }) => (
             <Form>
-              <DialogTitle id="alert-dialog-title" sx={{ textAlign: "center" }}>
+              <DialogTitle
+                id="alert-dialog-title"
+                sx={{
+                  textAlign: "center",
+                  backgroundImage:
+                    "linear-gradient(to right top, #ffab91, #ffbc8e, #ffce8f, #ffe193, #fff59d)",
+                }}
+              >
                 {"TẠO TÀI KHOẢN NHÂN VIÊN"}
               </DialogTitle>
               <DialogContent>
@@ -113,9 +120,9 @@ export default function ModalCreateUser({
                           <>
                             <Typography
                               variant="subtitle2"
-                              sx={{ color: "black", mb: 1 }}
+                              sx={{ color: "black", mb: 1, mt: 2 }}
                             >
-                              Tên nhân viên:
+                              Tên nhân viên*
                             </Typography>
                             <TextField
                               {...field}
@@ -144,7 +151,7 @@ export default function ModalCreateUser({
                               variant="subtitle2"
                               sx={{ color: "black", mb: 1 }}
                             >
-                              URL ảnh:
+                              URL ảnh*
                             </Typography>
                             <TextField
                               {...field}
@@ -171,7 +178,7 @@ export default function ModalCreateUser({
                               variant="subtitle2"
                               sx={{ color: "black", mb: 1 }}
                             >
-                              Email:
+                              Email
                             </Typography>
                             <TextField
                               {...field}
@@ -199,7 +206,7 @@ export default function ModalCreateUser({
                               variant="subtitle2"
                               sx={{ color: "black", mb: 1 }}
                             >
-                              Số điện thoại:
+                              Số điện thoại*
                             </Typography>
                             <TextField
                               {...field}
@@ -226,7 +233,7 @@ export default function ModalCreateUser({
                               variant="subtitle2"
                               sx={{ color: "black", mb: 1 }}
                             >
-                              Địa chỉ:
+                              Địa chỉ*
                             </Typography>
                             <TextField
                               {...field}
@@ -249,7 +256,7 @@ export default function ModalCreateUser({
                     </Grid>
                   </Grid>
                   <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
-                    <Typography>Trạng thái: </Typography>
+                    <Typography>Trạng thái </Typography>
                     <Switch
                       checked={checked}
                       onChange={handleChange}

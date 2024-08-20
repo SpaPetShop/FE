@@ -141,7 +141,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          Danh sách sản phẩm
+          Danh sách sản phẩm*
         </Typography>
       )}
       {/* {numSelected > 0 ? (

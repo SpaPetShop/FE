@@ -1,5 +1,5 @@
 
-import { ProductResponse } from "../types/Product/ProductType";
+import { ProductResponse, ProductType } from "../types/Product/ProductType";
 import axiosClient from "./axiosClient";
 const SubProductAPI = {
   getAll: (params: any) => {
@@ -10,6 +10,10 @@ const SubProductAPI = {
         indexes: null, // by default: false
       },
     });
+  },
+  getDetail: (id: string) => {
+    const url = `/supProducts/${id}`;
+    return axiosClient.get<any, ProductType>(url);
   },
   create: (payload: any) => {
     const url = "/supProducts";

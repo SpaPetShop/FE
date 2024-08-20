@@ -17,6 +17,12 @@ const Page403 = () => {
       <Button
         variant="contained"
         sx={{ mt: "75vh", ml: "48vw" }}
+        style={{
+          backgroundColor: "#33eaff",
+          color: "black",
+          borderRadius:"15px",
+          fontSize:15,
+        }}
         onClick={() => navigate(-1)}
       >
         Quay trở về

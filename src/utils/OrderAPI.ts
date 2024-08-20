@@ -20,7 +20,7 @@ const OrderAPI = {
   },
   update: (id: string, payload: any) => {
     const url = `/orders/${id}`;
-    return axiosClient.patch(url, payload);
+    return axiosClient.put(url, payload);
   },
   delete: (id: string) => {
     const url = `/orders/${id}`;

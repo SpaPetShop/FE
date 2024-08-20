@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "./recomment.css";
 import { Link } from "react-router-dom";
 import data from "../../../../../../assets/data/detail/recomment.json";
+import { ROLES } from "../../../../../../routes/roles";
+import { UserContext } from "../../../../../../context/AuthContext";
 
 interface PetService {
   type: string;
@@ -17,7 +19,7 @@ const Recomment: React.FC = () => {
   const { pets } = data;
   const itemsPerPage = 3;
   const [currentPage, setCurrentPage] = useState(1);
-
+  const currentUser = useContext(UserContext)
   const totalPages = Math.ceil(pets.length / itemsPerPage);
 
   const handlePageChange = (page: number) => {
@@ -40,9 +42,9 @@ const Recomment: React.FC = () => {
                 <Link to="/detail" className="recomment-button">
                   Xem chi tiết
                 </Link>
-                <Link to="/booking" className="recomment-button">
+                {currentUser.user?.role === ROLES.CUSTOMER && <Link to="/booking" className="recomment-button">
                   Đặt lịch ngay
-                </Link>
+                </Link>}
               </div>
             </div>
             <div className="recomment-info">

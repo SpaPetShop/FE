@@ -4,7 +4,7 @@ import Logout from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import NotificationsIcon from "@mui/icons-material/Notifications";
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import { Stack } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
@@ -182,10 +182,8 @@ export default function Sidebar() {
               {titleSelected}
             </Typography>
             <Stack direction={"row"}>
-              <IconButton color="inherit">
-                <Badge badgeContent={4} color="error">
-                  <NotificationsIcon color="secondary" />
-                </Badge>
+              <IconButton color="inherit" onClick={()=>navigate("/")}>             
+                  <HomeOutlinedIcon color="info" />
               </IconButton>
               <Box>
                 <Box>
@@ -210,7 +208,7 @@ export default function Sidebar() {
                   id="account-menu"
                   open={openMenu}
                   onClose={handleClose}
-                  onClick={handleClose}
+                  onClick={handleClose}              
                   PaperProps={{
                     elevation: 0,
                     sx: {
@@ -244,7 +242,7 @@ export default function Sidebar() {
                     direction={"row"}
                     alignItems={"cenetr"}
                     spacing={1}
-                    sx={{ p: 1 }}
+                    sx={{ p: 2, minWidth:234 }}
                   >
                     <img
                       src={"/logo.png"}
@@ -371,7 +369,6 @@ export default function Sidebar() {
                     }}
                   >
                     <ListItemIcon>{item.icon}</ListItemIcon>
-
                     <ListItemText primary={item.title} />
                   </ListItemButton>
                 </Link>
@@ -391,12 +388,9 @@ export default function Sidebar() {
           }}
         >
           <Toolbar />
-          {/* <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}> */}
           <Box sx={{ p: 3 }}>
             <Outlet />
           </Box>
-
-          {/* </Container> */}
         </Box>
       </Box>
     </ThemeProvider>

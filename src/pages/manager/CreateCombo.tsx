@@ -124,7 +124,7 @@ export default function CreateCombo() {
                     variant="subtitle2"
                     sx={{ color: "black", mb: 1 }}
                   >
-                    Tên gói:
+                    Tên gói*
                   </Typography>
                   <TextField
                     {...field}
@@ -149,7 +149,7 @@ export default function CreateCombo() {
                     variant="subtitle2"
                     sx={{ color: "black", mb: 1 }}
                   >
-                    Mô tả:
+                    Mô tả*
                   </Typography>
                   <TextField
                     {...field}
@@ -176,7 +176,7 @@ export default function CreateCombo() {
                         variant="subtitle2"
                         sx={{ color: "black", mb: 1 }}
                       >
-                        Giá gốc sản phẩm:
+                        Giá gốc sản phẩm*
                       </Typography>
                       <TextField
                         {...field}
@@ -205,7 +205,7 @@ export default function CreateCombo() {
                         variant="subtitle2"
                         sx={{ color: "black", mb: 1 }}
                       >
-                        Giá bán sản phẩm:
+                        Giá bán sản phẩm*
                       </Typography>
                       <TextField
                         {...field}
@@ -232,7 +232,7 @@ export default function CreateCombo() {
               <Grid item xs={12} sm={6} md={6}>
                 {" "}
                 <Typography variant="subtitle2" sx={{ color: "black", mb: 1 }}>
-                  Loại sản phẩm:
+                  Loại sản phẩm*
                 </Typography>
                 <FormControl
                   fullWidth
@@ -255,7 +255,7 @@ export default function CreateCombo() {
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
                 <Typography variant="subtitle2" sx={{ color: "black", mb: 1 }}>
-                  Trạng thái sản phẩm:
+                  Trạng thái sản phẩm*
                 </Typography>
                 <FormControl
                   fullWidth
@@ -280,7 +280,7 @@ export default function CreateCombo() {
               </Grid>
             </Grid>
             <Box mb={2}></Box>
-            <Typography variant="subtitle2" sx={{ color: "black", mb: 1 }}>Nhập link ảnh:</Typography>
+            <Typography variant="subtitle2" sx={{ color: "black", mb: 1 }}>Nhập link ảnh*</Typography>
             <FieldArray name="image">
                     {({ push, remove }: any) => (
                       <Box>

@@ -35,7 +35,6 @@ export default function ModalUpdateCategory({
   fetchAllCategory,
   data,
 }: ModalUpdateCategoryProps) {
-
   const [checked, setChecked] = React.useState(true);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,9 +43,9 @@ export default function ModalUpdateCategory({
   const handleClose = () => {
     setOpen(false);
   };
-  React.useEffect(()=>{
-   if(data) setChecked(data.status === "Active" ? true  : false)
-  },[data])
+  React.useEffect(() => {
+    if (data) setChecked(data.status === "Active" ? true : false);
+  }, [data]);
   if (data)
     return (
       <>
@@ -62,8 +61,8 @@ export default function ModalUpdateCategory({
                 const submitData = {
                   ...values,
                   status: checked ? "ACTIVE" : "INACTIVE",
-                  masterCategoryId: data.masterCategoryId
-                }
+                  masterCategoryId: data.masterCategoryId,
+                };
                 const response = await CategoryAPI.update(data.id, submitData);
                 console.log({ response });
                 setOpen(false);
@@ -78,7 +77,11 @@ export default function ModalUpdateCategory({
               <Form>
                 <DialogTitle
                   id="alert-dialog-title"
-                  sx={{ textAlign: "center" }}
+                  sx={{
+                    textAlign: "center",
+                    backgroundImage:
+                      "linear-gradient(to right top, #ffab91, #ffbc8e, #ffce8f, #ffe193, #fff59d)",
+                  }}
                 >
                   {"CẬP NHẬT THỂ LOẠI"}
                 </DialogTitle>
@@ -88,9 +91,9 @@ export default function ModalUpdateCategory({
                       <>
                         <Typography
                           variant="subtitle2"
-                          sx={{ color: "black", mb: 1 }}
+                          sx={{ color: "black", mb: 1, mt: 2 }}
                         >
-                          Tên thể loại:
+                          Tên thể loại*
                         </Typography>
                         <TextField
                           {...field}
@@ -117,7 +120,7 @@ export default function ModalUpdateCategory({
                           variant="subtitle2"
                           sx={{ color: "black", mb: 1 }}
                         >
-                          Mô tả:
+                          Mô tả*
                         </Typography>
                         <TextField
                           {...field}

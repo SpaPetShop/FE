@@ -46,12 +46,15 @@ import {
         
                     <DialogTitle
                       id="alert-dialog-title"
-                      sx={{ textAlign: "center" }}
+                      sx={{ 
+                        textAlign: "center",
+                        backgroundImage: "linear-gradient(to right top, #ffab91, #ffbc8e, #ffce8f, #ffe193, #fff59d)"  
+                       }}
                     >
                       {"XÁC NHẬN XÓA!"}
                     </DialogTitle>
                     <DialogContent>
-                     <Typography>Bạn muốn xóa loại thú cưng <strong>{data.name}</strong> này ?</Typography>
+                     <Typography sx={{mt:1}}>Bạn muốn xóa loại thú cưng <strong>{data.name}</strong> này ?</Typography>
                     </DialogContent>
                     <DialogActions>
                       <Stack direction={"row"} sx={{ mt: 2 }} spacing={1}>

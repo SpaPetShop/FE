@@ -150,7 +150,7 @@ export default function UpdateCombo() {
                       variant="subtitle2"
                       sx={{ color: "black", mb: 1 }}
                     >
-                      Tên gói:
+                      Tên gói*
                     </Typography>
                     <TextField
                       {...field}
@@ -175,7 +175,7 @@ export default function UpdateCombo() {
                       variant="subtitle2"
                       sx={{ color: "black", mb: 1 }}
                     >
-                      Mô tả:
+                      Mô tả*
                     </Typography>
                     <TextField
                       {...field}
@@ -202,7 +202,7 @@ export default function UpdateCombo() {
                           variant="subtitle2"
                           sx={{ color: "black", mb: 1 }}
                         >
-                          Giá gốc sản phẩm:
+                          Giá gốc sản phẩm*
                         </Typography>
                         <TextField
                           {...field}
@@ -230,7 +230,7 @@ export default function UpdateCombo() {
                           variant="subtitle2"
                           sx={{ color: "black", mb: 1 }}
                         >
-                          Giá bán sản phẩm:
+                          Giá bán sản phẩm*
                         </Typography>
                         <TextField
                           {...field}
@@ -259,7 +259,7 @@ export default function UpdateCombo() {
                     variant="subtitle2"
                     sx={{ color: "black", mb: 1 }}
                   >
-                    Loại sản phẩm:
+                    Loại sản phẩm*
                   </Typography>
                   <FormControl
                     fullWidth
@@ -285,7 +285,7 @@ export default function UpdateCombo() {
                     variant="subtitle2"
                     sx={{ color: "black", mb: 1 }}
                   >
-                    Trạng thái sản phẩm:
+                    Trạng thái sản phẩm*
                   </Typography>
                   <FormControl
                     fullWidth
@@ -326,7 +326,7 @@ export default function UpdateCombo() {
                     </>
                   )}
                   <Box mb={2}></Box>
-            <Typography variant="subtitle2" sx={{ color: "black", mb: 1 }}>Nhập link ảnh:</Typography>
+            <Typography variant="subtitle2" sx={{ color: "black", mb: 1 }}>Nhập link ảnh*</Typography>
            
             <FieldArray name="image">
                     {({ push, remove }: any) => (

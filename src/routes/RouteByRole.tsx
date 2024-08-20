@@ -6,10 +6,12 @@ import TotalStaff from "../pages/admin/ManageMenu/TotalStaff";
 import Login from "../pages/common/Authentication/Login";
 import Register from "../pages/common/Authentication/Register";
 import ContactPage from "../pages/common/Contact";
+import ProductDetail from "../pages/common/Detail/DetailProduct";
 import Page401 from "../pages/common/ErrorPage/Page401";
 import Page403 from "../pages/common/ErrorPage/Page403";
 import Home from "../pages/common/Home/Home";
 import PaymentSuccess from "../pages/common/PaymentSuccess";
+import Booking from "../pages/customer/booking/Booking";
 import Profile from "../pages/customer/Profile";
 import CreateCombo from "../pages/manager/CreateCombo";
 import DetailCombo from "../pages/manager/DetailCombo";
@@ -40,6 +42,16 @@ export const commonRoutes = [
   {
     path: "/contact",
     element: <ContactPage />,
+    isWrapLayout: true,
+  },
+  {
+    path: "/detail-combo/:id",
+    element: <DetailCombo />,
+    isWrapLayout: true,
+  },
+  {
+    path: "/detail-product/:id",
+    element: <ProductDetail />,
     isWrapLayout: true,
   },
   {
@@ -151,12 +163,10 @@ export const customerRoutes = [
     path: "/profile",
     element: <Profile />,
   },
-
-  // {
-  //   path: "/booking",
-  //   element: <Booking />,
-  //   isWrapLayout: false,
-  // },
+  {
+    path: "/booking",
+    element: <Booking />,
+  },
 ];
 
 export const staffRoutes = [
