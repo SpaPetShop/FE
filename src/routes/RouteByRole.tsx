@@ -13,6 +13,8 @@ import Page403 from "../pages/common/ErrorPage/Page403";
 import Home from "../pages/common/Home/Home";
 import PaymentSuccess from "../pages/common/PaymentSuccess";
 import Booking from "../pages/customer/booking/Booking";
+import CustomerCreateOrder from "../pages/customer/booking/CustomerCreateOrder";
+import CartPage from "../pages/customer/CartPage";
 import Profile from "../pages/customer/Profile";
 import CreateCombo from "../pages/manager/CreateCombo";
 import DetailCombo from "../pages/manager/DetailCombo";
@@ -20,6 +22,7 @@ import DetailCustomer from "../pages/manager/DetailCustomer";
 import DetailOrder from "../pages/manager/DetailOrder";
 import ListCategory from "../pages/manager/ListCategory";
 import ListCombo from "../pages/manager/ListCombo";
+import ListCustomerRequest from "../pages/manager/ListCustomerRquest";
 import ListOrder from "../pages/manager/ListOrder";
 import ListPetType from "../pages/manager/ListPetType";
 import ListProduct from "../pages/manager/ListProduct";
@@ -27,7 +30,7 @@ import ListStaff from "../pages/manager/ListStaff";
 import ListTask from "../pages/manager/ListTask";
 import ListUser from "../pages/manager/ListUser";
 import UpdateCombo from "../pages/manager/UpdateCombo";
-import {StaffCalendar} from "../pages/staff/StaffCalendar";
+import { StaffCalendar } from "../pages/staff/StaffCalendar";
 
 export const commonRoutes = [
   {
@@ -66,7 +69,7 @@ export const commonRoutes = [
     isWrapLayout: false,
   },
   {
-    path: "/payment",
+    path: "/payment-successful",
     element: <PaymentSuccess />,
     isWrapLayout: false,
   },
@@ -112,6 +115,10 @@ export const managerRoutes = [
   {
     path: "/manager-manage-customer",
     element: <ListUser />,
+  },
+  {
+    path: "/manage-customer-request",
+    element: <ListCustomerRequest />,
   },
   {
     path: "/manager-manage-customer/:id",
@@ -170,10 +177,14 @@ export const customerRoutes = [
   },
   {
     path: "/booking",
-    element: <Booking />,
+    // element: <Booking />,
+    element: <CustomerCreateOrder/>
+  },
+  {
+    path: "/cart",
+    element: <CartPage />,
   },
 ];
-
 export const staffRoutes = [
   {
     path: "/staff-manage-task",

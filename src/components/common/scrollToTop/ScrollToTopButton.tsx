@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./ScrollToTopButton.css";
+import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 
 const ScrollToTopButton: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -30,7 +31,7 @@ const ScrollToTopButton: React.FC = () => {
     <div className="scroll-to-top">
       {isVisible && (
         <div className="scroll-button" onClick={scrollToTop}>
-          <i className="fa-solid fa-angle-up"></i>
+        <ArrowCircleUpIcon color="success"/>
         </div>
       )}
     </div>

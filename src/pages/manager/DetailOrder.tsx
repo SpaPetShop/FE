@@ -55,15 +55,15 @@ export default function DetailOrder() {
       setData(data);
       const createdDateTime = moment(data.createdDate);
 
-  // Lấy thời gian hiện tại
-  const now = moment();
+      // Lấy thời gian hiện tại
+      const now = moment();
 
-  // Tính toán sự khác biệt giữa thời gian hiện tại và thời gian createdDate
-  const duration = moment.duration(now.diff(createdDateTime));
+      // Tính toán sự khác biệt giữa thời gian hiện tại và thời gian createdDate
+      const duration = moment.duration(now.diff(createdDateTime));
 
-  // Kiểm tra xem sự khác biệt có lớn hơn 30 phút không
-  const isOver30Minutes = duration.asMinutes() > 30;
-  setIsShowAlert(isOver30Minutes);
+      // Kiểm tra xem sự khác biệt có lớn hơn 30 phút không
+      const isOver30Minutes = duration.asMinutes() > 30;
+      setIsShowAlert(isOver30Minutes);
     } catch (error) {
       console.log("Error get detail Order: ", error);
     } finally {
@@ -155,28 +155,31 @@ export default function DetailOrder() {
                           </Typography>
                         </Box>
                       </Stack>
-                      {(data?.staff && data.status==="PAID" && data.type === "MANAGERREQUEST" && isAssignStaff === false) && (
-                        <Box
-                          display={"flex"}
-                          flexDirection={"column"}
-                          alignItems={"center"}
-                        >
+                      {data?.staff &&
+                        data.status === "PAID" &&
+                        data.type === "MANAGERREQUEST" &&
+                        isAssignStaff === false && (
                           <Box
-                            sx={{
-                              textDecoration: "underline",
-                              color: "#4fc3f7",
-                              // "&:hover": {
-                              //   color: "blue",
-                              // },
-                              cursor: "pointer",
-                              mt:1
-                            }}
-                            onClick={handleSelectStaff}
+                            display={"flex"}
+                            flexDirection={"column"}
+                            alignItems={"center"}
                           >
-                            Đổi nhân viên
+                            <Box
+                              sx={{
+                                textDecoration: "underline",
+                                color: "#4fc3f7",
+                                // "&:hover": {
+                                //   color: "blue",
+                                // },
+                                cursor: "pointer",
+                                mt: 1,
+                              }}
+                              onClick={handleSelectStaff}
+                            >
+                              Đổi nhân viên
+                            </Box>
                           </Box>
-                        </Box>
-                      )}
+                        )}
                     </>
                   ) : (
                     <Box
@@ -189,39 +192,40 @@ export default function DetailOrder() {
                       >
                         Hiện chưa có nhân viên nhận đơn hàng này!
                       </Typography>
-                      {
-                      (data?.staff && data.status==="PAID" && data.type === "MANAGERREQUEST" && isAssignStaff === false) && (
-                        <Box
-                          sx={{
-                            textDecoration: "underline",
-                            color: "#4fc3f7",
-                            // "&:hover": {
-                            //   color: "blue",
-                            // },
-                            cursor: "pointer",
-                          }}
-                          onClick={handleSelectStaff}
-                        >
-                          Chỉ định nhân viên
-                        </Box>
-                      )}
-                     
+                      {data.staff == null &&
+                        data.status === "PAID" &&
+                        data.type === "MANAGERREQUEST" &&
+                        isAssignStaff === false && (
+                          <Box
+                            sx={{
+                              textDecoration: "underline",
+                              color: "#4fc3f7",
+                              // "&:hover": {
+                              //   color: "blue",
+                              // },
+                              cursor: "pointer",
+                            }}
+                            onClick={handleSelectStaff}
+                          >
+                            Chỉ định nhân viên
+                          </Box>
+                        )}
                     </Box>
                   )}
-                   <Box
-                      display={"flex"}
-                      flexDirection={"column"}
-                      alignItems={"center"}
-                    >
-                   {data && isAssignStaff && (
-                        <ModalUpdateOrder
-                          data={data}
-                          fetchOrder={fetchOrder}
-                          open={isAssignStaff}
-                          setOpen={setIsAssignStaff}
-                        />
-                      )}
-                      </Box>
+                  <Box
+                    display={"flex"}
+                    flexDirection={"column"}
+                    alignItems={"center"}
+                  >
+                    {data && isAssignStaff && (
+                      <ModalUpdateOrder
+                        data={data}
+                        fetchOrder={fetchOrder}
+                        open={isAssignStaff}
+                        setOpen={setIsAssignStaff}
+                      />
+                    )}
+                  </Box>
                 </Grid>
               </Grid>
 
@@ -319,7 +323,8 @@ export default function DetailOrder() {
                   </Typography>
                 )}
                 <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
-                  Mô tả: <strong>{data.description || "Chưa có thông tin"}</strong>
+                  Mô tả:{" "}
+                  <strong>{data.description || "Chưa có thông tin"}</strong>
                 </Typography>
 
                 {/* <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
@@ -330,21 +335,23 @@ export default function DetailOrder() {
                   Tổng giá tiền:{" "}
                   <strong>{data.finalAmount.toLocaleString()} VNĐ</strong>
                 </Typography>
-                <Typography variant="h6" sx={{ fontSize: 17}}>
+                <Typography variant="h6" sx={{ fontSize: 17 }}>
                   Trạng thái: {renderStatusOrder(data.status)}
                 </Typography>
 
-                {isShowAlert && data.status === "UNPAID" && <Box sx={{mt:2}}>
-                   <Alert severity="warning">
-                      Hóa đơn này đã tạo được 30 phút nhưng vẫn chưa thanh toán!  
+                {isShowAlert && data.status === "UNPAID" && (
+                  <Box sx={{ mt: 2 }}>
+                    <Alert severity="warning">
+                      Hóa đơn này đã tạo được 30 phút nhưng vẫn chưa thanh toán!
                     </Alert>
-                </Box>}
+                  </Box>
+                )}
                 {data.status !== "CANCELED" && (
                   <Button
                     variant="contained"
                     color="error"
                     sx={{ mt: 10 }}
-                    onClick={()=>setIsCancelOrder(true)}
+                    onClick={() => setIsCancelOrder(true)}
                   >
                     Hủy Đơn Hàng
                   </Button>
@@ -457,12 +464,14 @@ export default function DetailOrder() {
           </Box>
         </Box>
       )}
-      {data && <ModalCancelOrder
-      data={data}
-      fetchOrder={fetchOrder}
-      open={isCancelOrder}
-      setOpen={setIsCancelOrder}
-      />}
+      {data && (
+        <ModalCancelOrder
+          data={data}
+          fetchOrder={fetchOrder}
+          open={isCancelOrder}
+          setOpen={setIsCancelOrder}
+        />
+      )}
     </Paper>
   );
 }
