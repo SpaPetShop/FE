@@ -53,7 +53,7 @@
 
 // ];
 
-// export default function ListCombo() {
+// export default function ListProduct() {
 //   const [page, setPage] = React.useState(1);
 //   const [listService, setListService] = React.useState<ServiceType[] | []>(dataServices);
 //   const [showModalCreate, setShowModalCreate] = React.useState(false)
@@ -130,11 +130,9 @@
 //   );
 // }
 
-import AddIcon from "@mui/icons-material/Add";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import {
   Box,
-  Button,
   FormControl,
   Grid,
   InputAdornment,
@@ -145,36 +143,36 @@ import {
   Stack,
   TextField
 } from "@mui/material";
-import Paper from "@mui/material/Paper";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import SingleCombo from "../../components/manager/SingleCombo";
-import useDebounce from "../../hook/useDebounce";
-import { ComboType, FilterComboType } from "../../types/Combo/ComboType";
-import { PaginationType } from "../../types/CommonType";
-import ProductAPI from "../../utils/ProductAPI";
+import useDebounce from "../../../hook/useDebounce";
+import { PaginationType } from "../../../types/CommonType";
+import { FilterProductType, ProductType } from "../../../types/Product/ProductType";
+import SubProductAPI from "../../../utils/SubProductAPI";
+import ProductCard from "./card/ProductCard";
 
-export default function ListProduct() {
+
+export default function ListProductForCustomer() {
   const navigate = useNavigate()
 
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const [listCombo, setListCombo] = React.useState<ComboType[] | []>(
+  const [listProduct, setListProduct] = React.useState<ProductType[] | []>(
     []
   );
 
   const [pagination, setPagination] = React.useState<PaginationType>({
     page: 1,
-    size: 10,
-    total: 10,
+    size: 18,
+    total: 18,
     totalPages: 1,
   });
 
   const [searchName, setSearchName] = React.useState("");
 
-  const [filter, setFilter] = React.useState<FilterComboType>({
+  const [filter, setFilter] = React.useState<FilterProductType>({
     page: 1,
-    size: 10,
+    size: 18,
     Status: "",
   });
 
@@ -188,12 +186,12 @@ export default function ListProduct() {
     setSearchName(name);
   };
   
-  const fetchAllCombo = React.useCallback(async () => {
+  const fetchAllProduct = React.useCallback(async () => {
     try {
       setIsLoading(true);
-      const data = await ProductAPI.getAll(filter);
+      const data = await SubProductAPI.getAll(filter);
       console.log({ data });
-      setListCombo(data.items);
+      setListProduct(data.items);
       setPagination({
         page: data.page,
         size: data.size,
@@ -201,20 +199,20 @@ export default function ListProduct() {
         totalPages: data.totalPages,
       });
     } catch (error) {
-      console.log("Error get list Combo: ", error);
+      console.log("Error get list Product: ", error);
     } finally {
       setIsLoading(false);
     }
   }, [filter]);
 
   React.useEffect(() => {
-    fetchAllCombo();
-  }, [fetchAllCombo]);
+    fetchAllProduct();
+  }, [fetchAllProduct]);
   React.useEffect(() => {
     setFilter((prev) => ({ ...prev, Name: debouncedInputValue }));
   }, [debouncedInputValue]);
   return (
-    <Paper sx={{ p: 3 }}>
+    <Box sx={{width:"90vw", margin:"auto"}}>
       <Stack
         direction={"row"}
         justifyContent={"space-between"}
@@ -228,7 +226,7 @@ export default function ListProduct() {
         >
           <TextField
             size="small"
-            placeholder="Nhập tên gói..."
+            placeholder="Nhập tên sản phẩm..."
             label="Tìm kiếm"
             value={searchName}
             onChange={(e) => handleSearchName(e.target.value)}
@@ -257,33 +255,18 @@ export default function ListProduct() {
                 }
               >
                 <MenuItem value={""}>Tất cả</MenuItem>
-                <MenuItem value={"AVAILABLE"}>Đang Hoạt động</MenuItem>
-                <MenuItem value={"UNAVAILABLE"}>Ngưng hoạt động</MenuItem>
-                <MenuItem value={"OUTOFSTOCK"}>Hết hàng</MenuItem>
+                <MenuItem value={"AVAILABLE"}>Đang hoạt động</MenuItem>
+                <MenuItem value={"UNAVAILABLE"}>Không có sẵn</MenuItem>
+                {/* <MenuItem value={"OUTOFSTOCK"}>Hết hàng</MenuItem> */}
               </Select>
             </FormControl>
           </Box>
         </Stack>
-        <Button
-          variant="contained"
-          color="info"
-          startIcon={<AddIcon />}
-          style={{
-            backgroundColor: "#33eaff",
-            color: "black",
-            borderRadius:"15px"
-          }}
-          onClick={() => {
-            navigate("/manager-manage-combo/create-combo");
-          }}
-        >
-          Tạo gói
-        </Button>
       </Stack>
 
       <Grid container spacing={3} sx={{ minHeight: 600 }}>
-         {listCombo.map((combo, index) => (
-           <SingleCombo key={index} data={combo} />
+         {listProduct.map((Product, index) => (
+           <ProductCard key={index} data={Product} />
          ))}
        </Grid>
       <Stack
@@ -299,6 +282,6 @@ export default function ListProduct() {
           onChange={handleChangePage}
         />
       </Stack>
-    </Paper>
+    </Box>
   );
 }

@@ -56,7 +56,7 @@ const AppRoutes = () => {
       <Route key={"wrap_layout2"} element={<WrapLayoutCustomer />}>
         <Route path={"/"} element={<Home />} />;
         <Route path={"/:id"} element={<DetailPage />} />;
-        <Route path="/booking" element={<Booking />} />
+        {/* <Route path="/booking" element={<Booking />} /> */}
         <Route
           key={"customer_private"}
           element={<AuthRoute allowedRoles={[ROLES.CUSTOMER]} />}

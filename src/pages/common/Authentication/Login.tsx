@@ -88,11 +88,12 @@ export default function Login() {
               try {
                 setIsLoading(true);           
                 const response = await AuthAPI.login(values);
+                console.log("data login", response);
                 localStorage.setItem(
                   "userData",
                   JSON.stringify({
                     accessToken: response.tokenModel.accessToken,
-                    avatarUrl: response.image,
+                    image: response.image,
                     email: "",
                     id: response.id,
                     name: response.fullName,

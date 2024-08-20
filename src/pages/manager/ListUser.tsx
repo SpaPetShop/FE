@@ -71,7 +71,8 @@ export default function ListUser() {
   const debouncedInputValueName = useDebounce(searchName, 500); // Debounce with 500ms delay
   const debouncedInputValuePhone = useDebounce(searchPhone, 500);
   const handleChangePage = (event: unknown, newPage: number) => {
-    setFilter((prev) => ({ ...prev, page: newPage }));
+    console.log(newPage);
+    setFilter((prev) => ({ ...prev, page: newPage + 1 }));
   };
 
   const handleChangeRowsPerPage = (

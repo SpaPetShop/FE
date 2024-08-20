@@ -87,7 +87,7 @@ export default function ListStaff() {
     const debouncedInputValuePhone = useDebounce(searchPhone, 500);
 
     const handleChangePage = (event: unknown, newPage: number) => {
-      setFilter((prev) => ({ ...prev, page: newPage }));
+      setFilter((prev) => ({ ...prev, page: newPage + 1 }));
     };
 
   const handleChangeRowsPerPage = (

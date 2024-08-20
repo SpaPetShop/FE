@@ -3,7 +3,7 @@ import {
   DialogActions,
   Stack,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -30,17 +30,13 @@ export default function ModalCreateCategory({
   setOpen,
   fetchAllCategory,
 }: ModalCreateCategoryProps) {
-  
   const handleClose = () => {
     setOpen(false);
   };
-  
 
   return (
     <>
-      <Dialog
-        open={open}
-      >
+      <Dialog open={open}>
         <Formik
           initialValues={{
             name: "",
@@ -61,7 +57,14 @@ export default function ModalCreateCategory({
         >
           {({ values }) => (
             <Form>
-              <DialogTitle id="alert-dialog-title" sx={{ textAlign: "center" }}>
+              <DialogTitle
+                id="alert-dialog-title"
+                sx={{
+                  textAlign: "center",
+                  backgroundImage:
+                    "linear-gradient(to right top, #ffab91, #ffbc8e, #ffce8f, #ffe193, #fff59d)",
+                }}
+              >
                 {"TẠO THỂ LOẠI MỚI"}
               </DialogTitle>
               <DialogContent>
@@ -70,9 +73,9 @@ export default function ModalCreateCategory({
                     <>
                       <Typography
                         variant="subtitle2"
-                        sx={{ color: "black", mb: 1 }}
+                        sx={{ color: "black", mb: 1, mt: 2 }}
                       >
-                        Tên thể loại:
+                        Tên thể loại*
                       </Typography>
                       <TextField
                         {...field}
@@ -99,7 +102,7 @@ export default function ModalCreateCategory({
                         variant="subtitle2"
                         sx={{ color: "black", mb: 1 }}
                       >
-                        Mô tả:
+                        Mô tả*
                       </Typography>
                       <TextField
                         {...field}
@@ -117,30 +120,29 @@ export default function ModalCreateCategory({
                       />
                     </>
                   )}
-                </Field>    
-   
+                </Field>
               </DialogContent>
               <DialogActions>
-                  <Stack direction={"row"} sx={{ mt: 4 }} spacing={3}>
-                    <Button
-                      fullWidth
-                      color="error"
-                      onClick={handleClose}
-                      variant="outlined"
-                    >
-                      Hủy
-                    </Button>
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      autoFocus
-                      color="info"
-                      type="submit"
-                    >
-                      Nộp
-                    </Button>
-                  </Stack>
-                </DialogActions>
+                <Stack direction={"row"} sx={{ mt: 4 }} spacing={3}>
+                  <Button
+                    fullWidth
+                    color="error"
+                    onClick={handleClose}
+                    variant="outlined"
+                  >
+                    Hủy
+                  </Button>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    autoFocus
+                    color="info"
+                    type="submit"
+                  >
+                    Nộp
+                  </Button>
+                </Stack>
+              </DialogActions>
             </Form>
           )}
         </Formik>

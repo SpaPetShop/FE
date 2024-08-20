@@ -18,6 +18,7 @@ export type OrderType = {
   petInfor: {
     id: string;
     name: string;
+    image: string
     typePet: {
       id: string
       name: string
@@ -50,26 +51,6 @@ export type OrderType = {
   ];
 };
 
-export type ComboType = {
-  id: string;
-  name: string;
-  stockPrice: number;
-  sellingPrice: number;
-  description: string;
-  status: string;
-  priority: string | null;
-  image: { imageURL: string }[];
-  category: {
-    id: string;
-    name: string;
-  };
-  supProducts: {
-    id: string;
-    name: string;
-    stockPrice: number;
-    sellingPrice: number;
-  }[];
-};
 
 export type FilterOrderType = {
   InvoiceCode?: string;

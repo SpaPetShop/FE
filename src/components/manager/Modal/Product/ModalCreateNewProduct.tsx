@@ -32,7 +32,11 @@ const validationSchema = Yup.object({
     .min(1000, "Giá gốc không thể nhỏ hơn 1000 VNĐ!"),
   sellingPrice: Yup.number()
     .required("*Giá bán không được để trống!")
-    .min(1000, "Giá bán không thể nhỏ hơn 1000 VNĐ!"),
+    .min(1000, "Giá bán không thể nhỏ hơn 1000 VNĐ!")
+    .max(
+      Yup.ref('stockPrice'),
+      '*Giá bán phải nhỏ hơn hoặc bằng giá gốc!'
+    ),
   status: Yup.string().required("Trạng thái không được để trống !"),
   categoryId: Yup.string().required("Trạng thái không được để trống !"),
   image: Yup.array().of(Yup.string().required("Hình ảnh không được để trống!")),
@@ -109,7 +113,10 @@ export default function ModalCreateProduct({
         >
           {({ values, errors, touched, handleChange, handleBlur }) => (
             <Form>
-              <DialogTitle id="alert-dialog-title" sx={{ textAlign: "center" }}>
+              <DialogTitle id="alert-dialog-title"  sx={{ 
+                      textAlign: "center",
+                      backgroundImage: "linear-gradient(to right top, #ffab91, #ffbc8e, #ffce8f, #ffe193, #fff59d)"  
+                     }}>
                 {"TẠO SẢN PHẨM MỚI"}
               </DialogTitle>
               <DialogContent>
@@ -118,9 +125,9 @@ export default function ModalCreateProduct({
                     <>
                       <Typography
                         variant="subtitle2"
-                        sx={{ color: "black", mb: 1 }}
+                        sx={{ color: "black", mb: 1, mt: 2 }}
                       >
-                        Tên sản phẩm:
+                        Tên sản phẩm*
                       </Typography>
                       <TextField
                         {...field}
@@ -147,7 +154,7 @@ export default function ModalCreateProduct({
                         variant="subtitle2"
                         sx={{ color: "black", mb: 1 }}
                       >
-                        Mô tả:
+                        Mô tả*
                       </Typography>
                       <TextField
                         {...field}
@@ -235,7 +242,7 @@ export default function ModalCreateProduct({
                         variant="subtitle2"
                         sx={{ color: "black", mb: 1 }}
                       >
-                        Giá gốc sản phẩm:
+                        Giá gốc sản phẩm*
                       </Typography>
                       <TextField
                         {...field}
@@ -262,7 +269,7 @@ export default function ModalCreateProduct({
                         variant="subtitle2"
                         sx={{ color: "black", mb: 1 }}
                       >
-                        Giá bán sản phẩm:
+                        Giá bán sản phẩm*
                       </Typography>
                       <TextField
                         {...field}
@@ -284,7 +291,7 @@ export default function ModalCreateProduct({
 
                 <Box mb={2}></Box>
                 <Typography variant="subtitle2" sx={{ color: "black", mb: 1 }}>
-                  Loại sản phẩm:
+                  Loại sản phẩm*
                 </Typography>
                 <FormControl
                   fullWidth
@@ -309,7 +316,7 @@ export default function ModalCreateProduct({
 
                 <Box mb={2}></Box>
                 <Typography variant="subtitle2" sx={{ color: "black", mb: 1 }}>
-                  Trạng thái sản phẩm:
+                  Trạng thái sản phẩm*
                 </Typography>
                 <FormControl
                   fullWidth
