@@ -36,6 +36,7 @@ export default function ModalUpdateOrder({
           page: 1,
           size: 100,
           Role: "STAFF",
+          Status:"ACTIVE"
         });
         setListStaff(data.items);
       } catch (error) {
@@ -83,8 +84,8 @@ export default function ModalUpdateOrder({
               toast.success("Cập nhật thành công !");
             }
             fetchOrder();
-          } catch (error) {
-            toast.error("Cập nhật thất bại !");
+          } catch (error: any) {
+            toast.error(error?.response?.data ? error?.response?.data?.error : "Cập nhật thất bại !");
           }
         }}
       >

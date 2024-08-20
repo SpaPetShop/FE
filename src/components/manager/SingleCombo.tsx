@@ -48,7 +48,7 @@ export default function SingleCombo({ data }: SingleComboProps) {
         onClick={() => navigate(`/manager-manage-combo/${data.id}`)}
       >
         <CardActionArea>
-        <Carousel sx={{ margin: 'auto', border: 'none' }}
+        <Carousel sx={{ margin: 'auto', border: 'none', minHeight:200 }}
 					indicatorContainerProps={{
 						style: {
 							zIndex: 1,

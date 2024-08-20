@@ -1,4 +1,3 @@
-
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import Logout from "@mui/icons-material/Logout";
@@ -6,6 +5,7 @@ import PersonAdd from "@mui/icons-material/PersonAdd";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import {
   Avatar,
+  Badge,
   Box,
   Divider,
   IconButton,
@@ -22,11 +22,13 @@ import logoImage from "../../../assets/images/home/logo.png";
 import { UserContext } from "../../../context/AuthContext";
 import { ROLES } from "../../../routes/roles";
 import "./Header.css";
+import useCart from "../../../hook/useCart";
 
 const Header: React.FC = () => {
   const currentUser = useContext(UserContext);
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(true);
+  const {cartItems} = useCart()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -65,9 +67,9 @@ const Header: React.FC = () => {
 
   return (
     <header className="header-container">
-      <div className="logo">
-        <img src={logoImage} alt="Pet Station" />
-        <span>Pet Station</span>
+      <div className="logo" onClick={()=>navigate("/")}>
+        <img src={logoImage} alt="Pet SPA" />
+        <span style={{fontSize:20,  fontWeight:700}}>Pet SPA</span>
       </div>
       <nav>
         <ul>
@@ -115,6 +117,18 @@ const Header: React.FC = () => {
               flexDirection={"column"}
             >
               <Link to={"/booking"}>Đặt lịch</Link>
+            </Stack>
+          )}
+           {currentUser.user?.role === ROLES.CUSTOMER && (
+            <Stack
+              alignItems={"center"}
+              justifyContent={"center"}
+              flexDirection={"column"}
+            >
+                <Badge badgeContent={cartItems.listCombo.length + cartItems.listProduct.length} color="success">
+                <Link to={"/cart"}>Giỏ hàng</Link>
+                </Badge>
+              
             </Stack>
           )}
           <Stack

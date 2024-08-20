@@ -1,9 +1,10 @@
-import { CategoryResponse } from "../types/Category/CategoryType";
+
+import { CustomerRequestResponse } from "../types/CustomerRequest/CustomerRequestType";
 import axiosClient from "./axiosClient";
-const CategoryAPI = {
+const CustomerRequestAPI = {
   getAll: (params: any) => {
-    const url = "/categories";
-    return axiosClient.get<any, CategoryResponse>(url, {
+    const url = "/request";
+    return axiosClient.get<any, CustomerRequestResponse>(url, {
       params,
       paramsSerializer: {
         indexes: null, // by default: false
@@ -11,16 +12,16 @@ const CategoryAPI = {
     });
   },
   create: (payload: any) => {
-    const url = "/categories";
+    const url = "/request";
     return axiosClient.post(url, payload);
   },
   update: (id: string, payload: any) => {
-    const url = `/categories/${id}`;
+    const url = `/request/${id}`;
     return axiosClient.put(url, payload);
   },
   delete: (id: string) => {
-    const url = `/categories/${id}`;
+    const url = `/request/${id}`;
     return axiosClient.delete(url);
   },
 };
-export default CategoryAPI;
+export default CustomerRequestAPI;
