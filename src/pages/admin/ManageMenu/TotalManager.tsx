@@ -1,6 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import {
+  Avatar,
   Box,
   Button,
   Chip,
@@ -24,8 +25,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import * as React from "react";
-import MenuActionUser from "../../../components/manager/MenuAction/MenuActionUser";
-
 import useDebounce from "../../../hook/useDebounce";
 import {
   UserType,
@@ -37,6 +36,7 @@ import ModalCreateUser from "../../../components/manager/Modal/User/ModalCreateU
 import ModalUpdateUser from "../../../components/manager/Modal/User/ModalUpdateUser";
 import ModalDeleteUser from "../../../components/manager/Modal/User/ModalDeleteUser";
 import ModalCreateManager from "../ModalCreateManager";
+import MenuActionManageManager from "../../../components/manager/MenuAction/MenuActionManageManager";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -266,8 +266,11 @@ const TotalManager = () => {
                 <StyledTableCell align="center" size="small">
                   {(pagination.page - 1) * pagination.size + index + 1}
                 </StyledTableCell>
-                <StyledTableCell align="center" size="small">
-                  {row.fullName}
+                <StyledTableCell component="th" scope="row" size="small">
+                  <Stack direction="row" alignItems="center" spacing={2}>
+                    <Avatar src={row.image || '/default-avatar.png'} />
+                    <Typography>{row.fullName}</Typography>
+                  </Stack>
                 </StyledTableCell>
                 <StyledTableCell
                   align="center"
@@ -295,7 +298,7 @@ const TotalManager = () => {
                   )}
                 </StyledTableCell>
                 <StyledTableCell align="center" size="small">
-                  <MenuActionUser
+                  <MenuActionManageManager
                    setOpenUpdate={setShowModalUpdate}                  
                    setOpenDelete={setShowModalDelete}
                    setSelectedUser={setSelectedUser}
