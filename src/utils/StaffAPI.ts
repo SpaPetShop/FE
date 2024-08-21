@@ -23,7 +23,7 @@ const StaffAPI = {
     return axiosClient.post(url, payload);
   },
   update: (id: string, payload: any) => {
-    const url = `//${id}`;
+    const url = `/task/${id}`;
     return axiosClient.put(url, payload);
   },
   delete: (id: string) => {
