@@ -9,11 +9,11 @@ const AdminDashboardAPI = {
     return axiosClient.get<any>(url);
   },
   getAllCountOderInDay: (params: any) => {
-    const url = `dashboard/countOrderInYeay${params}`;
+    const url = `/dashboard/countOrderInMonth`;
     return axiosClient.get<any>(url, {
       params,
       paramsSerializer: {
-        indexes: null, // by default: false
+        indexes: null, 
       },
     });
   },
