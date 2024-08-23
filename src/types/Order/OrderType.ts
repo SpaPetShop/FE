@@ -48,7 +48,7 @@ export type OrderType = {
       sellingPrice: number;
       totalAmount: number;
     }
-  ];
+  ];  
 };
 
 

@@ -259,7 +259,7 @@ export default function ListUser() {
                     {row.email ? row.email : "-"}
                   </StyledTableCell>
                   <StyledTableCell align="center" >
-                    {row.rank ? row.rank : "-"}
+                    {row.rank ? row.rank.name : "-"}
                   </StyledTableCell>
                   <StyledTableCell align="center" >
                     {row.point ? row.point : "-"}

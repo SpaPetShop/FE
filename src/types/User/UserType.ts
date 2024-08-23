@@ -12,7 +12,11 @@ export type UserType = {
   point: null | string;
   yearsOfExperience: null | number;
   image: string | null;
-  rank: null | string;
+  rank: {
+    name: string;
+    range: string;
+    value: string;
+  };
 };
 
 export type FilterUserType = {

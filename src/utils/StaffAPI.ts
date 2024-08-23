@@ -9,6 +9,13 @@ const StaffAPI = {
       },
     });
   },
+  getOrderDetail: ( id : string ) => {
+    const url = `/orders/${id}`;
+    return axiosClient.get<any >(url, {
+      
+     
+    });
+  },
   getDetail: (id: string,params: any) => {
     const url = `/task/${id}`;
     return axiosClient.get<any >(url, {
@@ -23,7 +30,7 @@ const StaffAPI = {
     return axiosClient.post(url, payload);
   },
   update: (id: string, payload: any) => {
-    const url = `/task/${id}`;
+    const url = `/orders/${id}`;
     return axiosClient.put(url, payload);
   },
   delete: (id: string) => {
