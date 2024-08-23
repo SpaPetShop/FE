@@ -37,6 +37,7 @@ import ModalUpdateUser from "../../../components/manager/Modal/User/ModalUpdateU
 import ModalDeleteUser from "../../../components/manager/Modal/User/ModalDeleteUser";
 import ModalCreateManager from "../ModalCreateManager";
 import MenuActionManageManager from "../../../components/manager/MenuAction/MenuActionManageManager";
+import ModalUpdateManager from "../../../components/manager/Modal/Manager/ModalUpdateManager";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -80,7 +81,8 @@ const TotalManager = () => {
   const [filter, setFilter] = React.useState<FilterUserType>({
     page: 1,
     size: 10,
-    Role:"Manager"
+    Role:"Manager",
+    Status:'',
   });
   const [selectedUser, setSelectedUser] = React.useState<UserType | null>(null);
 
@@ -329,7 +331,7 @@ const TotalManager = () => {
     
     />
 
-    {selectedUser && <ModalUpdateUser
+    {selectedUser && <ModalUpdateManager
       open={showModalUpdate}
       setOpen={setShowModalUpdate}
       fetchAllUser={fetchAllUser}

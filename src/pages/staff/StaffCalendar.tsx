@@ -26,6 +26,7 @@ import {
   Snackbar,
   Alert,
   Grid,
+  Card,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
@@ -42,7 +43,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontSize: 14,
   },
 }));
-
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
@@ -66,9 +66,11 @@ export const StaffCalendar: React.FC = () => {
   const [searchName, setSearchName] = useState("");
   const [searchPhone, setSearchPhone] = useState("");
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
   const [openSnackbar, setOpenSnackbar] = useState(false);
-
+  const [orderDetail, setOrderDetail] = useState<any>();
   const userData = JSON.parse(localStorage.getItem("userData") || "null");
 
   const handleSearchName = (name: string) => {
@@ -80,7 +82,7 @@ export const StaffCalendar: React.FC = () => {
   };
 
   const handleApprove = () => {
-    updateTaskStatus("COMPLETED");
+    updateTaskStatus("ACCEPT");
   };
 
   const fetchTasks = useCallback(async () => {
@@ -90,7 +92,7 @@ export const StaffCalendar: React.FC = () => {
         accountId: userData?.id,
       });
       setTasks(data);
-      console.log(data)
+      console.log(data);
       setPagination({
         page: data.page,
         size: data.size,
@@ -111,7 +113,7 @@ export const StaffCalendar: React.FC = () => {
       setIsLoading(true);
       await StaffAPI.update(selectedTask.id, {
         accountId: userData?.id,
-        excutionDate: new Date().toISOString(), 
+        excutionDate: new Date().toISOString(),
         status,
       });
 
@@ -129,23 +131,71 @@ export const StaffCalendar: React.FC = () => {
     }
   };
 
+  const fetchOrderDetail = async (orderId: string) => {
+    try {
+      setIsLoading(true);
+      const response: any = await StaffAPI.getOrderDetail(orderId);
+      setOrderDetail(response);
+      console.log("orderDetail", response);
+    } catch (error) {
+      console.log("Error fetching order details: ", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
 
+  const updateOrderStatus = async (orderId: string, status: string) => {
+    if (!orderId) return;
+
+    try {
+      setIsLoading(true);
+      await StaffAPI.update(orderId, {
+        status: status,
+      });
+
+      setSnackbarMessage("Đơn hàng đã được cập nhật thành công!");
+      setSnackbarSeverity("success");
+      fetchTasks();
+      handleCloseDetail();
+    } catch (error) {
+      setSnackbarMessage("Lỗi khi cập nhật đơn hàng.");
+      setSnackbarSeverity("error");
+      console.log("Lỗi khi cập nhật đơn hàng: ", error);
+    } finally {
+      setIsLoading(false);
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleCompleteOrder = () => {
+    if (selectedTask?.order?.id) {
+      updateOrderStatus(selectedTask.order.id, "COMPLETED");
+    }
+  };
+
   const handleDetailClick = (task: any) => {
     setSelectedTask(task);
+    if (task?.order?.id) {
+      fetchOrderDetail(task.order.id);
+    }
   };
 
   const handleCloseDetail = () => {
     setSelectedTask(null);
+    setOrderDetail([]);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPagination((prev) => ({ ...prev, page: newPage + 1 }));
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setPagination((prev) => ({ ...prev, size: +event.target.value, page: 1 }));
   };
 
@@ -155,7 +205,12 @@ export const StaffCalendar: React.FC = () => {
 
   return (
     <Paper sx={{ p: 3 }}>
-      <Stack direction={"row"} alignItems={"center"} spacing={3} sx={{ mb: 3, mt: 2 }}>
+      <Stack
+        direction={"row"}
+        alignItems={"center"}
+        spacing={3}
+        sx={{ mb: 3, mt: 2 }}
+      >
         <TextField
           size="small"
           placeholder="Nhập mã đơn hàng..."
@@ -193,7 +248,6 @@ export const StaffCalendar: React.FC = () => {
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell align="center">STT</StyledTableCell>
               <StyledTableCell align="center">Mã hóa đơn</StyledTableCell>
               <StyledTableCell align="center">Tên thú cưng</StyledTableCell>
               <StyledTableCell align="center">Người phụ trách</StyledTableCell>
@@ -234,42 +288,32 @@ export const StaffCalendar: React.FC = () => {
                 </StyledTableRow>
               ))
             ) : tasks.length > 0 ? (
-              tasks.map((task, index) => (
+              tasks.map((task) => (
                 <StyledTableRow key={task.id}>
                   <StyledTableCell align="center" size="small">
-                    {(pagination.page - 1) * pagination.size + index + 1}
+                    {task.order?.id || "-"}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                    {task.order.invoiceCode}
+                    {task.pets.name || "-"}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                    {task.pets.name}
+                    {task.staff.fullName || "-"}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                    {task.staff.fullName}
+                    {task.createDate || "-"}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                    {task.createDate}
+                    {task.excutionDate || "-"}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                    {task.excutionDate}
-                  </StyledTableCell>
-                  <StyledTableCell align="center" size="small">
-                    {task.status === "PENDING" ? (
-                      <Chip label={"Chờ thực thi"} color="warning" />
-                    ) : task.status === "COMPLETED" ? (
-                      <Chip label={"Hoàn thành"} color="success" />
-                    ) : (
-                      <Chip label={"Đang xử lý"} color="info" />
-                    )}
+                    {task.status || "-"}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
                     <Button
                       variant="contained"
-                      color="primary"
                       onClick={() => handleDetailClick(task)}
                     >
-                      Xem chi tiết
+                      Chi tiết
                     </Button>
                   </StyledTableCell>
                 </StyledTableRow>
@@ -277,7 +321,7 @@ export const StaffCalendar: React.FC = () => {
             ) : (
               <StyledTableRow>
                 <StyledTableCell colSpan={8} align="center">
-                  <Typography variant="body2">Không có dữ liệu</Typography>
+                  Không có dữ liệu
                 </StyledTableCell>
               </StyledTableRow>
             )}
@@ -295,76 +339,138 @@ export const StaffCalendar: React.FC = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
-      <Dialog open={!!selectedTask} onClose={handleCloseDetail}>
+      {/* Task Detail Dialog */}
+      <Dialog
+        open={!!selectedTask}
+        onClose={handleCloseDetail}
+        fullWidth
+        maxWidth="md"
+      >
         <DialogTitle>Chi tiết công việc</DialogTitle>
         <DialogContent>
-        
-        </DialogContent>
-        {/* <DialogActions>
-          <Button onClick={() => updateTaskStatus("COMPLETED")} color="primary">
-            Hoàn thành
-          </Button>
-          <Button onClick={() => updateTaskStatus("PENDING")} color="secondary">
-            Đặt lại
-          </Button>
-          <Button onClick={handleCloseDetail}>Đóng</Button>
-        </DialogActions> */}
-         <Dialog
-        open={Boolean(selectedTask)}
-        onClose={handleCloseDetail}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle>Task Details</DialogTitle>
-        <DialogContent>
-          {selectedTask ? (
-            <Stack spacing={2}>
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <Typography> <strong>Mã hóa đơn:</strong> {selectedTask.order.invoiceCode}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography><strong>Tổng tiền:</strong> {selectedTask.order.finalAmount}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography><strong>Ngày tạo:</strong> {selectedTask.createDate}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography><strong>Ngày thực thi:</strong> {selectedTask.excutionDate}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography><strong>Trạng thái:</strong> {selectedTask.status}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography><strong>Nhân viên phụ trách:</strong> {selectedTask.staff.fullName}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography><strong>Tên thú cưng:</strong> {selectedTask.pets.name}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography><strong>Loại thú cưng:</strong> {selectedTask.pets.typePet}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography>Ảnh: {selectedTask.pets.image}</Typography>
-              </Grid>
+          <Typography variant="h6" gutterBottom>
+            Mã đơn hàng: {selectedTask?.order?.invoiceCode || "-"}
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            Tên thú cưng: {selectedTask?.pets.name || "-"}
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            Người phụ trách: {selectedTask?.staff.fullName || "-"}
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            Ngày tạo: {selectedTask?.createDate || "-"}
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            Ngày thực thi: {selectedTask?.excutionDate || "-"}
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            Trạng thái: {selectedTask?.status || "-"}
+          </Typography>
+          {selectedTask?.status === "PROCESS" && (
+            <Button onClick={handleApprove} color="success">
+              Nhận công việc
+            </Button>
+          )}
+
+          <Grid container spacing={2} sx={{ mt: 2 }}>
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom>
+                Chi tiết đơn hàng
+              </Typography>
+              {orderDetail ? (
+                <Card sx={{ p: 2, mb: 2 }}>
+                  <Grid container spacing={2}>
+                    {/* Cột bên trái: Thông tin đơn hàng */}
+                    <Grid item xs={12} md={8}>
+                      <Typography variant="body1" gutterBottom>
+                        Mã đơn hàng: {orderDetail.invoiceCode || "-"}
+                      </Typography>
+                      <Typography variant="body1" gutterBottom>
+                        Giá cuối cùng:{" "}
+                        {orderDetail.finalAmount?.toLocaleString() || "-"} VND
+                      </Typography>
+                      <Typography variant="body1" gutterBottom>
+                        Loại công việc: {orderDetail.type || "-"}
+                      </Typography>
+                      <Typography variant="body1" gutterBottom>
+                        Ngày tạo:{" "}
+                        {new Date(orderDetail.createDate).toLocaleString() ||
+                          "-"}
+                      </Typography>
+                      <Typography variant="body1" gutterBottom>
+                        Ngày thực hiện:{" "}
+                        {new Date(orderDetail.excutionDate).toLocaleString() ||
+                          "-"}
+                      </Typography>
+                      <Typography variant="body1" gutterBottom>
+                        Trạng thái: {orderDetail.status || "-"}
+                      </Typography>
+                      <Typography variant="body1" gutterBottom>
+                        Ngày hoàn thành:{" "}
+                        {orderDetail.completedDate
+                          ? new Date(orderDetail.completedDate).toLocaleString()
+                          : "-"}
+                      </Typography>
+                      <Typography variant="body1" gutterBottom>
+                        Nhân viên phụ trách:{" "}
+                        {orderDetail.staff?.fullName || "-"}
+                      </Typography>
+                    </Grid>
+
+                    {/* Cột bên phải: Thông tin thú cưng */}
+                    <Grid item xs={12} md={4}>
+                      <Typography variant="h6" gutterBottom>
+                        Thông tin thú cưng
+                      </Typography>
+                      <Typography variant="body1" gutterBottom>
+                        Tên: {orderDetail.petInfor?.name || "-"}
+                      </Typography>
+                      {orderDetail.petInfor?.image && (
+                        <Box sx={{ mt: 2, mb: 2 }}>
+                          <img
+                            src={orderDetail.petInfor.image}
+                            alt={`Ảnh của ${
+                              orderDetail.petInfor?.name || "thú cưng"
+                            }`}
+                            style={{
+                              maxWidth: "100%",
+                              height: "auto",
+                              borderRadius: "8px",
+                            }}
+                            onError={(e) => {
+                              e.currentTarget.src =
+                                "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png";
+                              e.currentTarget.alt = "Ảnh không khả dụng";
+                            }}
+                          />
+                        </Box>
+                      )}
+                      <Typography variant="body1" gutterBottom>
+                        Loại: {orderDetail.petInfor?.typePet?.name || "-"}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                  <DialogContent>
+                    {orderDetail?.status === "ACCEPT" && (
+                      <Button onClick={handleCompleteOrder} color="primary">
+                        Hoàn thành đơn hàng
+                      </Button>
+                    )}
+                  </DialogContent>
+                </Card>
+              ) : (
+                <Typography variant="body1">
+                  Không có thông tin chi tiết.
+                </Typography>
+              )}
             </Grid>
-          
-            <div style={{ display: "flex", justifyContent: "center", marginTop: '20px' }}>
-            <Button style={{backgroundColor:'green', color:'white'}} onClick={() => updateTaskStatus("PROCESS")} >
-            Hoàn thành
-          </Button>
-             
-            </div>
-          </Stack>
-          ) : null}
+          </Grid>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDetail} color="primary">
-            Close
+            Đóng
           </Button>
         </DialogActions>
-      </Dialog>
-    
       </Dialog>
 
       <Snackbar
@@ -372,7 +478,11 @@ export const StaffCalendar: React.FC = () => {
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
       >
-        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity}>
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>
