@@ -67,6 +67,7 @@ export default function TotalStaff() {
     try {
       const response: any = await AdminManageStaffAPI.getAll({ role: 'Staff' });
       setStaff(response.items);
+      console.log(response)
     } catch (error) {
       console.error('Failed to fetch staff:', error);
     }
@@ -145,7 +146,7 @@ export default function TotalStaff() {
                 {row.gender}
               </StyledTableCell>
               <StyledTableCell align="center" size="small">
-                {row.status === 'Activate' ? (
+                {row.status === 'ACTIVE' ? (
                   <Chip label="Đang hoạt động" color="success" />
                 ) : (
                   <Chip label="Ngưng hoạt động" color="error" />

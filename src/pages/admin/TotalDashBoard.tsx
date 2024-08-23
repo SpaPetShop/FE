@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Card, CardContent, Typography, Box } from '@mui/material';
 import PetsIcon from '@mui/icons-material/Pets';
 import PeopleIcon from '@mui/icons-material/People';
 import GroupIcon from '@mui/icons-material/Group';
-
-// Import the local image
 import petspaImage from '../../assets/images/adminImage/funny-mastiff-puppy-towel-on-600nw-2280747877.png';
+import AdminDashboardAPI from '../../utils/AdminDashboardAPI';
 
 const cardStyles = {
   backgroundColor: '#f5f5f5',
@@ -14,7 +13,6 @@ const cardStyles = {
   padding: '16px',
   textAlign: 'center',
   color: '#4caf50',
-  
 };
 
 const iconStyles = {
@@ -75,11 +73,37 @@ const ImageCard: React.FC = () => (
 );
 
 const TotalDashBoard: React.FC = () => {
-  // Example data
-  const totalManager = 150;
-  const totalOrders = 1200;
-  const totalCustomers = 300;
-  const totalStaff = 25;
+  const [totalManager, setTotalManager] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [totalCustomers, setTotalCustomers] = useState(0);
+  const [totalStaff, setTotalStaff] = useState(0);
+
+  const fetchAllUser = async () => {
+    try {
+      const response: any = await AdminDashboardAPI.getAllCountAcount();
+      const { tolalAccount, accountByRole } = response;
+      setTotalManager(accountByRole.MANAGER || 0);
+      setTotalCustomers(accountByRole.USER || 0);
+      setTotalStaff(accountByRole.STAFF || 0);
+    } catch (error) {
+      console.error('Failed to fetch account data:', error);
+    }
+  };
+
+  const fetchAllOrder = async () => {
+    try {
+      const response: any = await AdminDashboardAPI.getAllCountOder();
+      const { tolalOrders } = response;
+      setTotalOrders(tolalOrders || 0);
+    } catch (error) {
+      console.error('Failed to fetch order data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllUser();
+    fetchAllOrder();
+  }, []);
 
   return (
     <Box sx={{ padding: '24px', backgroundColor: '#e8f5e9', borderRadius: '20px' }}>
