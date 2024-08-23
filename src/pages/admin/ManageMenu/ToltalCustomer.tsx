@@ -26,6 +26,7 @@ import AdminManageStaffAPI from '../../../utils/AdminMangeStaffAPI';
 import ModalUpdateUser from "../../../components/manager/Modal/User/ModalUpdateUser";
 import ModalDeleteUser from "../../../components/manager/Modal/User/ModalDeleteUser";
 import MenuActionManageCustomer from '../../../components/manager/MenuAction/MenuActionManageCustomer';
+import ModalUpdateCustomer from '../../../components/manager/Modal/Customer/ModalUpdateCustomer';
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -61,6 +62,16 @@ const TotalCustomer = () => {
 
   const [selectedUser, setSelectedUser] = React.useState<UserType | null>(null);
 
+  const formatGender = (gender: string) => {
+    switch (gender.toUpperCase()) {
+      case 'MALE':
+        return 'Nam';
+      case 'FEMALE':
+        return 'Nữ';
+      default:
+        return 'Khác'; // You can use this for any other gender values or as a fallback
+    }
+  };
   const fetchAllUser = async () => {
     try {
       const response: any = await AdminManageStaffAPI.getAll({ role: 'User' });
@@ -141,10 +152,10 @@ const TotalCustomer = () => {
                   {row.email}
                 </StyledTableCell>
                 <StyledTableCell align="center" size="small">
-                  {row.gender}
+                  {formatGender(row.gender)}
                 </StyledTableCell>
                 <StyledTableCell align="center" size="small">
-                  {row.status === 'Activate' ? (
+                  {row.status === 'ACTIVE' ? (
                     <Chip label="Đang hoạt động" color="success" />
                   ) : (
                     <Chip label="Ngưng hoạt động" color="error" />
@@ -172,7 +183,7 @@ const TotalCustomer = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-    {selectedUser && <ModalUpdateUser
+    {selectedUser && <ModalUpdateCustomer
       open={showModalUpdate}
       setOpen={setShowModalUpdate}
       fetchAllUser={fetchAllUser}  
