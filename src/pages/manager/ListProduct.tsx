@@ -245,10 +245,7 @@ export default function ListProduct() {
                   </StyledTableCell>
                   <StyledTableCell align="left">
                     <Skeleton variant="rectangular" />
-                  </StyledTableCell>
-                  <StyledTableCell align="left">
-                    <Skeleton variant="rectangular" />
-                  </StyledTableCell>
+                  </StyledTableCell>                
                   <StyledTableCell align="left">
                     <Skeleton variant="rectangular" />
                   </StyledTableCell>
