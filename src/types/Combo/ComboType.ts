@@ -6,7 +6,6 @@ export type ComboType = {
   description: string;
   status: string;
   priority: string | null;
-  timeWork: number;
   image: { imageURL: string }[];
   category: {
     id: string;

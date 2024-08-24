@@ -196,14 +196,8 @@ export default function DetailCombo() {
             </Stack>
             <Typography
                gutterBottom variant="h6"
-               sx={{mb:2}}
               >
                 Mô tả: <strong>{data?.description || "Chưa có mô tả"} </strong>
-              </Typography>
-              <Typography
-               gutterBottom variant="h6"
-              >
-                Thời gian làm: <strong>{data?.timeWork || "Chưa có thông tin"} giờ</strong>
               </Typography>
               <Stack
                 direction={"row"}

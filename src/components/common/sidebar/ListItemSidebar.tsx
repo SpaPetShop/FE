@@ -57,14 +57,6 @@ export const managerSidebarItems = [
   },
 ];
 
-export const staffSidebarItems = [
-  {
-    title: "Danh sách công việc",
-    path: "/staff-manage-task",
-    icon: <FormatListNumberedOutlinedIcon />,
-  },
-];
-
 export const adminSidebarItems = [
   {
     title: "Bảng điều khiển",

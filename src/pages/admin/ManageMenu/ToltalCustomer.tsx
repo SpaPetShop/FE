@@ -19,12 +19,14 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
-import moment from 'moment';
+import {
+  UserType,
+} from "../../../types/User/UserType"
 import AdminManageStaffAPI from '../../../utils/AdminMangeStaffAPI';
-import ModalCreateStaff from '../../../components/manager/Modal/ModalCreateStaff';
-import MenuActionManageStaff from '../../../components/manager/MenuAction/MenuActionManageStaff';
-import { GridRowSelectionModel } from '@mui/x-data-grid';
+import ModalUpdateUser from "../../../components/manager/Modal/User/ModalUpdateUser";
+import ModalDeleteUser from "../../../components/manager/Modal/User/ModalDeleteUser";
+import MenuActionManageCustomer from '../../../components/manager/MenuAction/MenuActionManageCustomer';
+import ModalUpdateCustomer from '../../../components/manager/Modal/Customer/ModalUpdateCustomer';
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -47,41 +49,41 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     backgroundColor: '#81d4fa',
   },
 }));
-interface Customer {
-  id: string;
-  username: string;
-  role: string;
-  fullName: string;
-  gender: string;
-  phoneNumber: string;
-  email: string;
-  address?: string | null;
-  status: string;
-  image?: string | null;
-}
 
 
 const TotalCustomer = () => {
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [customers, setCustomers] = useState<UserType[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState('');
-  const [showModalCreate, setShowModalCreate] = useState(false);
+ 
+  const [showModalUpdate, setShowModalUpdate] = React.useState(false);
+  const [showModalDelete, setShowModalDelete] = React.useState(false);
+
+  const [selectedUser, setSelectedUser] = React.useState<UserType | null>(null);
+
+  const formatGender = (gender: string) => {
+    switch (gender.toUpperCase()) {
+      case 'MALE':
+        return 'Nam';
+      case 'FEMALE':
+        return 'Nữ';
+      default:
+        return 'Khác'; // You can use this for any other gender values or as a fallback
+    }
+  };
+  const fetchAllUser = async () => {
+    try {
+      const response: any = await AdminManageStaffAPI.getAll({ role: 'User' });
+      setCustomers(response.items);
+    } catch (error) {
+      console.error('Failed to fetch staff:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchManager = async () => {
-      try {
-        const response:any = await AdminManageStaffAPI.getAll({ role: 'User' });
-        setCustomers(response.items);
-      } catch (error) {
-        console.error('Failed to fetch staff:', error);
-      }
-    };
-
-    fetchManager();
+    fetchAllUser();
   }, []);
-
- 
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -150,21 +152,22 @@ const TotalCustomer = () => {
                   {row.email}
                 </StyledTableCell>
                 <StyledTableCell align="center" size="small">
-                  {row.gender}
+                  {formatGender(row.gender)}
                 </StyledTableCell>
-                {/* <StyledTableCell align="center" size="small">
-                  {row.address}
-                </StyledTableCell>
-                */}
                 <StyledTableCell align="center" size="small">
-                  {row.status === 'Activate' ? (
+                  {row.status === 'ACTIVE' ? (
                     <Chip label="Đang hoạt động" color="success" />
                   ) : (
                     <Chip label="Ngưng hoạt động" color="error" />
                   )}
                 </StyledTableCell>
                 <StyledTableCell align="center" size="small">
-                  <MenuActionManageStaff />
+                  <MenuActionManageCustomer
+                   setOpenUpdate={setShowModalUpdate}                  
+                   setOpenDelete={setShowModalDelete}
+                   setSelectedUser={setSelectedUser}
+                   data={row}
+                  />
                 </StyledTableCell>
               </StyledTableRow>
             ))}
@@ -180,8 +183,18 @@ const TotalCustomer = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-
-      
+    {selectedUser && <ModalUpdateCustomer
+      open={showModalUpdate}
+      setOpen={setShowModalUpdate}
+      fetchAllUser={fetchAllUser}  
+      data={selectedUser}
+    />}
+    {selectedUser && <ModalDeleteUser
+      open={showModalDelete}
+      setOpen={setShowModalDelete}
+      fetchAllUser={fetchAllUser}  
+      data={selectedUser}
+    />}
     </Paper>
   );
 };

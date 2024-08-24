@@ -2,7 +2,11 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import {
   Box,
   Chip,
+  FormControl,
   InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
   Skeleton,
   Stack,
   TablePagination,
@@ -95,7 +99,7 @@ export const renderStatusOrder = (status: string) => {
           size="small"
         />
       );
-    case "CANCELLED":
+    case "CANCELED":
       return (
         <Chip
           sx={{ minWidth: 120 }}
@@ -137,7 +141,7 @@ const ManageOrderList = () => {
     setValue(newValue);
   };
   const handleChangePage = (event: unknown, newPage: number) => {
-    setFilter((prev) => ({ ...prev, page: newPage }));
+    setFilter((prev) => ({ ...prev, page: newPage+1 }));
   };
 
   const handleChangeRowsPerPage = (
@@ -204,22 +208,7 @@ const ManageOrderList = () => {
               </Box>
             }
           />
-          <Tab
-            value="SELECT"
-            label={
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <TabName>Nhân Viên Được Chọn</TabName>
-              </Box>
-            }
-          />
-          <Tab
-            value="RANDOM"
-            label={
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <TabName>Nhân Viên Ngẫu Nhiên</TabName>
-              </Box>
-            }
-          />
+         
         </TabList>
       </TabContext>
       <Stack
@@ -258,7 +247,34 @@ const ManageOrderList = () => {
             ),
           }}
         />
-        <Box></Box>
+
+        <Box sx={{ minWidth: 120 }}>
+          <FormControl sx={{ width: "300px" }} size="small">
+            <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={filter.Status}
+              label="Trạng thái"
+              onChange={(e) =>
+                setFilter((prev) => ({
+                  ...prev,
+                  Status: e.target.value as string,
+                }))
+              }
+            >
+              <MenuItem value={""}>Tất cả</MenuItem>
+              <MenuItem value={"PAID"}>Đã thanh toán</MenuItem>
+              <MenuItem value={"UNPAID"}>Chưa thanh toán</MenuItem>
+              <MenuItem value={"CANCELED"}>Đã hủy</MenuItem>
+              <MenuItem value={"COMPLETED"}>Đã hoàn thành</MenuItem>
+
+            </Select>
+          </FormControl>
+        </Box>
+        <Box>
+
+        </Box>
       </Stack>
 
       <TableContainer component={Paper} sx={{ minHeight: 600 }}>
