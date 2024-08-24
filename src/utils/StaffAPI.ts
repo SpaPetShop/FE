@@ -33,6 +33,12 @@ const StaffAPI = {
     const url = `/orders/${id}`;
     return axiosClient.put(url, payload);
   },
+
+  updateTask: (id: string, payload: any) => {
+    const url = `/task/${id}`;
+    return axiosClient.put(url, payload);
+  },
+
   delete: (id: string) => {
     const url = `/${id}`;
     return axiosClient.delete(url);

@@ -111,7 +111,7 @@ export const StaffCalendar: React.FC = () => {
 
     try {
       setIsLoading(true);
-      await StaffAPI.update(selectedTask.id, {
+      await StaffAPI.updateTask(selectedTask.id, {
         accountId: userData?.id,
         excutionDate: new Date().toISOString(),
         status,
@@ -155,6 +155,7 @@ export const StaffCalendar: React.FC = () => {
       setIsLoading(true);
       await StaffAPI.update(orderId, {
         status: status,
+        excutionDate: new Date().toISOString(),
       });
 
       setSnackbarMessage("Đơn hàng đã được cập nhật thành công!");
@@ -329,7 +330,7 @@ export const StaffCalendar: React.FC = () => {
         </Table>
       </TableContainer>
 
-      <TablePagination
+      {/* <TablePagination
         rowsPerPageOptions={[10, 25, 50]}
         component="div"
         count={pagination.total}
@@ -337,7 +338,7 @@ export const StaffCalendar: React.FC = () => {
         page={pagination.page - 1}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      /> */}
 
       {/* Task Detail Dialog */}
       <Dialog
