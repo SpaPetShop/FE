@@ -75,7 +75,7 @@ export default function ModalCreateUser({
             fullName: data.fullName || "",
             address: data.address || "",
             gender: data.gender || "",
-            role: "STAFF",
+            role: "Staff",
             email: data.email || "",
             phoneNumber: data.phoneNumber || "",
             image: data.image || "",
@@ -88,7 +88,7 @@ export default function ModalCreateUser({
               // call api here
               await UserAPI.update(data.id, {
                 ...values,
-                status: checked ? "ACTIVE" : "DEACTIVE",
+                status: checked ? "Activate" : "Deactivate",
               });
               setOpen(false);
               toast.success("Tạo thành công !");

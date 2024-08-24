@@ -37,6 +37,14 @@ const validationSchema = Yup.object({
       Yup.ref('stockPrice'),
       '*Giá bán phải nhỏ hơn hoặc bằng giá gốc!'
     ),
+    // timeWork: Yup.string()
+    // .required('Thông tin này là bắt buộc')
+    // .min(0, "Thời gian làm việc không hợp lệ!")
+    // .test('valid-decimal', 'Thời gian làm việc không hợp lệ!', (value) => {
+    //   if (value === undefined || value === null) return false;
+    //   const regex = /^\d+(\.0|\.5)?$/;
+    //   return regex.test(value);
+    // }),
   status: Yup.string().required("Trạng thái không được để trống !"),
   categoryId: Yup.string().required("Trạng thái không được để trống !"),
   image: Yup.array().of(Yup.string().required("Hình ảnh không được để trống!")),
@@ -88,6 +96,7 @@ export default function ModalCreateProduct({
             sellingPrice: "",
             status: "AVAILABLE",
             categoryId: "",
+            timeWork:2,
             image: [""],
           }}
           validationSchema={validationSchema}
@@ -106,8 +115,8 @@ export default function ModalCreateProduct({
               setOpen(false);
               toast.success("Tạo thành công !");
               fetchAllProduct();
-            } catch (error) {
-              toast.error("Tạo thất bại !");
+            } catch (error: any) {
+              toast.error(error?.response?.data?.Error || "Tạo thất bại !");
             }
           }}
         >
@@ -288,7 +297,35 @@ export default function ModalCreateProduct({
                     </>
                   )}
                 </Field>
-
+{/* 
+                <Box mb={2}></Box>
+                <Field name={`timeWork`}>
+                  {({ field, meta }: any) => (
+                    <>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{ color: "black", mb: 1 }}
+                      >
+                        Thời gian làm việc*
+                      </Typography>
+                      <TextField
+                        {...field}
+                        type="number"
+                        size="small"
+                        placeholder="Nhập thời gian làm..."
+                        fullWidth
+                        autoComplete="off"
+                        sx={{ minWidth: 200 }}
+                        // InputLabelProps={{ shrink: true }}
+                        inputProps={{ step: "0.5" }} // Đặt step để cho phép nhập số thực
+                        error={meta.touched && !!meta.error}
+                        helperText={
+                          meta.touched && meta.error ? meta.error : ""
+                        }
+                      />
+                    </>
+                  )}
+                </Field> */}
                 <Box mb={2}></Box>
                 <Typography variant="subtitle2" sx={{ color: "black", mb: 1 }}>
                   Loại sản phẩm*

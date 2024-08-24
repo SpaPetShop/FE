@@ -6,6 +6,8 @@ export type OrderType = {
   description: string;
   totalAmount: number;
   finalAmount: number;
+  timeWork: number;
+  estimatedCompletionDate: string;
   status: string;
   type: string;
   userInfo: {
@@ -48,7 +50,7 @@ export type OrderType = {
       sellingPrice: number;
       totalAmount: number;
     }
-  ];  
+  ];
 };
 
 

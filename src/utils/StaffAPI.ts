@@ -40,7 +40,7 @@ const StaffAPI = {
   },
 
   delete: (id: string) => {
-    const url = `//${id}`;
+    const url = `/${id}`;
     return axiosClient.delete(url);
   },
 };
