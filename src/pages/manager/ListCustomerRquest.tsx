@@ -64,9 +64,9 @@ export const renderStatusCustomerRequest = (status: string) => {
     case "PENDING":
       return <Chip sx={{minWidth:120}} label={"Đang chờ"} color="warning" size="small"/>
     case "ACCEPT":
-      return <Chip sx={{minWidth:120}}  label={"Đang xử lí"} color="info" size="small"/>
+      return <Chip sx={{minWidth:120}}  label={"Đã Duyệt"} color="success" size="small"/>
     case "REJECT":
-      return <Chip sx={{minWidth:120}}  label={"Hoàn Thành"} color="success" size="small"/>
+      return <Chip sx={{minWidth:120}}  label={"Từ Chối"} color="success" size="small"/>
   }
 }
 export default function ListCustomerRequest() {
@@ -161,7 +161,7 @@ export default function ListCustomerRequest() {
             autoComplete: "off", // disable autocomplete and autofill
           }}
         /> */}
-         <TextField
+         {/* <TextField
             size="small"
             placeholder="Nhập ngày thực thi..."
             label="Ngày thực thi"
@@ -176,7 +176,7 @@ export default function ListCustomerRequest() {
                 </InputAdornment>
               ),
             }}
-          />
+          /> */}
           <Box sx={{ minWidth: 120 }}>
             <FormControl sx={{ width: "300px" }} size="small">
               <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
@@ -266,10 +266,10 @@ export default function ListCustomerRequest() {
                     {row.userId.fullName}
                   </StyledTableCell>              
                   <StyledTableCell align="center" size="small">
-                    {row.createDate ? moment(row.createDate).format("DD/MM/YYYY - HH:mm A") :"-"}
+                    {row.createDate ? moment(row.createDate).format("DD/MM/YYYY - HH:mm") :"-"}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                  {row.exctionDate ? moment(row.exctionDate).format("DD/MM/YYYY - HH:mm A") :"-"}
+                  {row.exctionDate ? moment(row.exctionDate).format("DD/MM/YYYY - HH:mm") :"-"}
                   </StyledTableCell>  
                   <StyledTableCell align="center" size="small">
                   {row.staffId ? row.staffId.fullName : "-"}

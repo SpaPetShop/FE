@@ -8,6 +8,7 @@ export type OrderType = {
   finalAmount: number;
   timeWork: number;
   estimatedCompletionDate: string;
+  excutionDate: string;
   status: string;
   type: string;
   userInfo: {

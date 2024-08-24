@@ -312,7 +312,7 @@ export default function DetailOrder() {
                   Ngày tạo đơn:{" "}
                   <strong>
                     {data.createdDate
-                      ? moment(data.createdDate).format("DD/MM/YYYY - hh:mm A")
+                      ? moment(data.createdDate).format("DD/MM/YYYY - HH:mm")
                       : "Chưa có thông tin"}
                   </strong>
                 </Typography>
@@ -322,7 +322,18 @@ export default function DetailOrder() {
                   <strong>
                     {data.estimatedCompletionDate
                       ? moment(data.estimatedCompletionDate).format(
-                          "DD/MM/YYYY - hh:mm A"
+                          "DD/MM/YYYY - HH:mm"
+                        )
+                      : "Chưa có thông tin"}
+                  </strong>
+                </Typography>
+
+                <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
+                  Ngày thực thi đơn:{" "}
+                  <strong>
+                    {data.excutionDate
+                      ? moment(data.excutionDate).format(
+                          "DD/MM/YYYY - HH:mm"
                         )
                       : "Chưa có thông tin"}
                   </strong>
@@ -333,7 +344,7 @@ export default function DetailOrder() {
                   <strong>
                     {data.completedDate
                       ? moment(data.completedDate).format(
-                          "DD/MM/YYYY - hh:mm A"
+                          "DD/MM/YYYY - HH:mm"
                         )
                       : "Chưa có thông tin"}
                   </strong>
@@ -369,7 +380,7 @@ export default function DetailOrder() {
                     </Alert>
                   </Box>
                 )}
-                {data.status !== "CANCELED" && (
+                {data.status !== "COMPLETED" && (
                   <Button
                     variant="contained"
                     color="error"
@@ -455,7 +466,7 @@ export default function DetailOrder() {
                   <Box key={index} sx={{ mb: 2 }}>
                     <Typography sx={{ mb: 1 }}>
                       Ngày tạo:{" "}
-                      {moment(note.createDate).format("DD/MM/YYYY - hh:mm")}
+                      {moment(note.createDate).format("DD/MM/YYYY - HH:mm")}
                     </Typography>
                     <Typography>Nội dung: {note.description}</Typography>
                   </Box>

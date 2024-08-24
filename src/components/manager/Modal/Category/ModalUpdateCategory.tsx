@@ -44,7 +44,7 @@ export default function ModalUpdateCategory({
     setOpen(false);
   };
   React.useEffect(() => {
-    if (data) setChecked(data.status === "Active" ? true : false);
+    if (data) setChecked(data.status === "ACTIVE" ? true : false);
   }, [data]);
   if (data)
     return (
