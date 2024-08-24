@@ -14,7 +14,7 @@ import {
   TablePagination,
   TextField,
   Tooltip,
-  Typography,
+  Typography
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
@@ -28,10 +28,7 @@ import moment from "moment";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import useDebounce from "../../hook/useDebounce";
-import {
-  FilterCustomerRequestType,
-  CustomerRequestType,
-} from "../../types/CustomerRequest/CustomerRequestType";
+import { FilterCustomerRequestType, CustomerRequestType } from "../../types/CustomerRequest/CustomerRequestType";
 import { UserType } from "../../types/User/UserType";
 import CustomerRequestAPI from "../../utils/CustomerRequestAPI";
 import UserAPI from "../../utils/UserAPI";
@@ -65,44 +62,22 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export const renderStatusCustomerRequest = (status: string) => {
   switch (status) {
     case "PENDING":
-      return (
-        <Chip
-          sx={{ minWidth: 120 }}
-          label={"Đang chờ"}
-          color="warning"
-          size="small"
-        />
-      );
+      return <Chip sx={{minWidth:120}} label={"Đang chờ"} color="warning" size="small"/>
     case "ACCEPT":
-      return (
-        <Chip
-          sx={{ minWidth: 120 }}
-          label={"Đang xử lí"}
-          color="info"
-          size="small"
-        />
-      );
+      return <Chip sx={{minWidth:120}}  label={"Đang xử lí"} color="info" size="small"/>
     case "REJECT":
-      return (
-        <Chip
-          sx={{ minWidth: 120 }}
-          label={"Hoàn Thành"}
-          color="success"
-          size="small"
-        />
-      );
+      return <Chip sx={{minWidth:120}}  label={"Hoàn Thành"} color="success" size="small"/>
   }
-};
+}
 export default function ListCustomerRequest() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const [isLoading, setIsLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [typeAction, setTypeAction] = React.useState(true);
-  const [selectedRequest, setSelectedRequest] =
-    React.useState<CustomerRequestType | null>(null);
-  const [listCustomerRequest, setListCustomerRequest] = React.useState<
-    CustomerRequestType[] | []
-  >([]);
+  const [selectedRequest, setSelectedRequest] = React.useState<CustomerRequestType | null>(null);
+  const [listCustomerRequest, setListCustomerRequest] = React.useState<CustomerRequestType[] | []>(
+    []
+  );
   const [pagination, setPagination] = React.useState<PaginationType>({
     page: 1,
     size: 10,
@@ -158,17 +133,17 @@ export default function ListCustomerRequest() {
   React.useEffect(() => {
     setFilter((prev) => ({ ...prev, ExctionDate: debouncedInputValueDate }));
   }, [debouncedInputValueDate]);
-  console.log({ typeAction });
+  console.log({typeAction});
 
   return (
-    <Paper sx={{ p: 3, minHeight: "85vh" }}>
-      <Stack
-        direction={"row"}
-        alignItems={"center"}
-        spacing={3}
-        sx={{ mb: 3, mt: 2 }}
-      >
-        {/* 
+    <Paper sx={{ p: 3, minHeight:"85vh" }}>
+        <Stack
+          direction={"row"}
+          alignItems={"center"}
+          spacing={3}
+          sx={{ mb: 3, mt: 2 }}
+        >
+{/* 
         <TextField
           label="Tìm kiếm theo tên người dùng"
           value={searchName}
@@ -186,63 +161,64 @@ export default function ListCustomerRequest() {
             autoComplete: "off", // disable autocomplete and autofill
           }}
         /> */}
-        <TextField
-          size="small"
-          placeholder="Nhập ngày thực thi..."
-          label="Ngày thực thi"
-          type="date"
-          value={searchCreateDate}
-          onChange={(e) => handleSearchCreateDate(e.target.value)}
-          sx={{ width: "300px" }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchOutlinedIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <Box sx={{ minWidth: 120 }}>
-          <FormControl sx={{ width: "300px" }} size="small">
-            <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={filter.Status}
-              label="Trạng thái"
-              onChange={(e) =>
-                setFilter((prev) => ({
-                  ...prev,
-                  Status: e.target.value as string,
-                }))
-              }
-            >
-              <MenuItem value={""}>Tất cả</MenuItem>
-              <MenuItem value={"PENDING"}>Đang chờ</MenuItem>
-              <MenuItem value={"ACCEPT"}>Đã chấp nhận</MenuItem>
-              <MenuItem value={"REJECT"}>Đã từ chối</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-      </Stack>
+         <TextField
+            size="small"
+            placeholder="Nhập ngày thực thi..."
+            label="Ngày thực thi"
+            type="date"
+            value={searchCreateDate}
+            onChange={(e) => handleSearchCreateDate(e.target.value)}
+            sx={{ width: "300px" }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchOutlinedIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Box sx={{ minWidth: 120 }}>
+            <FormControl sx={{ width: "300px" }} size="small">
+              <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={filter.Status}
+                label="Trạng thái"
+                onChange={(e) =>
+                  setFilter((prev) => ({
+                    ...prev,
+                    Status: e.target.value as string,
+                  }))
+                }
+              >
+                <MenuItem value={""}>Tất cả</MenuItem>
+                <MenuItem value={"PENDING"}>Đang chờ</MenuItem>
+                <MenuItem value={"ACCEPT"}>Đã chấp nhận</MenuItem>
+                <MenuItem value={"REJECT"}>Đã từ chối</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+        </Stack>
       <TableContainer component={Paper} sx={{ minHeight: 600 }}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
               <StyledTableCell align="center">STT</StyledTableCell>
               <StyledTableCell align="center">Tên Khách Hàng</StyledTableCell>
-              <StyledTableCell align="center">Ngày Tạo</StyledTableCell>
-              <StyledTableCell align="center">Ngày Thực Thi</StyledTableCell>
-              <StyledTableCell align="center">Ghi Chú</StyledTableCell>
-              <StyledTableCell align="center">Trạng thái</StyledTableCell>
-              <StyledTableCell align="center">Hóa Đơn</StyledTableCell>
-              <StyledTableCell align="center">Thao Tác</StyledTableCell>
+              <StyledTableCell align="center">Ngày Tạo</StyledTableCell>  
+              <StyledTableCell align="center">Ngày Thực Thi</StyledTableCell>  
+              <StyledTableCell align="center">Nhân viên</StyledTableCell>
+              <StyledTableCell align="center">Ghi Chú</StyledTableCell>  
+              <StyledTableCell align="center">Trạng thái</StyledTableCell>  
+              <StyledTableCell align="center">Hóa Đơn</StyledTableCell>  
+              <StyledTableCell align="center">Thao Tác</StyledTableCell>  
             </TableRow>
           </TableHead>
           <TableBody>
             {listCustomerRequest.length === 0 && isLoading === false && (
               <StyledTableRow>
-                <StyledTableCell colSpan={8} align="left">
+                <StyledTableCell colSpan={9} align="left">
                   <Typography align="center">Không có dữ liệu!</Typography>
                 </StyledTableCell>
               </StyledTableRow>
@@ -271,6 +247,12 @@ export default function ListCustomerRequest() {
                   <StyledTableCell align="left">
                     <Skeleton variant="rectangular" />
                   </StyledTableCell>
+                  <StyledTableCell align="left">
+                    <Skeleton variant="rectangular" />
+                  </StyledTableCell>
+                  <StyledTableCell align="left">
+                    <Skeleton variant="rectangular" />
+                  </StyledTableCell>
                 </StyledTableRow>
               ))}
             {listCustomerRequest.length > 0 &&
@@ -278,36 +260,31 @@ export default function ListCustomerRequest() {
               listCustomerRequest.map((row, index) => (
                 <StyledTableRow key={index}>
                   <StyledTableCell align="center" size="small">
-                    {(pagination.page - 1) * pagination.size + index + 1}
+                    {(pagination.page - 1) * pagination.size + index + 1}                  
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
                     {row.userId.fullName}
+                  </StyledTableCell>              
+                  <StyledTableCell align="center" size="small">
+                    {row.createDate ? moment(row.createDate).format("DD/MM/YYYY - HH:mm A") :"-"}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                    {row.createDate
-                      ? moment(row.createDate).format("DD/MM/YYYY - HH:mm")
-                      : "-"}
-                  </StyledTableCell>
+                  {row.exctionDate ? moment(row.exctionDate).format("DD/MM/YYYY - HH:mm A") :"-"}
+                  </StyledTableCell>  
                   <StyledTableCell align="center" size="small">
-                    {row.exctionDate
-                      ? moment(row.exctionDate).format("DD/MM/YYYY - HH:mm")
-                      : "-"}
-                  </StyledTableCell>
+                  {row.staffId ? row.staffId.fullName : "-"}
+                  </StyledTableCell> 
                   <StyledTableCell align="center" size="small">
-                    {row.note || "-"}
-                  </StyledTableCell>
+                  {row.note || "-"}
+                  </StyledTableCell>                      
                   <StyledTableCell align="center" size="small">
                     {renderStatusCustomerRequest(row.status)}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                    <Tooltip
-                      title={"Xem chi tiết"}
-                      sx={{ cursor: "pointer" }}
-                      onClick={() =>
-                        navigate(`/manager-manage-order/${row.orderId}`)
-                      }
+                    <Tooltip title={"Xem chi tiết"} sx={{cursor:"pointer"}}
+                    onClick={()=>navigate(`/manager-manage-order/${row.orderId}`)}
                     >
-                      <VisibilityOutlinedIcon color="success" />
+                      <VisibilityOutlinedIcon color="success"/>
                     </Tooltip>
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
@@ -336,15 +313,14 @@ export default function ListCustomerRequest() {
           return `${from}–${to} / ${count !== -1 ? count : `nhiều hơn ${to}`}`;
         }}
       />
-      {selectedRequest && (
-        <ModalConfirmCustomerRequest
-          data={selectedRequest}
-          open={open}
-          setOpen={setOpen}
-          fetchCustomerRequest={fetchAllCustomerRequest}
-          type={typeAction}
-        />
-      )}
+      {selectedRequest && 
+      <ModalConfirmCustomerRequest
+      data={selectedRequest}
+      open={open}
+      setOpen={setOpen}
+      fetchCustomerRequest={fetchAllCustomerRequest}
+      type={typeAction}
+      />}
     </Paper>
   );
 }

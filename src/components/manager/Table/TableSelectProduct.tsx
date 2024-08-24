@@ -105,6 +105,9 @@ interface TableSelectProductProps {
   setTotalSellingPriceOfSubProuducts: React.Dispatch<
     React.SetStateAction<number>
   >;
+  setTotalTimeWorkOfSubProuducts:React.Dispatch<
+  React.SetStateAction<number>
+>;
   formikRef: React.RefObject<FormikProps<FormikValues>>;
 }
 
@@ -164,6 +167,7 @@ export default function TableSelectProduct({
   listProductSelected,
   setListProductSelected,
   setTotalSellingPriceOfSubProuducts,
+  setTotalTimeWorkOfSubProuducts,
   formikRef,
 }: TableSelectProductProps) {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
@@ -187,11 +191,13 @@ export default function TableSelectProduct({
       const commonElements = listProduct.filter((element) =>
         newSelected.includes(element.id)
       );
-      let totalSubPrice = 0;
+      let totalSubPrice = 0, totalTimeWork = 0;
       commonElements.forEach((element) => {
         totalSubPrice = totalSubPrice + element.sellingPrice;
+        totalTimeWork = totalTimeWork + element.timeWork;
       });
       setTotalSellingPriceOfSubProuducts(totalSubPrice);
+      setTotalTimeWorkOfSubProuducts(totalTimeWork);
       return;
     }
     setSelected([]);
@@ -218,11 +224,13 @@ export default function TableSelectProduct({
     const commonElements = listProduct.filter((element) =>
       newSelected.includes(element.id)
     );
-    let totalSubPrice = 0;
-    commonElements.forEach((element) => {
-      totalSubPrice = totalSubPrice + element.sellingPrice;
-    });
-    setTotalSellingPriceOfSubProuducts(totalSubPrice);
+    let totalSubPrice = 0, totalTimeWork = 0;
+      commonElements.forEach((element) => {
+        totalSubPrice = totalSubPrice + element.sellingPrice;
+        totalTimeWork = totalTimeWork + element.timeWork;
+      });
+      setTotalSellingPriceOfSubProuducts(totalSubPrice);
+      setTotalTimeWorkOfSubProuducts(totalTimeWork);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -260,6 +268,7 @@ export default function TableSelectProduct({
   }, [filter]);
 
   React.useEffect(() => {
+    console.log("check category id select: ",formikRef.current?.values.categoryId);
     if (formikRef.current?.values.categoryId) {
       setSelected([]);
       setFilter((prev) => ({

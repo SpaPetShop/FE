@@ -7,7 +7,7 @@ import MenuItem from "@mui/material/MenuItem";
 import * as React from "react";
 import { UserType } from "../../../types/User/UserType";
 interface MenuProps {
-    setOpenUpdate: React.Dispatch<React.SetStateAction<boolean>>
+  setOpenUpdate: React.Dispatch<React.SetStateAction<boolean>>
     setOpenDelete: React.Dispatch<React.SetStateAction<boolean>>
     setSelectedUser: React.Dispatch<React.SetStateAction<UserType | null>>
     data:UserType

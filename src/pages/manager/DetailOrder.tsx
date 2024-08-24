@@ -192,7 +192,7 @@ export default function DetailOrder() {
                       >
                         Hiện chưa có nhân viên nhận đơn hàng này!
                       </Typography>
-                      {data.staff == null &&
+                      {data?.staff &&
                         data.status === "PAID" &&
                         data.type === "MANAGERREQUEST" &&
                         isAssignStaff === false && (
@@ -311,31 +311,54 @@ export default function DetailOrder() {
                 <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
                   Ngày tạo đơn:{" "}
                   <strong>
-                    {moment(data.createdDate).format("DD/MM/YYYY - hh:mm")}
+                    {data.createdDate
+                      ? moment(data.createdDate).format("DD/MM/YYYY - hh:mm A")
+                      : "Chưa có thông tin"}
                   </strong>
                 </Typography>
-                {data.completedDate && (
-                  <Typography>
-                    Ngày hoàn thành đơn:{" "}
-                    <strong>
-                      {moment(data.completedDate).format("DD/MM/YYYY - hh:mm")}
-                    </strong>
-                  </Typography>
-                )}
+
+                <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
+                  Ngày dự kiến hoàn thành đơn:{" "}
+                  <strong>
+                    {data.estimatedCompletionDate
+                      ? moment(data.estimatedCompletionDate).format(
+                          "DD/MM/YYYY - hh:mm A"
+                        )
+                      : "Chưa có thông tin"}
+                  </strong>
+                </Typography>
+
+                <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
+                  Ngày hoàn thành đơn:{" "}
+                  <strong>
+                    {data.completedDate
+                      ? moment(data.completedDate).format(
+                          "DD/MM/YYYY - hh:mm A"
+                        )
+                      : "Chưa có thông tin"}
+                  </strong>
+                </Typography>
+
                 <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
                   Mô tả:{" "}
                   <strong>{data.description || "Chưa có thông tin"}</strong>
                 </Typography>
 
-                {/* <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
-                  Tổng giá tiền:{" "}
-                  <strong>{data.totalAmount.toLocaleString()} VNĐ</strong>
-                </Typography> */}
+                <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
+                  Tổng thời gian làm:{" "}
+                  <strong>
+                    {data.timeWork
+                      ? data.timeWork + " giờ"
+                      : "Chưa có thông tin"}
+                  </strong>
+                </Typography>
+
                 <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
                   Tổng giá tiền:{" "}
                   <strong>{data.finalAmount.toLocaleString()} VNĐ</strong>
                 </Typography>
-                <Typography variant="h6" sx={{ fontSize: 17 }}>
+
+                <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
                   Trạng thái: {renderStatusOrder(data.status)}
                 </Typography>
 
@@ -350,7 +373,7 @@ export default function DetailOrder() {
                   <Button
                     variant="contained"
                     color="error"
-                    sx={{ mt: 10 }}
+                    sx={{ mt: 5 }}
                     onClick={() => setIsCancelOrder(true)}
                   >
                     Hủy Đơn Hàng
