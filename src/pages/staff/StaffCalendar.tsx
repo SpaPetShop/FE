@@ -7,14 +7,11 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
   Skeleton,
   Stack,
-  TablePagination,
-  TextField,
   Typography,
   Button,
   Paper,
@@ -130,6 +127,30 @@ export const StaffCalendar: React.FC = () => {
       setOpenSnackbar(true);
     }
   };
+   const renderTaskatus = (status: string) => {
+    switch (status) {
+      case "ACCEPT":
+        return <Chip sx={{minWidth:120}} label={"Nhận Công Việc"} color="warning" size="small"/>
+      case "COMPLETED":
+        return <Chip sx={{minWidth:120}}  label={"Đã Hoàn Thành"} color="success" size="small"/>
+      case "PROCESS":
+        return <Chip sx={{minWidth:120}}  label={"Đang xử lý"} color="info" size="small"/>
+      case "CANCELED":
+        return <Chip sx={{minWidth:120}}  label={"Đã Hủy"} color="error" size="small"/>
+    }
+  }
+  const renderStatusOrder = (status: string) => {
+    switch (status) {
+      case "PAID":
+        return <Chip sx={{minWidth:120}} label={"Đã Thanh Toán"} color="warning" size="small"/>
+      case "COMPLETED":
+        return <Chip sx={{minWidth:120}}  label={"Đã Hoàn Thành"} color="success" size="small"/>
+      case "PROCESS":
+        return <Chip sx={{minWidth:120}}  label={"Đang xử lý"} color="info" size="small"/>
+      case "CANCELED":
+        return <Chip sx={{minWidth:120}}  label={"Đã Hủy"} color="error" size="small"/>
+    }
+  }
 
   const fetchOrderDetail = async (orderId: string) => {
     try {
@@ -212,7 +233,7 @@ export const StaffCalendar: React.FC = () => {
         spacing={3}
         sx={{ mb: 3, mt: 2 }}
       >
-        <TextField
+        {/* <TextField
           size="small"
           placeholder="Nhập mã đơn hàng..."
           label="Tìm kiếm"
@@ -226,7 +247,7 @@ export const StaffCalendar: React.FC = () => {
               </InputAdornment>
             ),
           }}
-        />
+        /> */}
         <Box sx={{ minWidth: 120 }}>
           <FormControl sx={{ width: "300px" }} size="small">
             <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
@@ -249,7 +270,7 @@ export const StaffCalendar: React.FC = () => {
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell align="center">Mã hóa đơn</StyledTableCell>
+              <StyledTableCell align="center">#</StyledTableCell>
               <StyledTableCell align="center">Tên thú cưng</StyledTableCell>
               <StyledTableCell align="center">Người phụ trách</StyledTableCell>
               <StyledTableCell align="center">Ngày tạo</StyledTableCell>
@@ -289,10 +310,10 @@ export const StaffCalendar: React.FC = () => {
                 </StyledTableRow>
               ))
             ) : tasks.length > 0 ? (
-              tasks.map((task) => (
+              tasks.map((task, index) => (
                 <StyledTableRow key={task.id}>
                   <StyledTableCell align="center" size="small">
-                    {task.order?.id || "-"}
+                    {index + 1}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
                     {task.pets.name || "-"}
@@ -307,7 +328,7 @@ export const StaffCalendar: React.FC = () => {
                     {task.excutionDate || "-"}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                    {task.status || "-"}
+                    {renderTaskatus(task.status || "-")}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
                     <Button
@@ -349,29 +370,30 @@ export const StaffCalendar: React.FC = () => {
       >
         <DialogTitle>Chi tiết công việc</DialogTitle>
         <DialogContent>
-          <Typography variant="h6" gutterBottom>
-            Mã đơn hàng: {selectedTask?.order?.invoiceCode || "-"}
+          <Card sx={{ p: 2, mb: 2 }}><Typography variant="h6" gutterBottom>
+          <strong>  Mã đơn hàng:</strong> {selectedTask?.order?.invoiceCode || "-"}
           </Typography>
           <Typography variant="h6" gutterBottom>
-            Tên thú cưng: {selectedTask?.pets.name || "-"}
+          <strong>Tên thú cưng:</strong> {selectedTask?.pets.name || "-"}
           </Typography>
           <Typography variant="h6" gutterBottom>
-            Người phụ trách: {selectedTask?.staff.fullName || "-"}
+           <strong> Người phụ trách:</strong> {selectedTask?.staff.fullName || "-"}
           </Typography>
           <Typography variant="h6" gutterBottom>
-            Ngày tạo: {selectedTask?.createDate || "-"}
+          <strong>  Ngày tạo:</strong> {selectedTask?.createDate || "-"}
           </Typography>
           <Typography variant="h6" gutterBottom>
-            Ngày thực thi: {selectedTask?.excutionDate || "-"}
+            <strong>Ngày thực thi:</strong> {selectedTask?.excutionDate || "-"}
           </Typography>
           <Typography variant="h6" gutterBottom>
-            Trạng thái: {selectedTask?.status || "-"}
+            <strong>Trạng thái:</strong> {renderTaskatus(selectedTask?.status || "-")}
           </Typography>
           {selectedTask?.status === "PROCESS" && (
-            <Button onClick={handleApprove} color="success">
+            <Button style={{backgroundColor:'orange', color:'white', margin:'10px'}} onClick={handleApprove} >
               Nhận công việc
             </Button>
-          )}
+           )} 
+          </Card>
 
           <Grid container spacing={2} sx={{ mt: 2 }}>
             <Grid item xs={12}>
@@ -384,36 +406,36 @@ export const StaffCalendar: React.FC = () => {
                     {/* Cột bên trái: Thông tin đơn hàng */}
                     <Grid item xs={12} md={8}>
                       <Typography variant="body1" gutterBottom>
-                        Mã đơn hàng: {orderDetail.invoiceCode || "-"}
+                        <strong>Mã đơn hàng:</strong> {orderDetail.invoiceCode || "-"}
                       </Typography>
                       <Typography variant="body1" gutterBottom>
-                        Giá cuối cùng:{" "}
-                        {orderDetail.finalAmount?.toLocaleString() || "-"} VND
+                       <strong> Giá đơn hàng:  {orderDetail.finalAmount?.toLocaleString() || "-"} VND</strong>{" "}
+                       
                       </Typography>
                       <Typography variant="body1" gutterBottom>
-                        Loại công việc: {orderDetail.type || "-"}
+                        <strong>Loại công việc:</strong> {orderDetail.type || "-"}
                       </Typography>
                       <Typography variant="body1" gutterBottom>
-                        Ngày tạo:{" "}
+                        <strong>Ngày tạo:</strong>{" "}
                         {new Date(orderDetail.createDate).toLocaleString() ||
                           "-"}
                       </Typography>
                       <Typography variant="body1" gutterBottom>
-                        Ngày thực hiện:{" "}
+                       <strong> Ngày thực hiện:</strong>{" "}
                         {new Date(orderDetail.excutionDate).toLocaleString() ||
                           "-"}
                       </Typography>
                       <Typography variant="body1" gutterBottom>
-                        Trạng thái: {orderDetail.status || "-"}
+                        <strong>Trạng thái:</strong>   {renderStatusOrder(orderDetail?.status || "")}
                       </Typography>
                       <Typography variant="body1" gutterBottom>
-                        Ngày hoàn thành:{" "}
+                        <strong>Ngày hoàn thành:</strong>{" "}
                         {orderDetail.completedDate
                           ? new Date(orderDetail.completedDate).toLocaleString()
                           : "-"}
                       </Typography>
                       <Typography variant="body1" gutterBottom>
-                        Nhân viên phụ trách:{" "}
+                        <strong>Nhân viên phụ trách:</strong>{" "}
                         {orderDetail.staff?.fullName || "-"}
                       </Typography>
                     </Grid>
@@ -424,7 +446,7 @@ export const StaffCalendar: React.FC = () => {
                         Thông tin thú cưng
                       </Typography>
                       <Typography variant="body1" gutterBottom>
-                        Tên: {orderDetail.petInfor?.name || "-"}
+                        <strong>Tên:</strong> {orderDetail.petInfor?.name || "-"}
                       </Typography>
                       {orderDetail.petInfor?.image && (
                         <Box sx={{ mt: 2, mb: 2 }}>
@@ -447,13 +469,13 @@ export const StaffCalendar: React.FC = () => {
                         </Box>
                       )}
                       <Typography variant="body1" gutterBottom>
-                        Loại: {orderDetail.petInfor?.typePet?.name || "-"}
+                        <strong>Loại:</strong> {orderDetail.petInfor?.typePet?.name || "-"}
                       </Typography>
                     </Grid>
                   </Grid>
                   <DialogContent>
-                    {orderDetail?.status === "ACCEPT" && (
-                      <Button onClick={handleCompleteOrder} color="primary">
+                   {orderDetail?.status === "ACCEPT" && (
+                      <Button style={{backgroundColor:'green', color:'white'}} onClick={handleCompleteOrder} >
                         Hoàn thành đơn hàng
                       </Button>
                     )}
