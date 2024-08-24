@@ -229,7 +229,7 @@ export default function ListStaff() {
           <TableBody>
             {listUser.length === 0 && isLoading === false && (
               <StyledTableRow>
-                <StyledTableCell colSpan={6} align="left">
+                <StyledTableCell colSpan={7} align="left">
                   <Typography align="center">Không có dữ liệu!</Typography>
                 </StyledTableCell>
               </StyledTableRow>
@@ -252,6 +252,9 @@ export default function ListStaff() {
                   <StyledTableCell align="left">
                     <Skeleton variant="rectangular" />
                   </StyledTableCell>
+                  <StyledTableCell align="left">
+                    <Skeleton variant="rectangular" />
+                  </StyledTableCell> 
                   <StyledTableCell align="left">
                     <Skeleton variant="rectangular" />
                   </StyledTableCell>             

@@ -9,8 +9,6 @@ const AdminManageStaffAPI = {
       },
     });
   },
-  
-
   create: (payload: any) => {
     const url = "/staff";
     return axiosClient.post(url, payload);

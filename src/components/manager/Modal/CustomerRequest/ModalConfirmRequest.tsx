@@ -41,7 +41,7 @@ export default function ModalConfirmCustomerRequest({
     } catch (error: any) {
       toast.error(
         error?.response?.data
-          ? error?.response?.data?.error
+          ? error?.response?.data?.Error
           : "Cập nhật thất bại"
       );
     }
