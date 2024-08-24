@@ -24,15 +24,15 @@ import {
   
   const phoneRegExp =
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-  const validationSchema = Yup.object({
-    fullName: Yup.string().required("*Tên nhân viên không được để trống!"),
-    address: Yup.string().required("*Địa chỉ không được để trống!"),
-    email: Yup.mixed().required("*Email không được để trống!"),
-    phoneNumber: Yup.string()
-      .required("*Số điện thoại không được để trống !")
-      .matches(phoneRegExp, "*Số điện thoại không hợp lệ !"),
-    image: Yup.string().required("*Ảnh nhân viên không được thiếu!"),
-  });
+  // const validationSchema = Yup.object({
+  //   fullName: Yup.string().required("*Tên nhân viên không được để trống!"),
+  //   address: Yup.string().required("*Địa chỉ không được để trống!"),
+  //   email: Yup.mixed().required("*Email không được để trống!"),
+  //   phoneNumber: Yup.string()
+  //     .required("*Số điện thoại không được để trống !")
+  //     .matches(phoneRegExp, "*Số điện thoại không hợp lệ !"),
+  //   image: Yup.string().required("*Ảnh nhân viên không được thiếu!"),
+  // });
   
   type ModalCreateCustomerProps = {
     open: boolean;
@@ -81,7 +81,7 @@ import {
               image: data.image || "",
               yearsOfExperience: data.yearsOfExperience || 0,
             }}
-            validationSchema={validationSchema}
+            // validationSchema={validationSchema}
             onSubmit={async (values) => {
               try {
                 console.log(values);
