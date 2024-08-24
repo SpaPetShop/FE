@@ -70,7 +70,7 @@ export default function ModalCreateUser({
             address: "",
             username: "",
             password: "",
-            role: "Staff",
+            role: "STAFF",
             email: "",
             phoneNumber: "",
             image: "",
@@ -84,8 +84,8 @@ export default function ModalCreateUser({
               setOpen(false);
               toast.success("Tạo thành công !");
               fetchAllUser();
-            } catch (error) {
-              toast.error("Tạo thất bại !");
+            } catch (error: any) {
+              toast.error(error?.response?.data?.Error || "Tạo thất bại !");
             }
           }}
         >

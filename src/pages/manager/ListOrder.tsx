@@ -71,9 +71,9 @@ const TabName = styled('span')(({ theme }) => ({
 export const renderStatusOrder = (status: string) => {
   switch (status) {
     case "UNPAID":
-      return <Chip sx={{minWidth:120}} label={"Chưa Thanh Toán"} color="warning" size="small"/>
+      return <Chip sx={{minWidth:120}} label={"Chưa Đặt Cọc"} color="warning" size="small"/>
     case "PAID":
-      return <Chip sx={{minWidth:120}}  label={"Đã Thanh Toán"} color="info" size="small"/>
+      return <Chip sx={{minWidth:120}}  label={"Đã Đặt Cọc"} color="info" size="small"/>
     case "COMPLETED":
       return <Chip sx={{minWidth:120}}  label={"Hoàn Thành"} color="success" size="small"/>
     case "CANCELED":
@@ -184,7 +184,7 @@ export default function ListOrder() {
           spacing={3}
           sx={{ mb: 3, mt: 2 }}
         >
-          <TextField
+          {/* <TextField
             size="small"
             placeholder="Nhập ngày tạo đơn..."
             label="Ngày tạo đơn"
@@ -199,7 +199,7 @@ export default function ListOrder() {
                 </InputAdornment>
               ),
             }}
-          />
+          /> */}
            <Box sx={{ minWidth: 120 }}>
             <FormControl sx={{ width: "300px" }} size="small">
               <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
@@ -297,10 +297,10 @@ export default function ListOrder() {
                       maxWidth: "250px",
                     }}
                   >
-                    {moment(row.createdDate).format("DD/MM/YYYY - hh:mm:A")}
+                    {moment(row.createdDate).format("DD/MM/YYYY - HH:mm:A")}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
-                  {row.completedDate ? moment(row.completedDate).format("DD/MM/YYYY - hh:mm:A") : "-"}
+                  {row.excutionDate ? moment(row.excutionDate).format("DD/MM/YYYY - HH:mm:A") : "-"}
                   </StyledTableCell>
                   <StyledTableCell align="center" size="small">
                     {row.finalAmount.toLocaleString()} VNĐ
