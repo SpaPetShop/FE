@@ -181,7 +181,7 @@ export default function TableSelectProduct({
   const [filter, setFilter] = React.useState<FilterProductType>({
     page: 1,
     size: 10,
-    Status: "Available",
+    Status: "AVAILABLE",
   });
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
@@ -276,7 +276,7 @@ export default function TableSelectProduct({
         CategoryId: formikRef.current?.values.categoryId,
       }));
     }
-  }, [formikRef.current?.values.categoryId, formikRef]);
+  }, [formikRef]);
 
   return (
     <Box sx={{ width: "100%" }}>
