@@ -40,7 +40,7 @@ export default function ModalDeleteUser({
   if (data)
     return (
       <>
-        <Dialog open={open}>
+        <Dialog open={open} fullWidth maxWidth="sm">
           <DialogTitle
             id="alert-dialog-title"
             sx={{
@@ -53,7 +53,7 @@ export default function ModalDeleteUser({
           </DialogTitle>
           <DialogContent>
             <Typography sx={{mt: 1}}>
-              Bạn muốn xóa nhân viên <strong>{data.fullName}</strong> này ?
+              Bạn muốn ngưng hoạt động nhân viên <strong>{data.fullName}</strong> này ?
             </Typography>
           </DialogContent>
           <DialogActions>

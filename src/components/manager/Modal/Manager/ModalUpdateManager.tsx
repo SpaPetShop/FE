@@ -59,7 +59,8 @@ import {
       setOpen(false);
     };
     React.useEffect(() => {
-      setChecked(data.status === "Activate" ? true : false);
+      console.log(data.status,'check')
+      setChecked(data.status === "ACTIVE" ? true : false);
     }, [data]);
   
     return (
@@ -108,7 +109,7 @@ import {
                       "linear-gradient(to right top, #ffab91, #ffbc8e, #ffce8f, #ffe193, #fff59d)",
                   }}
                 >
-                  {"TẠO TÀI KHOẢN QUẢN LÝ"}
+                  {"CẬP NHẬT TÀI KHOẢN QUẢN LÝ"}
                 </DialogTitle>
                 <DialogContent>
                   <DialogContentText id="alert-dialog-description">

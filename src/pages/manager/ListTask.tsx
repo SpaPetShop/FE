@@ -59,10 +59,14 @@ export const renderStatusTask = (status: string) => {
   switch (status) {
     case "PENDING":
       return <Chip sx={{minWidth:120}} label={"Đang chờ"} color="warning" size="small"/>
+    case "ACCEPT":
+        return <Chip sx={{minWidth:120}} label={"Đã nhận"} color="secondary" size="small"/>
     case "PROCESS":
       return <Chip sx={{minWidth:120}}  label={"Đang xử lí"} color="info" size="small"/>
     case "COMPLETED":
       return <Chip sx={{minWidth:120}}  label={"Hoàn Thành"} color="success" size="small"/>
+    case "REJECT":
+        return <Chip sx={{minWidth:120}} label={"Từ chối"} color="error" size="small"/>
   }
 }
 export default function ListTask() {
@@ -207,7 +211,7 @@ export default function ListTask() {
         />
       )}
     />
-         <TextField
+         {/* <TextField
             size="small"
             placeholder="Nhập ngày thực thi..."
             label="Ngày thực thi"
@@ -222,7 +226,7 @@ export default function ListTask() {
                 </InputAdornment>
               ),
             }}
-          />
+          /> */}
           <Box sx={{ minWidth: 120 }}>
             <FormControl sx={{ width: "300px" }} size="small">
               <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
@@ -293,6 +297,7 @@ export default function ListTask() {
                   <StyledTableCell align="left">
                     <Skeleton variant="rectangular" />
                   </StyledTableCell>
+                  
                 </StyledTableRow>
               ))}
             {listTask.length > 0 &&

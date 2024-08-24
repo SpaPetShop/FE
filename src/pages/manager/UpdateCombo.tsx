@@ -42,11 +42,19 @@ const validationSchema = Yup.object({
       Yup.ref('stockPrice'),
       '*Giá bán phải nhỏ hơn hoặc bằng giá gốc!'
     ),
+    // timeWork: Yup.string()
+    // .required('Thông tin này là bắt buộc')
+    // .min(0, "Thời gian làm việc không hợp lệ!")
+    // .test('valid-decimal', 'Thời gian làm việc không hợp lệ!', (value) => {
+    //   if (value === undefined || value === null) return false;
+    //   const regex = /^\d+(\.0|\.5)?$/;
+    //   return regex.test(value);
+    // }),
   status: Yup.string().required("*Trạng thái không được để trống !"),
-  categoryId: Yup.string().required("*Loại sản phẩm không được để trống !"),
-  image: Yup.array().of(
-    Yup.string().required("Hình ảnh không được để trống!")
-  ),
+  // categoryId: Yup.string().required("*Loại sản phẩm không được để trống !"),
+  // image: Yup.array().of(
+  //   Yup.string().required("Hình ảnh không được để trống!")
+  // ),
 });
 
 export default function UpdateCombo() {
@@ -67,7 +75,7 @@ export default function UpdateCombo() {
     const fetchListCategory = async () => {
       try {
         setIsLoading(true);
-        const data = await CategoryAPI.getAll({ page: 1, size: 100 });
+        const data = await CategoryAPI.getAll({ page: 1, size: 100, Status:"ACTIVE" });
         setListCategory(data.items);
       } catch (error) {
         console.log("Error get list Category: ", error);
@@ -111,6 +119,7 @@ export default function UpdateCombo() {
             stockPrice: data.stockPrice || "",
             sellingPrice: data.sellingPrice || "",
             status: data.status || "",
+            timeWork:data.timeWork || 2,
             categoryId: data.category.id || "",
             image: data.image.map((img)=>img.imageURL) || [""]
           }}
@@ -125,16 +134,16 @@ export default function UpdateCombo() {
               await ProductAPI.update(id || "", {
                 ...values,
                 priority: 0,
-                supProductId: listProductSelected,
-                image: values.image.map((img: any)=>{return({
-                  imageURL: img
-                })
-              })
+              //  supProductId: listProductSelected,
+              //   image: values.image.map((img: any)=>{return({
+              //     imageURL: img
+              //   })
+              // })
               });
-              toast.success("Tạo thành công !");
+              toast.success("Cập nhật thành công !");
               navigate("/manager-manage-combo");
-            } catch (error) {
-              toast.error("Tạo thất bại !");
+            } catch (error: any) {
+              toast.error(error?.response?.data?.Error || "Cập nhật thất bại !");
             }
           }}
         >
@@ -249,6 +258,36 @@ export default function UpdateCombo() {
                     )}
                   </Field>
                 </Grid>
+                {/* <Grid item xs={12} sm={6} md={4}>
+                {" "}
+                <Field name={`timeWork`}>
+                  {({ field, meta }: any) => (
+                    <>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{ color: "black", mb: 1 }}
+                      >
+                        Thời gian làm việc*
+                      </Typography>
+                      <TextField
+                        {...field}
+                        type="number"
+                        size="small"
+                        placeholder="Nhập thời gian làm..."
+                        fullWidth
+                        autoComplete="off"
+                        sx={{ minWidth: 200 }}
+                        // InputLabelProps={{ shrink: true }}
+                        inputProps={{ step: "0.5" }} // Đặt step để cho phép nhập số thực
+                        error={meta.touched && !!meta.error}
+                        helperText={
+                          meta.touched && meta.error ? meta.error : ""
+                        }
+                      />
+                    </>
+                  )}
+                </Field>
+              </Grid> */}
               </Grid>
 
               <Box mb={2}></Box>
@@ -261,13 +300,20 @@ export default function UpdateCombo() {
                   >
                     Loại sản phẩm*
                   </Typography>
-                  <FormControl
+                  <TextField
+                   size="small"
+                   fullWidth
+                   value={data.category.name}
+                   onChange={()=>{}}
+                   disabled
+                  />
+                  {/* <FormControl
                     fullWidth
                     size="small"
                     error={touched.categoryId && Boolean(errors.categoryId)}
                   >
                     <Field
-                      as={Select}
+                      as={Select}                    
                       name="categoryId"
                       onChange={handleChange}
                       onBlur={handleBlur}
@@ -278,7 +324,7 @@ export default function UpdateCombo() {
                       ))}
                     </Field>
                     <FormHelperText>Vui lòng chọn loại sản phẩm</FormHelperText>
-                  </FormControl>
+                  </FormControl> */}
                 </Grid>
                 <Grid item xs={12} sm={6} md={6}>
                   <Typography
@@ -326,7 +372,7 @@ export default function UpdateCombo() {
                     </>
                   )}
                   <Box mb={2}></Box>
-            <Typography variant="subtitle2" sx={{ color: "black", mb: 1 }}>Nhập link ảnh*</Typography>
+            {/* <Typography variant="subtitle2" sx={{ color: "black", mb: 1 }}>Nhập link ảnh*</Typography>
            
             <FieldArray name="image">
                     {({ push, remove }: any) => (
@@ -350,7 +396,7 @@ export default function UpdateCombo() {
                                       placeholder="Nhập url ảnh..."
                                       fullWidth
                                       autoComplete="off"
-                                      // sx={{ minWidth: 500 }}
+                                     
                                       error={meta.touched && !!meta.error}
                                       helperText={
                                         meta.touched && meta.error
@@ -361,7 +407,7 @@ export default function UpdateCombo() {
                                   </Box>
                                 )}
                               </Field>
-                              {/* hiển thị nút delete cho phần tử thứ 2 trở đi */}
+                             
                               {index > 0 && (
                                 <
                                 >
@@ -376,7 +422,7 @@ export default function UpdateCombo() {
                                     />
                                   </IconButton>
                                 </>
-                                //   <Button onClick={()=>remove(index)}> delete {index + 1}</Button>
+                               
                               )}
                             </Stack>
                           )
@@ -395,8 +441,8 @@ export default function UpdateCombo() {
                         </Box>
                       </Box>
                     )}
-                  </FieldArray>
-              <Box sx={{ mt: 5, mb: 3 }}>
+                  </FieldArray> */}
+              {/* <Box sx={{ mt: 5, mb: 3 }}>
                 <TableSelectProduct
                   setListProductSelected={setListProductSelected}
                   listProductSelected={listProductSelected}
@@ -405,7 +451,7 @@ export default function UpdateCombo() {
                   }
                   formikRef={formikRef}
                 />
-              </Box>
+              </Box> */}
               {typeof values.sellingPrice === "number" &&
                 totalSellingPriceOfSubProuducts < values.sellingPrice && (
                   <Box>

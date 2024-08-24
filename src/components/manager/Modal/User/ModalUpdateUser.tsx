@@ -59,7 +59,7 @@ export default function ModalCreateUser({
     setOpen(false);
   };
   React.useEffect(() => {
-    setChecked(data.status === "Activate" ? true : false);
+    setChecked(data.status === "ACTIVE" ? true : false);
   }, [data]);
 
   return (
@@ -91,10 +91,10 @@ export default function ModalCreateUser({
                 status: checked ? "ACTIVE" : "DEACTIVE",
               });
               setOpen(false);
-              toast.success("Tạo thành công !");
+              toast.success("Cập nhật thành công !");
               fetchAllUser();
-            } catch (error) {
-              toast.error("Tạo thất bại !");
+            } catch (error: any) {
+              toast.error(error?.response?.data?.Error || "Cập nhật thất bại !");
             }
           }}
         >
@@ -108,7 +108,7 @@ export default function ModalCreateUser({
                     "linear-gradient(to right top, #ffab91, #ffbc8e, #ffce8f, #ffe193, #fff59d)",
                 }}
               >
-                {"TẠO TÀI KHOẢN NHÂN VIÊN"}
+                {"CẬP NHẬT KHOẢN NHÂN VIÊN"}
               </DialogTitle>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">

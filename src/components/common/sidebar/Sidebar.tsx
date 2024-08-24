@@ -182,9 +182,9 @@ export default function Sidebar() {
               {titleSelected}
             </Typography>
             <Stack direction={"row"}>
-              <IconButton color="inherit" onClick={()=>navigate("/")}>             
+              {/* <IconButton color="inherit" onClick={()=>navigate("/")}>             
                   <HomeOutlinedIcon color="info" />
-              </IconButton>
+              </IconButton> */}
               <Box>
                 <Box>
                   <Tooltip title="Account settings">

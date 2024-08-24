@@ -59,6 +59,7 @@ import {
       setOpen(false);
     };
     React.useEffect(() => {
+      console.log(data.status,'check');
       setChecked(data.status === "ACTIVE" ? true : false);
     }, [data]);
   

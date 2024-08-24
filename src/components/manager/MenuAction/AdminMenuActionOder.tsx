@@ -79,10 +79,10 @@ export default function AdminMenuActionOrder({data, setOpenUpdate, setSelectedOr
           <span>Cập nhật</span>
         </MenuItem> */}
 
-        <MenuItem onClick={handleClickDelete}>
+        {/* <MenuItem onClick={handleClickDelete}>
           <CancelOutlinedIcon sx={{ mr: "4px" }} color="error" />
           <span>Hủy Đơn</span>
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
     </div>
   );

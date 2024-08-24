@@ -1,4 +1,4 @@
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import EditIcon from "@mui/icons-material/Edit";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import Button from "@mui/material/Button";
@@ -69,8 +69,8 @@ export default function MenuActionUser({data, setOpenUpdate, setSelectedUser, se
         </MenuItem>
 
         <MenuItem onClick={handleClickDelete}>
-          <DeleteForeverIcon sx={{ mr: "4px" }} color="error" />
-          <span>Xóa</span>
+          <HighlightOffIcon sx={{ mr: "4px" }} color="error" />
+          <span>Ngưng hoạt động</span>
         </MenuItem>
       </Menu>
     </div>
