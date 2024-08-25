@@ -192,7 +192,7 @@ export default function DetailOrder() {
                       >
                         Hiện chưa có nhân viên nhận đơn hàng này!
                       </Typography>
-                      {data?.staff &&
+                      {data?.staff === null &&
                         data.status === "PAID" &&
                         data.type === "MANAGERREQUEST" &&
                         isAssignStaff === false && (
@@ -332,9 +332,7 @@ export default function DetailOrder() {
                   Ngày thực thi đơn:{" "}
                   <strong>
                     {data.excutionDate
-                      ? moment(data.excutionDate).format(
-                          "DD/MM/YYYY - HH:mm"
-                        )
+                      ? moment(data.excutionDate).format("DD/MM/YYYY - HH:mm")
                       : "Chưa có thông tin"}
                   </strong>
                 </Typography>
@@ -343,9 +341,7 @@ export default function DetailOrder() {
                   Ngày hoàn thành đơn:{" "}
                   <strong>
                     {data.completedDate
-                      ? moment(data.completedDate).format(
-                          "DD/MM/YYYY - HH:mm"
-                        )
+                      ? moment(data.completedDate).format("DD/MM/YYYY - HH:mm")
                       : "Chưa có thông tin"}
                   </strong>
                 </Typography>
@@ -368,15 +364,29 @@ export default function DetailOrder() {
                   Tổng giá tiền:{" "}
                   <strong>{data.finalAmount.toLocaleString()} VNĐ</strong>
                 </Typography>
-                  
-                {data.status === "PAID" && <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
-                  Số tiền đã thanh toán:{" "}
-                  <strong>{Math.ceil(data.finalAmount * 20 / 100).toLocaleString()} VNĐ</strong>
-                </Typography>}
-                {data.status === "PAID" && <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
-                  Số tiền còn lại:{" "}
-                  <strong>{Math.round(data.finalAmount - (data.finalAmount * 20 / 100)).toLocaleString()} VNĐ</strong>
-                </Typography>}
+
+                {data.status === "PAID" && (
+                  <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
+                    Số tiền đã thanh toán:{" "}
+                    <strong>
+                      {Math.ceil(
+                        (data.finalAmount * 20) / 100
+                      ).toLocaleString()}{" "}
+                      VNĐ
+                    </strong>
+                  </Typography>
+                )}
+                {data.status === "PAID" && (
+                  <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
+                    Số tiền còn lại:{" "}
+                    <strong>
+                      {Math.round(
+                        data.finalAmount - (data.finalAmount * 20) / 100
+                      ).toLocaleString()}{" "}
+                      VNĐ
+                    </strong>
+                  </Typography>
+                )}
 
                 <Typography variant="h6" sx={{ fontSize: 17, mb: 2 }}>
                   Trạng thái: {renderStatusOrder(data.status)}

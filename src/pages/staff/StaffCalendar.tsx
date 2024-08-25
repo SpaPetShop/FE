@@ -82,6 +82,10 @@ export const StaffCalendar: React.FC = () => {
     updateTaskStatus("ACCEPT");
   };
 
+  const handleProcess = () => {
+    updateTaskStatus("PROCESS");
+  };
+
   const fetchTasks = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -127,30 +131,95 @@ export const StaffCalendar: React.FC = () => {
       setOpenSnackbar(true);
     }
   };
-   const renderTaskatus = (status: string) => {
+  const renderTaskatus = (status: string) => {
     switch (status) {
       case "ACCEPT":
-        return <Chip sx={{minWidth:120}} label={"Nhận Công Việc"} color="warning" size="small"/>
+        return (
+          <Chip
+            sx={{ minWidth: 120 }}
+            label={"Nhận Công Việc"}
+            color="warning"
+            size="small"
+          />
+        );
       case "COMPLETED":
-        return <Chip sx={{minWidth:120}}  label={"Đã Hoàn Thành"} color="success" size="small"/>
+        return (
+          <Chip
+            sx={{ minWidth: 120 }}
+            label={"Đã Hoàn Thành"}
+            color="success"
+            size="small"
+          />
+        );
       case "PROCESS":
-        return <Chip sx={{minWidth:120}}  label={"Đang xử lý"} color="info" size="small"/>
+        return (
+          <Chip
+            sx={{ minWidth: 120 }}
+            label={"Đang xử lý"}
+            color="info"
+            size="small"
+          />
+        );
       case "CANCELED":
-        return <Chip sx={{minWidth:120}}  label={"Đã Hủy"} color="error" size="small"/>
+        return (
+          <Chip
+            sx={{ minWidth: 120 }}
+            label={"Đã Hủy"}
+            color="error"
+            size="small"
+          />
+        );
+      case "PENDING":
+        return (
+          <Chip
+            sx={{ minWidth: 120 }}
+            label={"Đang chờ "}
+            color="secondary"
+            size="small"
+          />
+        );
     }
-  }
+  };
   const renderStatusOrder = (status: string) => {
     switch (status) {
       case "PAID":
-        return <Chip sx={{minWidth:120}} label={"Đã Thanh Toán"} color="warning" size="small"/>
+        return (
+          <Chip
+            sx={{ minWidth: 120 }}
+            label={"Đã Thanh Toán"}
+            color="warning"
+            size="small"
+          />
+        );
       case "COMPLETED":
-        return <Chip sx={{minWidth:120}}  label={"Đã Hoàn Thành"} color="success" size="small"/>
+        return (
+          <Chip
+            sx={{ minWidth: 120 }}
+            label={"Đã Hoàn Thành"}
+            color="success"
+            size="small"
+          />
+        );
       case "PROCESS":
-        return <Chip sx={{minWidth:120}}  label={"Đang xử lý"} color="info" size="small"/>
+        return (
+          <Chip
+            sx={{ minWidth: 120 }}
+            label={"Đang xử lý"}
+            color="info"
+            size="small"
+          />
+        );
       case "CANCELED":
-        return <Chip sx={{minWidth:120}}  label={"Đã Hủy"} color="error" size="small"/>
+        return (
+          <Chip
+            sx={{ minWidth: 120 }}
+            label={"Đã Hủy"}
+            color="error"
+            size="small"
+          />
+        );
     }
-  }
+  };
 
   const fetchOrderDetail = async (orderId: string) => {
     try {
@@ -370,29 +439,52 @@ export const StaffCalendar: React.FC = () => {
       >
         <DialogTitle>Chi tiết công việc</DialogTitle>
         <DialogContent>
-          <Card sx={{ p: 2, mb: 2 }}><Typography variant="h6" gutterBottom>
-          <strong>  Mã đơn hàng:</strong> {selectedTask?.order?.invoiceCode || "-"}
-          </Typography>
-          <Typography variant="h6" gutterBottom>
-          <strong>Tên thú cưng:</strong> {selectedTask?.pets.name || "-"}
-          </Typography>
-          <Typography variant="h6" gutterBottom>
-           <strong> Người phụ trách:</strong> {selectedTask?.staff.fullName || "-"}
-          </Typography>
-          <Typography variant="h6" gutterBottom>
-          <strong>  Ngày tạo:</strong> {selectedTask?.createDate || "-"}
-          </Typography>
-          <Typography variant="h6" gutterBottom>
-            <strong>Ngày thực thi:</strong> {selectedTask?.excutionDate || "-"}
-          </Typography>
-          <Typography variant="h6" gutterBottom>
-            <strong>Trạng thái:</strong> {renderTaskatus(selectedTask?.status || "-")}
-          </Typography>
-          {selectedTask?.status === "PROCESS" && (
-            <Button style={{backgroundColor:'orange', color:'white', margin:'10px'}} onClick={handleApprove} >
-              Nhận công việc
-            </Button>
-           )} 
+          <Card sx={{ p: 2, mb: 2 }}>
+            <Typography variant="h6" gutterBottom>
+              <strong> Mã đơn hàng:</strong>{" "}
+              {selectedTask?.order?.invoiceCode || "-"}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+              <strong>Tên thú cưng:</strong> {selectedTask?.pets.name || "-"}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+              <strong> Người phụ trách:</strong>{" "}
+              {selectedTask?.staff.fullName || "-"}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+              <strong> Ngày tạo:</strong> {selectedTask?.createDate || "-"}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+              <strong>Ngày thực thi:</strong>{" "}
+              {selectedTask?.excutionDate || "-"}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+              <strong>Trạng thái:</strong>{" "}
+              {renderTaskatus(selectedTask?.status || "-")}
+            </Typography>
+            {selectedTask?.status === "PENDING" ? (
+              <Button
+                style={{
+                  backgroundColor: "orange",
+                  color: "white",
+                  margin: "10px",
+                }}
+                onClick={handleApprove}
+              >
+                Nhận công việc
+              </Button>
+            ) : selectedTask?.status === "ACCEPT" ? (
+              <Button
+                style={{
+                  backgroundColor: "orange",
+                  color: "white",
+                  margin: "10px",
+                }}
+                onClick={handleProcess}
+              >
+                Tiến hành
+              </Button>
+            ) : null}
           </Card>
 
           <Grid container spacing={2} sx={{ mt: 2 }}>
@@ -406,14 +498,19 @@ export const StaffCalendar: React.FC = () => {
                     {/* Cột bên trái: Thông tin đơn hàng */}
                     <Grid item xs={12} md={8}>
                       <Typography variant="body1" gutterBottom>
-                        <strong>Mã đơn hàng:</strong> {orderDetail.invoiceCode || "-"}
+                        <strong>Mã đơn hàng:</strong>{" "}
+                        {orderDetail.invoiceCode || "-"}
                       </Typography>
                       <Typography variant="body1" gutterBottom>
-                       <strong> Giá đơn hàng:  {orderDetail.finalAmount?.toLocaleString() || "-"} VND</strong>{" "}
-                       
+                        <strong>
+                          {" "}
+                          Giá đơn hàng:{" "}
+                          {orderDetail.finalAmount?.toLocaleString() || "-"} VND
+                        </strong>{" "}
                       </Typography>
                       <Typography variant="body1" gutterBottom>
-                        <strong>Loại công việc:</strong> {orderDetail.type || "-"}
+                        <strong>Loại công việc:</strong>{" "}
+                        {orderDetail.type || "-"}
                       </Typography>
                       <Typography variant="body1" gutterBottom>
                         <strong>Ngày tạo:</strong>{" "}
@@ -421,12 +518,13 @@ export const StaffCalendar: React.FC = () => {
                           "-"}
                       </Typography>
                       <Typography variant="body1" gutterBottom>
-                       <strong> Ngày thực hiện:</strong>{" "}
+                        <strong> Ngày thực hiện:</strong>{" "}
                         {new Date(orderDetail.excutionDate).toLocaleString() ||
                           "-"}
                       </Typography>
                       <Typography variant="body1" gutterBottom>
-                        <strong>Trạng thái:</strong>   {renderStatusOrder(orderDetail?.status || "")}
+                        <strong>Trạng thái:</strong>{" "}
+                        {renderStatusOrder(orderDetail?.status || "")}
                       </Typography>
                       <Typography variant="body1" gutterBottom>
                         <strong>Ngày hoàn thành:</strong>{" "}
@@ -446,7 +544,8 @@ export const StaffCalendar: React.FC = () => {
                         Thông tin thú cưng
                       </Typography>
                       <Typography variant="body1" gutterBottom>
-                        <strong>Tên:</strong> {orderDetail.petInfor?.name || "-"}
+                        <strong>Tên:</strong>{" "}
+                        {orderDetail.petInfor?.name || "-"}
                       </Typography>
                       {orderDetail.petInfor?.image && (
                         <Box sx={{ mt: 2, mb: 2 }}>
@@ -469,13 +568,17 @@ export const StaffCalendar: React.FC = () => {
                         </Box>
                       )}
                       <Typography variant="body1" gutterBottom>
-                        <strong>Loại:</strong> {orderDetail.petInfor?.typePet?.name || "-"}
+                        <strong>Loại:</strong>{" "}
+                        {orderDetail.petInfor?.typePet?.name || "-"}
                       </Typography>
                     </Grid>
                   </Grid>
                   <DialogContent>
-                   {orderDetail?.status === "ACCEPT" && (
-                      <Button style={{backgroundColor:'green', color:'white'}} onClick={handleCompleteOrder} >
+                    {selectedTask?.status === "PROCESS" && (
+                      <Button
+                        style={{ backgroundColor: "green", color: "white" }}
+                        onClick={handleCompleteOrder}
+                      >
                         Hoàn thành đơn hàng
                       </Button>
                     )}
