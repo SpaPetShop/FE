@@ -24,15 +24,15 @@ import UserAPI from "../../../../utils/UserAPI";
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-const validationSchema = Yup.object({
-  fullName: Yup.string().required("*Tên nhân viên không được để trống!"),
-  address: Yup.string().required("*Địa chỉ không được để trống!"),
-  email: Yup.mixed().required("*Email không được để trống!"),
-  phoneNumber: Yup.string()
-    .required("*Số điện thoại không được để trống !")
-    .matches(phoneRegExp, "*Số điện thoại không hợp lệ !"),
-  image: Yup.string().required("*Ảnh nhân viên không được thiếu!"),
-});
+// const validationSchema = Yup.object({
+//   fullName: Yup.string().required("*Tên nhân viên không được để trống!"),
+//   address: Yup.string().required("*Địa chỉ không được để trống!"),
+//   email: Yup.mixed().required("*Email không được để trống!"),
+//   phoneNumber: Yup.string()
+//     .required("*Số điện thoại không được để trống !")
+//     .matches(phoneRegExp, "*Số điện thoại không hợp lệ !"),
+//   image: Yup.string().required("*Ảnh nhân viên không được thiếu!"),
+// });
 
 type ModalCreateUserProps = {
   open: boolean;
@@ -59,7 +59,7 @@ export default function ModalCreateUser({
     setOpen(false);
   };
   React.useEffect(() => {
-    setChecked(data.status === "ACTIVATE" ? true : false);
+    setChecked(data.status === "ACTIVE" ? true : false);
   }, [data]);
 
   return (
@@ -75,20 +75,20 @@ export default function ModalCreateUser({
             fullName: data.fullName || "",
             address: data.address || "",
             gender: data.gender || "",
-            role: "Staff",
+            role: "STAFF",
             email: data.email || "",
             phoneNumber: data.phoneNumber || "",
             image: data.image || "",
             yearsOfExperience: data.yearsOfExperience || 0,
           }}
-          validationSchema={validationSchema}
+          // validationSchema={validationSchema}
           onSubmit={async (values) => {
             try {
               console.log(values);
               // call api here
               await UserAPI.update(data.id, {
                 ...values,
-                status: checked ? "ACTIVATE" : "DEACTIVE",
+                status: checked ? "ACTIVE" : "DEACTIVE",
               });
               setOpen(false);
               toast.success("Cập nhật thành công !");

@@ -187,7 +187,7 @@ export default function Login() {
                     sx={{ mt: 1 }}
                     label="Ghi nhớ tôi"
                   />
-                  {/* <Box
+                  <Box
                     sx={{ cursor: "pointer" }}
                     onClick={() => navigate("/register")}
                   >
@@ -198,7 +198,7 @@ export default function Login() {
                     >
                       Đăng kí tài khoản
                     </Typography>
-                  </Box> */}
+                  </Box>
                 </Stack>
 
                 <Button

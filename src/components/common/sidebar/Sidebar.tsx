@@ -28,7 +28,7 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../../../context/AuthContext";
-import { adminSidebarItems, managerSidebarItems, staffSidebarItems } from "./ListItemSidebar";
+import { adminSidebarItems, managerSidebarItems } from "./ListItemSidebar";
 import { ROLES } from "../../../routes/roles";
 
 const drawerWidth: number = 270;
@@ -182,9 +182,9 @@ export default function Sidebar() {
               {titleSelected}
             </Typography>
             <Stack direction={"row"}>
-              <IconButton color="inherit" onClick={()=>navigate("/")}>             
+              {/* <IconButton color="inherit" onClick={()=>navigate("/")}>             
                   <HomeOutlinedIcon color="info" />
-              </IconButton>
+              </IconButton> */}
               <Box>
                 <Box>
                   <Tooltip title="Account settings">
@@ -327,28 +327,6 @@ export default function Sidebar() {
           </Toolbar>
           <Divider />
           <List component="nav">
-          {currentUser.user?.role === "STAFF" &&
-              staffSidebarItems.map((item, index) => (
-                <Link
-                  to={item.path}
-                  style={{ textDecoration: "none" }}
-                  key={item.path}
-                >
-                  <ListItemButton
-                    sx={{
-                      fontSize: "11px",
-                      fontWeight: 600,
-                      backgroundImage: isActive(item.path)
-                        ? "linear-gradient(to right, #7ff3fd, #82f6fc, #86f8fb, #8bfbf9, #8ffdf8)"
-                        : "transparent",
-                      color: "black",
-                    }}
-                  >
-                    <ListItemIcon>{item.icon}</ListItemIcon>
-                    <ListItemText primary={item.title} />
-                  </ListItemButton>
-                </Link>
-              ))}
             {currentUser.user?.role === "MANAGER" &&
               managerSidebarItems.map((item, index) => (
                 <Link

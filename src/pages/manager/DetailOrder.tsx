@@ -192,7 +192,7 @@ export default function DetailOrder() {
                       >
                         Hiện chưa có nhân viên nhận đơn hàng này!
                       </Typography>
-                      {data?.staff &&
+                      {data?.staff === null &&
                         data.status === "PAID" &&
                         data.type === "MANAGERREQUEST" &&
                         isAssignStaff === false && (

@@ -4,7 +4,7 @@ export type CustomerRequestType = {
   status: string
   createDate: string
   exctionDate: string;
-  staffId: {
+  staffId:{
     id: string
     fullName: string
     role: string

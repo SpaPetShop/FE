@@ -6,7 +6,7 @@ export type ProductType = {
   description: string;
   status: string;
   priority: number | null;
-  timeWork: number
+  timeWork: number;
   image:{imageURL: string}[]
   category: {
     id: string;

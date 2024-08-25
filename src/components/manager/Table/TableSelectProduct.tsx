@@ -193,10 +193,8 @@ export default function TableSelectProduct({
         totalTimeWork = 0;
       commonElements.forEach((element) => {
         totalSubPrice = totalSubPrice + element.sellingPrice;
-        totalTimeWork = totalTimeWork + element.timeWork;
       });
       setTotalSellingPriceOfSubProuducts(totalSubPrice);
-      setTotalTimeWorkOfSubProuducts(totalTimeWork);
       return;
     }
     setSelected([]);
